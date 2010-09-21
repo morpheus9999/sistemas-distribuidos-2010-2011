@@ -9,4 +9,17 @@
  */
 public class Main {
 
+
+
+void temp(){
+
+
+
+
+    System.out.println("NNN");
 }
+
+}
+
+
+
