@@ -1,4 +1,4 @@
-package pt.uc.dei.sd;
+package BetPackage;
 
 public enum Result {
     HOME,

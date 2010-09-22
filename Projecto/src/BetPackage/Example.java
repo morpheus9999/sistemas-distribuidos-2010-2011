@@ -1,4 +1,5 @@
-import pt.uc.dei.sd.*;
+package BetPackage;
+
 
 public class Example {
     public static void main(String[] args) {

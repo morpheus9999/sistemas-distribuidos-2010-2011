@@ -1,4 +1,5 @@
-package pt.uc.dei.sd;
+package BetPackage;
+
 
 import java.util.ArrayList;
 import java.util.List;
