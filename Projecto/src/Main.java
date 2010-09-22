@@ -9,18 +9,11 @@
  */
 public class Main {
 
+    public static void main() {
 
 
-void temp(){
-
-System.out.println("NNN");
-
-
-
-
-    System.out.println("NNN");
-}
-
+        
+    }
 }
 
 
