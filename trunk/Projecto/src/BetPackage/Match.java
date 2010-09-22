@@ -1,4 +1,4 @@
-package pt.uc.dei.sd;
+package BetPackage;
 
 import java.io.Serializable;
 
