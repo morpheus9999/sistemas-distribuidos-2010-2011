@@ -16,6 +16,7 @@ import java.io.IOException;
 public class Constants {
    
     //ficheiros
+    
     final static String INFOCLIENTS = "Clients.txt";
     final static String INFOMERCHANTS = "Merchants.txt";
     final static String INFOPRODUCTS = "Product.dat";
