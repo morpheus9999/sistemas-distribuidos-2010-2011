@@ -27,18 +27,18 @@ public class Login implements Serializable {
         this.password = password;
     }
 
-    public String getUserMail(){
+    public String getMail(){
         return this.mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPassword(){
         return this.password;
     }
 
-    public void setUserMail(String mail) {
-        this.mail = mail;
-    }
-    
     public void setPassword(String pass) {
         this.password = pass;
     }
