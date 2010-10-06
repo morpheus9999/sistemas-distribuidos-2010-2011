@@ -14,25 +14,25 @@ import java.io.Serializable;
 
 
 public class Login implements Serializable {
-    private String mail;
+    private String name;
     private String password;
 
     public Login() {
-        this.mail = null;
+        this.name = null;
         this.password = null;
     }
 
     public Login(String name, String password){
-        this.mail = name;
+        this.name = name;
         this.password = password;
     }
 
-    public String getMail(){
-        return this.mail;
+    public String getName(){
+        return this.name;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setName(String mail) {
+        this.name = mail;
     }
 
     public String getPassword(){

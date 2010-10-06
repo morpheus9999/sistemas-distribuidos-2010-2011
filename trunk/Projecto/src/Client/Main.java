@@ -82,6 +82,15 @@ public class Main {
      * Main method
      */
     public static void main(String args[]) {
+
+        /*  initialize sender thread    */
+        senderThread sender = new senderThread();
+        sender.start();
+        /*  initialize receiver thread    */
+        receiverThread receiver = new receiverThread();
+        receiver.start();
+
+
         
     }
 }
