@@ -6,6 +6,7 @@
 package Client;
 
 import Client_Server.Login;
+import Client_Server.User;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -70,31 +71,14 @@ public class Menus {
         StringTokenizer token;
         String temp;
 
-        while (true) {
-            System.out.print("Mail: ");
-            
-            try {
-                temp = scan.nextLine();
-                /*  check if string is a email  */
-                token = new StringTokenizer(temp);
-                token.nextToken("@");
-                token.nextToken(".");
-                token.nextToken("\n");
-
-                /*  adds mail to the object */
-                log.setMail(temp);
-                break;
-            }
-            catch (NoSuchElementException error) {
-                System.out.println("String inserted is not a email");
-            }
-        }
-
+        /*  get username    */
+        System.out.print("Username: ");
+        temp = scan.nextLine();
+        log.setName(temp);
+        
         /*  get password    */
         System.out.print("Password: ");
         temp = scan.nextLine();
-
-        /*  adds password to the object */
         log.setPassword(temp);
 
         return log;
@@ -104,7 +88,7 @@ public class Menus {
      * Register menu (????precisara de alteracoes????)
      */
     public Login registerMenu() {
-        Login reg = new Login();
+        User reg = new User();
         String temp;
         StringTokenizer token;
 
@@ -127,10 +111,13 @@ public class Menus {
                 System.out.println("String inserted is not a email");
             }
         }
-
-        System.out.println("Introduce your password: ");
+        
+        System.out.print("Introduce you username: ");
         temp = scan.nextLine();
+        reg.setName(temp);
 
+        System.out.print("Introduce your password: ");
+        temp = scan.nextLine();
         reg.setPassword(temp);
 
         return reg;

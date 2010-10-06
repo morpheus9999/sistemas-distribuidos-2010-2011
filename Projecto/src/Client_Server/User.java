@@ -11,32 +11,33 @@ package Client_Server;
  */
 public class User extends Login{
     private int credit;
+    private String mail;
 
     public User() {
         super();
+        this.mail = null;
         this.credit = 0;
     }
 
-    private User(String mail, String password) {
-        super(mail, password);
+    public User(String name, String password, String mail) {
+        super(name, password);
+        this.mail = mail;
         this.credit = 0;
     }
 
-    private User(String mail, String password, int credit) {
-        super(mail, password);
-        this.credit = credit;
-    }
-
-    private User(int credit) {
-        super();
-        this.credit = credit;
-    }
-
-    private int getCredit() {
+    public int getCredit() {
         return this.credit;
     }
 
-    private void setCredit(int credit) {
+    public void setCredit(int credit) {
         this.credit = credit;
+    }
+
+    public String getMail() {
+        return this.mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }
