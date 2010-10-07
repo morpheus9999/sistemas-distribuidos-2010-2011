@@ -58,11 +58,6 @@ public class Main {
             
             System.out.println("confirmacao enviada");
 
-            Credit teste = new Credit();
-            teste.setCredit(200);
-
-            System.out.println("valor do objecto generico: ");
-
         } catch (ClassNotFoundException ex) {
             System.out.println("nao encontra classe");
         } catch (IOException ex) {
