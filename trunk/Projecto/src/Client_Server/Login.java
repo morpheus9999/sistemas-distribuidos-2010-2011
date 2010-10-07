@@ -13,16 +13,34 @@ package Client_Server;
 import java.io.Serializable;
 
 
-public class Login implements Serializable {
+public class Login extends Generic implements Serializable {
     private String name;
     private String password;
 
     public Login() {
+        super(Constants.loginCode);
         this.name = null;
         this.password = null;
     }
 
-    public Login(String name, String password){
+    /**
+     * Constructor only used by User class to register clients
+     * @param name
+     * @param password
+     */
+    protected Login(int code) {
+        super(Constants.regCode);
+        this.name = null;
+        this.password = null;
+    }
+
+    /**
+     * Constructor only used by User class to register clients
+     * @param name
+     * @param password
+     */
+    protected Login(String name, String password){
+        super(Constants.regCode);
         this.name = name;
         this.password = password;
     }
