@@ -1,44 +1,68 @@
-package Server;
-
-
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
-/**
- *
- * @author jojo
- */
+package Server;
+
 import Client_Server.Constants;
+import Client_Server.Login;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
-
+/**
+ *
+ * @author JLA
+ */
 public class Main {
 
-    public static void main(String[] args) {
+    private static OutputStream outStream;
+    private static InputStream inStream;
+    private static ObjectOutputStream out;
+    private static ObjectInputStream in;
 
-        try{
-            ServerSocket listener = new ServerSocket(Constants.SERVERPORTTCP);
+
+    public static void main(String args[]) {
+        try {
+            /*  opens a port to check for requests  */
+            ServerSocket listener = new ServerSocket(Constants.serverPort);
             
-            while(true) {
-                /*  accepts a request of connection */
-                Socket clientSocket = listener.accept();
+            Socket sock = listener.accept();
 
-                /*  creates a unique thread for that connection */
-                ClientThread client = new ClientThread(clientSocket);
-                client.start();
+            //  outputStreams
+            outStream = sock.getOutputStream();
+            out = new ObjectOutputStream(outStream);
 
-            }
+            //  inputStreams
+            inStream = sock.getInputStream();
+            in = new ObjectInputStream(inStream);
 
-        }catch(IOException  error) {
-            System.out.println("ServerSocket listener: " + error.getMessage());
+            
 
+            Login lg = (Login) in.readObject();
+
+            System.out.println("Login enviado pelo cliente:");
+            System.out.println("name: "+lg.getName());
+            System.out.println("password: "+lg.getPassword());
+
+            out.writeUTF("login recebido");
+            out.flush();
+            
+            System.out.println("confirmacao enviada");
+            
+        } catch (ClassNotFoundException ex) {
+            System.out.println("nao encontra classe");
+        } catch (IOException ex) {
+            System.out.println("io exception");
         }
-        
+
+
     }
 }
