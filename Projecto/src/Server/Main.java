@@ -1,3 +1,5 @@
+package Server;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -7,6 +9,7 @@
  *
  * @author jojo
  */
+import Client_Server.Constants;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
