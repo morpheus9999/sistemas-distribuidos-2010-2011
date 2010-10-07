@@ -37,8 +37,11 @@ public class Main {
     public static Login log = new Login();
     public static User reg = new User();
     public static String message = null;
+    public static boolean logged = false;
     public static Selection opt = new Selection();
+    private static boolean exit = false;
 
+    
     /**
      * Main method
      */
@@ -56,7 +59,82 @@ public class Main {
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
-            
+            /*  sender thread   */
+            senderThread sender = new senderThread();
+            sender.start();
+
+            /*  receiver thread */
+            receiverThread receiver = new receiverThread();
+            receiver.start();
+
+            /*  initates interface  */
+            Interface inter = new Interface();
+            /*  open comunication channels with user    */
+            inter.openTIChannel();
+
+            /*  initiates interaction with user */
+            while(!logged) {
+                switch(inter.welcomeMenu()) {
+                    case 1:
+                        inter.login();
+                        break;
+                    case 2:
+                        inter.register();
+                        break;
+                    default:
+                        System.out.println("Wrong code!");
+                        break;
+                }
+            }
+
+            while(!exit) {
+                switch(inter.mainMenu()) {
+                    case 1:
+                        /*  Credit  */
+                        inter.credit();
+                        break;
+                    case 2:
+                        /*  Reset credit    */
+                        inter.resetCredit();
+                        break;
+                    case 3:
+                        /*  Current matches */
+                        inter.checkMatches();
+                        break;
+                    case 4:
+                        /*  Bet */
+                        inter.bet();
+                        break;
+                    case 5:
+                        /*  Online users    */
+                        inter.onlineUsers();
+                        break;
+                    case 6:
+                        /*  Message user    */
+                        inter.messageSingleUsers();
+                        break;
+                    case 7:
+                        /*  Message all users   */
+                        inter.messageAllUsers();
+                        break;
+                    case 8:
+                        /*  logout  */
+                        inter.logout();
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Wrong code!");
+                        break;
+                }
+            }
+
+            /*  closes comunication channels with user  */
+            inter.closeTIChannel();
+
+
+
+
+            /*
             Login lg = new Login();
 
             lg.setName("ola");
@@ -68,6 +146,8 @@ public class Main {
             String temp = in.readUTF();
 
             System.out.println("Resposta do servidor: "+temp);
+            */
+
 
         } catch (UnknownHostException ex) {
             System.out.println("unknown host");

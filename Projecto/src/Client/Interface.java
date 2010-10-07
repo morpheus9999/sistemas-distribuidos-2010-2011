@@ -69,6 +69,8 @@ public class Interface {
         StringTokenizer token;
         String temp;
 
+        System.out.println("#### Login ####");
+        
         /*  get username    */
         System.out.print("Username: ");
         temp = scan.nextLine().trim();
@@ -89,6 +91,8 @@ public class Interface {
     public void register() {
         String temp;
         StringTokenizer token;
+
+        System.out.println("#### Register ####");
 
         while (true) {
             System.out.print("Introduce your email: ");
@@ -151,6 +155,7 @@ public class Interface {
      * asks for the actual user credit
      */
     public void credit() {
+        System.out.println("#### Credit ####");
         Main.opt.setOption(1);
     }
 
@@ -159,6 +164,7 @@ public class Interface {
      * resets the credit of the user
      */
     public void resetCredit() {
+        System.out.println("#### Reset ####");
         Main.opt.setOption(2);
     }
 
@@ -167,6 +173,7 @@ public class Interface {
      * lets the user check the matches in play
      */
     public void checkMatches() {
+        System.out.println("#### Matches ####");
         Main.opt.setOption(3);
     }
 
@@ -175,7 +182,7 @@ public class Interface {
      * lets the user bet on any match
      */
     public void bet() {
-
+        System.out.println("#### Bet ####");
 
         /*  pedir dados antes   */
 
@@ -187,6 +194,7 @@ public class Interface {
      * presents the user with a list of online users
      */
     public void onlineUsers() {
+        System.out.println("#### Online Users ####");
         Main.opt.setOption(5);
     }
 
@@ -195,6 +203,7 @@ public class Interface {
      * sends a message to a specific user
      */
     public void messageSingleUsers() {
+        System.out.println("#### Message to user ####");
         Main.opt.setOption(6);
     }
 
@@ -203,6 +212,7 @@ public class Interface {
      * sends a message to all online users
      */
     public void messageAllUsers() {
+        System.out.println("#### Message to all users ####");
         Main.opt.setOption(7);
     }
 
@@ -211,6 +221,7 @@ public class Interface {
      * drops the connection with the server
      */
     public void logout() {
+        System.out.println("#### Logout ####");
         Main.opt.setOption(8);
     }
 }
