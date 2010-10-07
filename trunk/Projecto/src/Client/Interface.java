@@ -73,12 +73,12 @@ public class Interface {
         
         /*  get username    */
         System.out.print("Username: ");
-        temp = scan.nextLine().trim();
+        temp = scan.next().trim();
         Main.log.setName(temp);
         
         /*  get password    */
         System.out.print("Password: ");
-        temp = scan.nextLine().trim();
+        temp = scan.next().trim();
         Main.log.setPassword(temp);
 
         /*  flag 100 to Login   */
