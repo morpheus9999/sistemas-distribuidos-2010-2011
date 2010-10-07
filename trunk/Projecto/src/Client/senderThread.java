@@ -43,20 +43,44 @@ public class senderThread extends Thread{
                         gen.setCode(Constants.regCode);
                         break;
                     case 3:
+                        /*  lists current matches   */
+                        gen.setCode(Constants.matchesCode);
                         break;
                     case 4:
+                        /*  bets on a match */
+                        gen.setCode(Constants.betCode);
+
+                        /*  adicionar o objecto com a informacao da aposta  */
+                        /*  !!!!!!!!!!preciso de saber as variaveis para fazer a classe !!!!!!!!!!!!!!!*/
+
                         break;
                     case 5:
+                        /*  lists online users  */
+                        gen.setCode(Constants.onlineUsersCode);
                         break;
                     case 6:
+                        /*  messages a user */
+                        gen.setCode(Constants.messageCode);
+                        gen.setObj(Main.message);
                         break;
                     case 7:
+                        /*  messages all users  */
+                        gen.setCode(Constants.messageAllCode);
+                        gen.setObj(Main.message);
                         break;
                     case 8:
+                        /*  logout  */
+                        gen.setCode(Constants.logoutCode);
                         break;
                     case 100:
+                        /*  login   */
+                        gen.setCode(Constants.loginCode);
+                        gen.setObj(Main.log);
                         break;
                     case 101:
+                        /*  register    */
+                        gen.setCode(Constants.regCode);
+                        gen.setObj(Main.reg);
                         break;
                     default:
                         break;
@@ -65,7 +89,7 @@ public class senderThread extends Thread{
                 /*  sends the request to the server */
                 Main.out.writeObject(gen);
             } catch (IOException ex) {
-                System.out.println("IOException: "+ex.getMessage());
+                System.out.println("IOException sending object: "+ex.getMessage());
             }
         }
     }
