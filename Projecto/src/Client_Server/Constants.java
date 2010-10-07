@@ -5,7 +5,6 @@
 
 package Client_Server;
 
-import Client.Selection;
 
 /**
  *
@@ -16,4 +15,13 @@ public class Constants {
     final public static int serverPort = 3500;
     final public static int loginCode = 100;
     final public static int regCode = 101;
+    final public static int creditCode = 1;
+    final public static int resetCode = 2;
+    final public static int matchesCode = 3;
+    final public static int betCode = 4;
+    final public static int onlineUsersCode = 5;
+    final public static int messageCode = 6;
+    final public static int messageAllCode = 7;
+    final public static int logoutCode = 8;
+
 }

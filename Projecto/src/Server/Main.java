@@ -6,6 +6,7 @@
 package Server;
 
 import Client_Server.Constants;
+import Client_Server.Credit;
 import Client_Server.Login;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +57,12 @@ public class Main {
             out.flush();
             
             System.out.println("confirmacao enviada");
-            
+
+            Credit teste = new Credit();
+            teste.setCredit(200);
+
+            System.out.println("valor do objecto generico: ");
+
         } catch (ClassNotFoundException ex) {
             System.out.println("nao encontra classe");
         } catch (IOException ex) {
