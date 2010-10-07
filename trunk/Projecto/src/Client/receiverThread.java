@@ -21,7 +21,6 @@ public class receiverThread extends Thread{
      * Constructor
      */
     public receiverThread() {
-        super();
     }
 
     /*

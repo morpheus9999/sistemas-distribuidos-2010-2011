@@ -10,6 +10,7 @@ import Client.receiverThread;
 import Client.senderThread;
 import Client_Server.Constants;
 import Client_Server.Credit;
+import Client_Server.Generic;
 import Client_Server.Login;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,19 +30,31 @@ public class Main {
 
     private static OutputStream outStream;
     private static InputStream inStream;
+    private static ObjectOutputStream out;
+    private static ObjectInputStream in;
 
     public static void main(String args[]) {
         try {
             /*  opens a port to check for requests  */
             ServerSocket listener = new ServerSocket(Constants.serverPort);
-
-            while(true) {
-                Socket sock = listener.accept();
-                System.out.println("+1 cliente");
-                ClientThread client = new ClientThread(sock);
-                client.run();
-            }
             
+            Socket sock = listener.accept();
+
+            /*  outputStreams   */
+            outStream = sock.getOutputStream();
+            out = new ObjectOutputStream(outStream);
+
+            /*  inputStreams    */
+            inStream = sock.getInputStream();
+            in = new ObjectInputStream(inStream);
+
+            System.out.println("lê objecto");
+            Generic gen = (Generic) in.readObject();
+            System.out.println("faz query");
+            Boolean teste = Queries.login(gen);
+            System.out.println("envia resposta");
+            out.writeBoolean(teste);
+
 
             /*
             Login lg = (Login) in.readObject();
@@ -59,6 +72,8 @@ public class Main {
 
         //} catch (ClassNotFoundException ex) {
         //    System.out.println("nao encontra classe");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             System.out.println("io exception");
         }

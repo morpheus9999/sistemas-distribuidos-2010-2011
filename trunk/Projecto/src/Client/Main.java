@@ -48,8 +48,14 @@ public class Main {
     public static void main(String args[]) {
 
         try {
+
+            System.out.println("estabelecer ligacao");
+
             // Socket creation.
             sock = new Socket(host, Constants.serverPort);
+
+
+            System.out.println("ligacao estabelecida");
 
             //  outputStreams
             outStream = sock.getOutputStream();
@@ -59,13 +65,24 @@ public class Main {
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
+
+
+            System.out.println("thread time");
+
+
+            
             /*  sender thread   */
             senderThread sender = new senderThread();
             sender.start();
 
+            System.out.println("arrouxas aqui?");
+
+
             /*  receiver thread */
             receiverThread receiver = new receiverThread();
             receiver.start();
+
+            System.out.println("ou aqui??");
 
             /*  initates interface  */
             Interface inter = new Interface();

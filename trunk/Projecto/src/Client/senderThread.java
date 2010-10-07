@@ -20,7 +20,6 @@ public class senderThread extends Thread{
      * Constructor
      */
     public senderThread() {
-        super();
     }
 
     /*
