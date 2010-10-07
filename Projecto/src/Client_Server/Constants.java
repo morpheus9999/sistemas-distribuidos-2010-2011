@@ -1,6 +1,4 @@
 package Client_Server;
-
-import java.io.IOException;
 /*
  * Constants.java
  *
@@ -16,7 +14,12 @@ import java.io.IOException;
  */
 //Identificadores relevantes
 public class Constants {
-   
+
+    //Server
+    public static int SERVERPORTTCP = 6000;
+    
+
+
     //ficheiros
     
     final static String INFOCLIENTS = "Clients.txt";
@@ -37,7 +40,7 @@ public class Constants {
     final static int LOGINMERCHANTS = 101;
     final static int ANSWER = 200;
     final static int BOOLEAN = 201;
-    final static int SERVERPORTTCP = 6000;
+    
     final static int SERVERPORTUDP = 6789;
     final static int CLOSEMERCHANT = 1000;
     final static int CLOSECLIENT = 1001;
