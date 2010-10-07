@@ -74,7 +74,7 @@ public class TwitterTCP extends Thread implements exemplo.common.Constantes, Ser
                     out.close();
                     stop = true;
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+                    e1.printStackTrace();                   
                 }
                 //e.printStackTrace();
             } catch (ClassNotFoundException e) {

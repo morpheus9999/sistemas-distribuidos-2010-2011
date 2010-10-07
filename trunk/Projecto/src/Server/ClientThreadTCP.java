@@ -2,6 +2,8 @@ package Server;
 
 
 import Client_Server.Generic;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -20,36 +22,52 @@ import java.util.logging.Logger;
  *
  * @author Jorge
  */
-class ClientThread {
+class ClientThreadTCP {
 
-    private Socket sock;
+    private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private OutputStream outStream;
     private InputStream inStream;
 
-    ClientThread(Socket clientSocket) {
+    ClientThreadTCP(Socket clientSocket) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void run() {
         try {
             /*  outputStreams   */
-            outStream = this.sock.getOutputStream();
-            out = new ObjectOutputStream(outStream);
+            
+            out = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
             /*  inputStreams    */
-            inStream = this.sock.getInputStream();
-            in = new ObjectInputStream(inStream);
+            
+            in = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+            
+
 
             while(true) {
                 out.writeObject(Queries.login((Generic) in.readObject()));
                 out.flush();
+                
             }
             
         } catch (IOException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientThreadTCP.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientThreadTCP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void closed() {
+        try {
+            socket.close();
+            in.close();
+            out.close();
+            // acabar o run
+
+        } catch (IOException e) {
+            System.err.println("[TwitterTCP-exectuta]:Erro ao fechar streams");
+            
         }
     }
 

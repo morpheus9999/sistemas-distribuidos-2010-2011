@@ -149,10 +149,6 @@ public class Main {
             inter.closeTIChannel();
 
 
-
-
-        
-
         } catch (UnknownHostException ex) {
             System.out.println("unknown host");
         } catch (IOException ex) {

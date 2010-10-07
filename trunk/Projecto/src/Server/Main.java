@@ -52,9 +52,18 @@ public class Main {
             Generic gen = (Generic) in.readObject();
             System.out.println("faz query");
             Boolean teste = Queries.login(gen);
-            System.out.println("envia resposta");
-            out.writeBoolean(teste);
 
+
+            
+            System.out.println("envia resposta");
+            Generic envia =new Generic(100);
+            envia.setConfirmation(true);
+
+
+
+            while(true){
+                out.writeObject(envia);
+            }
 
             /*
             Login lg = (Login) in.readObject();
