@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import Client_Server.Constants;
+import Client_Server.User;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +33,11 @@ public class Main {
     private static InputStream inStream;
     private static ObjectOutputStream out;
     private static ObjectInputStream in;
-    
+
+    public static Login log = new Login();
+    public static User reg = new User();
+    public static String message = null;
+    public static Selection opt = new Selection();
 
     /**
      * Main method

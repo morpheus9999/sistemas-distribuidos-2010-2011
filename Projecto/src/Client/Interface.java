@@ -5,8 +5,7 @@
 
 package Client;
 
-import Client_Server.Login;
-import Client_Server.User;
+
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -65,30 +64,29 @@ public class Interface {
     /**
      * Login menu
      */
-    public Login loginMenu() {
+    public void login() {
         Boolean flag = true;
-        Login log = new Login();
         StringTokenizer token;
         String temp;
 
         /*  get username    */
         System.out.print("Username: ");
         temp = scan.nextLine().trim();
-        log.setName(temp);
+        Main.log.setName(temp);
         
         /*  get password    */
         System.out.print("Password: ");
         temp = scan.nextLine().trim();
-        log.setPassword(temp);
+        Main.log.setPassword(temp);
 
-        return log;
+        /*  flag 100 to Login   */
+        Main.opt.setOption(100);
     }
 
     /**
      * Register menu (????precisara de alteracoes????)
      */
-    public Login registerMenu() {
-        User reg = new User();
+    public void register() {
         String temp;
         StringTokenizer token;
 
@@ -104,7 +102,7 @@ public class Interface {
                 token.nextToken("\n");
 
                 /*  adds mail to the object */
-                reg.setMail(temp);
+                Main.reg.setMail(temp);
                 break;
             }
             catch (NoSuchElementException error) {
@@ -114,13 +112,14 @@ public class Interface {
         
         System.out.print("Introduce you username: ");
         temp = scan.nextLine().trim();
-        reg.setName(temp);
+        Main.reg.setName(temp);
 
         System.out.print("Introduce your password: ");
         temp = scan.nextLine().trim();
-        reg.setPassword(temp);
+        Main.reg.setPassword(temp);
 
-        return reg;
+        /*  flag 101 to register   */
+        Main.opt.setOption(101);
     }
 
     /**
@@ -151,8 +150,8 @@ public class Interface {
      * Credit
      * asks for the actual user credit
      */
-    public void printCredit() {
-
+    public void credit() {
+        Main.opt.setOption(1);
     }
 
     /**
@@ -160,7 +159,7 @@ public class Interface {
      * resets the credit of the user
      */
     public void resetCredit() {
-
+        Main.opt.setOption(2);
     }
 
     /**
@@ -168,7 +167,7 @@ public class Interface {
      * lets the user check the matches in play
      */
     public void checkMatches() {
-
+        Main.opt.setOption(3);
     }
 
     /**
@@ -177,6 +176,10 @@ public class Interface {
      */
     public void bet() {
 
+
+        /*  pedir dados antes   */
+
+        Main.opt.setOption(4);
     }
 
     /**
@@ -184,7 +187,7 @@ public class Interface {
      * presents the user with a list of online users
      */
     public void onlineUsers() {
-
+        Main.opt.setOption(5);
     }
 
     /**
@@ -192,7 +195,7 @@ public class Interface {
      * sends a message to a specific user
      */
     public void messageSingleUsers() {
-
+        Main.opt.setOption(6);
     }
 
     /**
@@ -200,15 +203,7 @@ public class Interface {
      * sends a message to all online users
      */
     public void messageAllUsers() {
-
-    }
-
-    /**
-     * Login
-     * logins the user
-     */
-    public void login() {
-
+        Main.opt.setOption(7);
     }
 
     /**
@@ -216,6 +211,6 @@ public class Interface {
      * drops the connection with the server
      */
     public void logout() {
-
+        Main.opt.setOption(8);
     }
 }

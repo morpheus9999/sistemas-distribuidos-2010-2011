@@ -5,6 +5,8 @@
 
 package Client_Server;
 
+import Client.Selection;
+
 /**
  *
  * @author JLA
@@ -12,5 +14,5 @@ package Client_Server;
 public class Constants {
 
     final public static int serverPort = 3500;
-
+    
 }
