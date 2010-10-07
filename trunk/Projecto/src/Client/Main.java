@@ -49,13 +49,13 @@ public class Main {
 
         try {
 
-            System.out.println("estabelecer ligacao");
+            //System.out.println("estabelecer ligacao");
 
             // Socket creation.
             sock = new Socket(host, Constants.serverPort);
 
 
-            System.out.println("ligacao estabelecida");
+            //System.out.println("ligacao estabelecida");
 
             //  outputStreams
             outStream = sock.getOutputStream();
@@ -67,7 +67,7 @@ public class Main {
 
 
 
-            System.out.println("thread time");
+            //System.out.println("thread time");
 
 
             
@@ -75,14 +75,14 @@ public class Main {
             senderThread sender = new senderThread();
             sender.start();
 
-            System.out.println("arrouxas aqui?");
+            //System.out.println("arrouxas aqui?");
 
 
             /*  receiver thread */
             receiverThread receiver = new receiverThread();
             receiver.start();
 
-            System.out.println("ou aqui??");
+            //System.out.println("ou aqui??");
 
             /*  initates interface  */
             Interface inter = new Interface();
@@ -151,20 +151,7 @@ public class Main {
 
 
 
-            /*
-            Login lg = new Login();
-
-            lg.setName("ola");
-            lg.setPassword("adeus");
-
-            out.writeObject(lg);
-
-
-            String temp = in.readUTF();
-
-            System.out.println("Resposta do servidor: "+temp);
-            */
-
+        
 
         } catch (UnknownHostException ex) {
             System.out.println("unknown host");

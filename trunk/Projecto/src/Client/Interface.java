@@ -55,7 +55,9 @@ public class Interface {
             System.out.println("2 - Register");
 
             System.out.print("Option: ");
-            opt = scan.nextInt();
+            opt = User.readInt();
+            
+
         } while (opt < 1 || opt > 2);
 
         return opt;
@@ -68,17 +70,17 @@ public class Interface {
         Boolean flag = true;
         StringTokenizer token;
         String temp;
-
+        
         System.out.println("#### Login ####");
         
         /*  get username    */
         System.out.print("Username: ");
-        temp = scan.nextLine().trim();
+        temp = User.readString().trim();
         Main.log.setName(temp);
         
         /*  get password    */
         System.out.print("Password: ");
-        temp = scan.nextLine().trim();
+        temp = User.readString().trim();
         Main.log.setPassword(temp);
 
         /*  flag 100 to Login   */
@@ -98,7 +100,7 @@ public class Interface {
             System.out.print("Introduce your email: ");
 
             try {
-                temp = scan.next().trim();
+                temp = User.readString().trim();
                 /*  check if string is a email  */
                 token = new StringTokenizer(temp);
                 token.nextToken("@");
@@ -115,11 +117,11 @@ public class Interface {
         }
         
         System.out.print("Introduce you username: ");
-        temp = scan.next().trim();
+        temp = User.readString().trim();
         Main.reg.setName(temp);
 
         System.out.print("Introduce your password: ");
-        temp = scan.next().trim();
+        temp = User.readString().trim();
         Main.reg.setPassword(temp);
 
         /*  flag 101 to register   */
@@ -144,7 +146,7 @@ public class Interface {
             System.out.println("8 - Logout");
 
             System.out.print("Option: ");
-            opt = scan.nextInt();
+            opt = User.readInt();
         } while (opt < 1 || opt > 8);
 
         return opt;

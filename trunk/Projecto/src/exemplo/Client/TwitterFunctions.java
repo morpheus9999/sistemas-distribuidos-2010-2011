@@ -1,5 +1,6 @@
 package exemplo.Client;
 
+import Client.User;
 import java.io.*;
 import java.sql.Timestamp;
 
