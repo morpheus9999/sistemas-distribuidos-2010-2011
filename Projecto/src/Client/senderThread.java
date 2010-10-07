@@ -41,16 +41,22 @@ public class senderThread extends Thread{
                     case 2:
                         /*  resets credit balance   */
                         gen.setCode(Constants.regCode);
+
+                        /*  adicionar o objecto com a informacao do registo  */
+
                         break;
                     case 3:
                         /*  lists current matches   */
                         gen.setCode(Constants.matchesCode);
+
+                        /*  adicionar o objecto com a informacao dos jogos  */
+
                         break;
                     case 4:
                         /*  bets on a match */
                         gen.setCode(Constants.betCode);
 
-                        /*  adicionar o objecto com a informacao da aposta  */
+                        
                         /*  !!!!!!!!!!preciso de saber as variaveis para fazer a classe !!!!!!!!!!!!!!!*/
 
                         break;
@@ -69,9 +75,9 @@ public class senderThread extends Thread{
                         gen.setObj(Main.message);
                         break;
                     case 8:
-                        /*  logout  */
+                        /*  logout and exit */
                         gen.setCode(Constants.logoutCode);
-                        break;
+                        return;
                     case 100:
                         /*  login   */
                         gen.setCode(Constants.loginCode);
@@ -83,6 +89,7 @@ public class senderThread extends Thread{
                         gen.setObj(Main.reg);
                         break;
                     default:
+                        System.out.println("Wrong option :X");
                         break;
                 }
                 
