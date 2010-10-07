@@ -14,7 +14,7 @@ public class User extends Login{
     private String mail;
 
     public User() {
-        super();
+        super(Constants.regCode);
         this.mail = null;
         this.credit = 0;
     }

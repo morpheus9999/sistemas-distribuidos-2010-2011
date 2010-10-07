@@ -27,13 +27,13 @@ public class Main {
     /*
      * Global/Static variables
      */
-    public static Socket sock;
+    private static Socket sock;
     private final static String host = "localhost";
     private static OutputStream outStream;
     private static InputStream inStream;
-    private static ObjectOutputStream out;
-    private static ObjectInputStream in;
-
+    
+    public static ObjectOutputStream out;
+    public static ObjectInputStream in;
     public static Login log = new Login();
     public static User reg = new User();
     public static String message = null;
@@ -57,7 +57,11 @@ public class Main {
             in = new ObjectInputStream(inStream);
 
             
-            Login lg = new Login("ola", "adeus");
+            Login lg = new Login();
+
+            lg.setName("ola");
+            lg.setPassword("adeus");
+
             out.writeObject(lg);
 
 
