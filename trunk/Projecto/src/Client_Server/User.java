@@ -5,16 +5,17 @@
 
 package Client_Server;
 
+import java.io.Serializable;
+
 /**
  *
  * @author JLA
  */
-public class User extends Login{
+public class User extends Login implements Serializable {
     private int credit;
     private String mail;
 
     public User() {
-        super(Constants.regCode);
         this.mail = null;
         this.credit = 0;
     }
