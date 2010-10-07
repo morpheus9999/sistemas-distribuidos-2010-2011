@@ -15,31 +15,31 @@ import java.util.StringTokenizer;
  *
  * @author JLA
  */
-public class Menus {
+public class Interface {
     private Scanner scan;
 
-    /*
+    /**
      * NULL constructor
      */
-    public Menus() {
+    public Interface() {
         super();
     }
 
-    /*
+    /**
      * open Text Interface channel
      */
     public void openTIChannel() {
         scan = new Scanner(System.in);
     }
 
-    /*
+    /**
      * close Text Interface channel
      */
     public void closeTIChannel() {
         scan.close();
     }
 
-    /*
+    /**
      * Welcome menu
      */
     public int welcomeMenu() {
@@ -62,7 +62,7 @@ public class Menus {
         return opt;
     }
 
-    /*
+    /**
      * Login menu
      */
     public Login loginMenu() {
@@ -84,7 +84,7 @@ public class Menus {
         return log;
     }
 
-    /*
+    /**
      * Register menu (????precisara de alteracoes????)
      */
     public Login registerMenu() {
@@ -123,7 +123,7 @@ public class Menus {
         return reg;
     }
 
-    /*
+    /**
      * Main menu
      */
     public int mainMenu() {
@@ -145,5 +145,77 @@ public class Menus {
         } while (opt < 1 || opt > 8);
 
         return opt;
+    }
+
+    /**
+     * Credit
+     * asks for the actual user credit
+     */
+    public void printCredit() {
+
+    }
+
+    /**
+     * Reset Credit
+     * resets the credit of the user
+     */
+    public void resetCredit() {
+
+    }
+
+    /**
+     * Current Matches
+     * lets the user check the matches in play
+     */
+    public void checkMatches() {
+
+    }
+
+    /**
+     * Bet
+     * lets the user bet on any match
+     */
+    public void bet() {
+
+    }
+
+    /**
+     * Online Users
+     * presents the user with a list of online users
+     */
+    public void onlineUsers() {
+
+    }
+
+    /**
+     * Message User
+     * sends a message to a specific user
+     */
+    public void messageSingleUsers() {
+
+    }
+
+    /**
+     * Message All Users
+     * sends a message to all online users
+     */
+    public void messageAllUsers() {
+
+    }
+
+    /**
+     * Login
+     * logins the user
+     */
+    public void login() {
+
+    }
+
+    /**
+     * Logout
+     * drops the connection with the server
+     */
+    public void logout() {
+
     }
 }
