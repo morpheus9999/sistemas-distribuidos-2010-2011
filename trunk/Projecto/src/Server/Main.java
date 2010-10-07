@@ -5,6 +5,9 @@
 
 package Server;
 
+import Client.Interface;
+import Client.receiverThread;
+import Client.senderThread;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Login;
@@ -29,7 +32,6 @@ public class Main {
     private static ObjectOutputStream out;
     private static ObjectInputStream in;
 
-
     public static void main(String args[]) {
         try {
             /*  opens a port to check for requests  */
@@ -37,16 +39,15 @@ public class Main {
             
             Socket sock = listener.accept();
 
-            //  outputStreams
+            /*  outputStreams   */
             outStream = sock.getOutputStream();
             out = new ObjectOutputStream(outStream);
 
-            //  inputStreams
+            /*  inputStreams    */
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
-            
-
+            /*
             Login lg = (Login) in.readObject();
 
             System.out.println("Login enviado pelo cliente:");
@@ -57,9 +58,11 @@ public class Main {
             out.flush();
             
             System.out.println("confirmacao enviada");
+            */
 
-        } catch (ClassNotFoundException ex) {
-            System.out.println("nao encontra classe");
+
+        //} catch (ClassNotFoundException ex) {
+        //    System.out.println("nao encontra classe");
         } catch (IOException ex) {
             System.out.println("io exception");
         }
