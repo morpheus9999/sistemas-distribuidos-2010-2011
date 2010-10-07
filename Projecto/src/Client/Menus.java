@@ -73,12 +73,12 @@ public class Menus {
 
         /*  get username    */
         System.out.print("Username: ");
-        temp = scan.nextLine();
+        temp = scan.nextLine().trim();
         log.setName(temp);
         
         /*  get password    */
         System.out.print("Password: ");
-        temp = scan.nextLine();
+        temp = scan.nextLine().trim();
         log.setPassword(temp);
 
         return log;
@@ -96,7 +96,7 @@ public class Menus {
             System.out.print("Introduce your email: ");
 
             try {
-                temp = scan.nextLine();
+                temp = scan.nextLine().trim();
                 /*  check if string is a email  */
                 token = new StringTokenizer(temp);
                 token.nextToken("@");
@@ -113,11 +113,11 @@ public class Menus {
         }
         
         System.out.print("Introduce you username: ");
-        temp = scan.nextLine();
+        temp = scan.nextLine().trim();
         reg.setName(temp);
 
         System.out.print("Introduce your password: ");
-        temp = scan.nextLine();
+        temp = scan.nextLine().trim();
         reg.setPassword(temp);
 
         return reg;
