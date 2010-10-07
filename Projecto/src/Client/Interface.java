@@ -73,12 +73,12 @@ public class Interface {
         
         /*  get username    */
         System.out.print("Username: ");
-        temp = scan.next().trim();
+        temp = scan.nextLine().trim();
         Main.log.setName(temp);
         
         /*  get password    */
         System.out.print("Password: ");
-        temp = scan.next().trim();
+        temp = scan.nextLine().trim();
         Main.log.setPassword(temp);
 
         /*  flag 100 to Login   */
@@ -98,7 +98,7 @@ public class Interface {
             System.out.print("Introduce your email: ");
 
             try {
-                temp = scan.nextLine().trim();
+                temp = scan.next().trim();
                 /*  check if string is a email  */
                 token = new StringTokenizer(temp);
                 token.nextToken("@");
@@ -115,11 +115,11 @@ public class Interface {
         }
         
         System.out.print("Introduce you username: ");
-        temp = scan.nextLine().trim();
+        temp = scan.next().trim();
         Main.reg.setName(temp);
 
         System.out.print("Introduce your password: ");
-        temp = scan.nextLine().trim();
+        temp = scan.next().trim();
         Main.reg.setPassword(temp);
 
         /*  flag 101 to register   */

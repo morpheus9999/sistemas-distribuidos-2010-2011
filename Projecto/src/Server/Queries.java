@@ -14,14 +14,16 @@ import Client_Server.Login;
  */
 public class Queries {
 
-    public static Generic login(Generic gen) {
-        Login lg = (Login) gen.getObj();
+    static boolean login(Generic generic) {
+        Login lg = (Login)generic.getObj();
 
-        /*  aqui faz-se as queries e as comparacoes */
-        System.out.println("login name: "+lg.getName());
-        System.out.println("login password: "+lg.getPassword());
+        /*  aqui vao as queries */
+        System.out.println("recebido");
+        System.out.println("name: "+ lg.getName());
+        System.out.println("pass: "+ lg.getPassword());
 
-        gen.setConfirmation(true);
-        return gen;
+        return true;
     }
+
+
 }

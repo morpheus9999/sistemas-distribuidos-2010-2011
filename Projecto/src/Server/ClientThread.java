@@ -20,7 +20,8 @@ import java.util.logging.Logger;
  *
  * @author Jorge
  */
-class ClientThread extends Thread {
+class ClientThread {
+
     private Socket sock;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -28,7 +29,7 @@ class ClientThread extends Thread {
     private InputStream inStream;
 
     ClientThread(Socket clientSocket) {
-        this.sock = clientSocket;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void run() {
@@ -40,12 +41,14 @@ class ClientThread extends Thread {
             inStream = this.sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
-            out.writeObject(Queries.login((Generic) in.readObject()));
-
-
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            while(true) {
+                out.writeObject(Queries.login((Generic) in.readObject()));
+                out.flush();
+            }
+            
         } catch (IOException ex) {
+            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
