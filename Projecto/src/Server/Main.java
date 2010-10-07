@@ -29,23 +29,19 @@ public class Main {
 
     private static OutputStream outStream;
     private static InputStream inStream;
-    private static ObjectOutputStream out;
-    private static ObjectInputStream in;
 
     public static void main(String args[]) {
         try {
             /*  opens a port to check for requests  */
             ServerSocket listener = new ServerSocket(Constants.serverPort);
+
+            while(true) {
+                Socket sock = listener.accept();
+                System.out.println("+1 cliente");
+                ClientThread client = new ClientThread(sock);
+                client.run();
+            }
             
-            Socket sock = listener.accept();
-
-            /*  outputStreams   */
-            outStream = sock.getOutputStream();
-            out = new ObjectOutputStream(outStream);
-
-            /*  inputStreams    */
-            inStream = sock.getInputStream();
-            in = new ObjectInputStream(inStream);
 
             /*
             Login lg = (Login) in.readObject();
