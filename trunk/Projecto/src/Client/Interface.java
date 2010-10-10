@@ -68,7 +68,7 @@ public class Interface {
      */
     public void login() {
         Boolean flag = true;
-        StringTokenizer token;
+        
         String temp;
         
         System.out.println("#### Login ####");
@@ -85,6 +85,7 @@ public class Interface {
 
         /*  flag 100 to Login   */
         Main.opt.setOption(100);
+        
     }
 
     /**
