@@ -87,6 +87,7 @@ public class receiverThread extends Thread{
                     case 100:
                         /*  login   */
                         if(gen.getConfirmation()) {
+                            Main.logged=true;
                             System.out.println("Login successfull!");
 
                             /*  mudar a flag de logado para true    */
