@@ -16,10 +16,10 @@ import java.io.Serializable;
 public class Login implements Serializable {
     private String name;
     private String password;
-
+    
     public Login() {
         this.name = null;
-        this.password = null;
+        this.password = null;      
     }
 
     /**
