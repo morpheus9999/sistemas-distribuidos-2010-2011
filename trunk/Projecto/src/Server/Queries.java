@@ -92,6 +92,33 @@ public class Queries {
         }
 
     }
+    static boolean newbet(Generic generic){
+        // nao deverá ser user 
+        User lg = (User)generic.getObj();
 
+        System.out.println("recebido");
+        System.out.println("name: "+ lg.getName());
+        System.out.println("bet: "+ lg.getBetGame());
+        //n sei que nome dar
+        System.out.println("bet: "+ lg.getBetXpto());
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String connectionUrl = "jdbc:mysql://localhost/sd?"+ "user=root&password=root";
+            Connection con = DriverManager.getConnection(connectionUrl);
+            Statement stmt = con.createStatement();
 
+            boolean flag = stmt.execute("INSERT INTO sd.users VALUES ('" + lg.getName() + "','" +lg.getPassword() + "','" + lg.getMail() + "','" + lg.getCredit() +")");
+            if (!flag) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+
+            System.out.println("SQL Exception: " + e.toString());
+            return false;
+        } catch (ClassNotFoundException cE) {
+            System.out.println("Class Not Found Exception: " + cE.toString());
+            return false;
+        }
+    }
 }
