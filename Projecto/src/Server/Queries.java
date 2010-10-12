@@ -92,7 +92,7 @@ public class Queries {
         }
 
     }
-    static boolean newbet(Generic generic){
+    static boolean newBet(Generic generic){
         // nao deverá ser user 
         User lg = (User)generic.getObj();
 
