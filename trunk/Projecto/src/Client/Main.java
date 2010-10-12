@@ -94,6 +94,7 @@ public class Main {
                 switch(inter.welcomeMenu()) {
                     case 1:
                         inter.login();
+
                         break;
                     case 2:
                         inter.register();

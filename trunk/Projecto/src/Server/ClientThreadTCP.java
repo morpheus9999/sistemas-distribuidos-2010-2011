@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  * @author Jorge
  */
 class ClientThreadTCP {
-
+    private boolean stop;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -35,29 +36,80 @@ class ClientThreadTCP {
     }
 
     public void run() {
-        try {
-            /*  outputStreams   */
-            
-            out = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
-            /*  inputStreams    */
-            
-            in = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
-            
 
+        while (!stop) {
+            if (socket == null) {
+                ;
+            } else {
+                try {
+                    executa();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            while(true) {
-                out.writeObject(Queries.login((Generic) in.readObject()));
-                out.flush();
-                
             }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(ClientThreadTCP.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClientThreadTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
+        
+    }
+    private void executa() {
+
+        try {
+            this.socket.setTcpNoDelay(true);
+
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            out = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));
+            in = new ObjectInputStream(new DataInputStream(socket.getInputStream()));
+            DataInputStream ids = new DataInputStream(this.socket.getInputStream());
+            DataOutputStream ods = new DataOutputStream(this.socket.getOutputStream());
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        while (!stop) {
+
+            try {
+                Object obj = in.readObject();
+                System.out.println("lê objecto");
+                Generic gen = (Generic) in.readObject();
+                gen.getCode();
+                
+                System.out.println("faz query");
+                Boolean teste = Queries.login(gen);
+
+                System.out.println("envia resposta");
+                Generic envia =new Generic(100);
+                envia.setConfirmation(true);
+                out.writeObject(envia);
+            } catch (IOException e) {
+                try {
+                    socket.close();
+                    in.close();
+                    out.close();
+                    stop = true;
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                //e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                //e.printStackTrace();
+            }
+
+        }
+
     }
 
+    private void envia(){
+
+
+        
+
+    }
     private void closed() {
         try {
             socket.close();
