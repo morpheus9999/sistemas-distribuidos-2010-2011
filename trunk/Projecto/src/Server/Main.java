@@ -63,6 +63,12 @@ public class Main {
 
             while(true){
                 out.writeObject(envia);
+                try {
+                    Thread.sleep(10000);
+                    break;
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             /*

@@ -1,6 +1,6 @@
 package exemplo.Client;
 
-import Client.User;
+import Client.Input;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +22,7 @@ public class MainTwitter implements Serializable {
         do {
             try {
                 System.out.println(showMenuLogin());
-                op = User.readInt();
+                op = Input.readInt();
                 if (op == 1) {
                     askForLogin();
                     break;

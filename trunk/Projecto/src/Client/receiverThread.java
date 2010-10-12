@@ -87,16 +87,21 @@ public class receiverThread extends Thread{
                     case 100:
                         /*  login   */
                         if(gen.getConfirmation()) {
+                            /*  mudar a flag de logado para true    */
                             Main.logged=true;
                             System.out.println("Login successfull!");
-
-                            /*  mudar a flag de logado para true    */
                         }
                         else {
-                            System.out.println("Login failed!");
-
                             /*  manter a flag a falso   */
+                            Main.logged=false;
+                            System.out.println("Login failed!");
                         }
+                        
+                        /*  notifies main thread so it can continue */
+                        synchronized(Main.class) {
+                            Main.class.notify();
+                        }
+
                         break;
                     case 101:
                         /*  register    */

@@ -1,6 +1,6 @@
 package exemplo.Client;
 
-import Client.User;
+import Client.Input;
 import java.io.*;
 import java.sql.Timestamp;
 
@@ -30,7 +30,7 @@ public class TwitterFunctions extends Thread implements exemplo.common.Constante
         int op = 0;
         do {
             menu();
-            op = User.readInt();
+            op = Input.readInt();
             if (op == 1) {
                 if(this.client.isCommandFlag())
                     listTweets(this.client.getLogin());
@@ -39,7 +39,7 @@ public class TwitterFunctions extends Thread implements exemplo.common.Constante
             }else
             if (op == 2) {
                 print("Write message>");
-                String data = User.readString();
+                String data = Input.readString();
                 Timestamp date = new Timestamp(System.currentTimeMillis());
                 if(this.client.isTweetsFlag()){
                     sendTweets(this.client.getLogin(), new Message(date, this.client.getLogin(), data));
@@ -55,7 +55,7 @@ public class TwitterFunctions extends Thread implements exemplo.common.Constante
             if (op == 3) {
                 if(this.client.isCommandFlag()){
                     print("Enter User>");
-                    String hisLogin = User.readString();
+                    String hisLogin = Input.readString();
                     searchUsers(this.client.getLogin(), hisLogin);
                 }
                 else
@@ -64,7 +64,7 @@ public class TwitterFunctions extends Thread implements exemplo.common.Constante
             if (op == 4) {
                 if(this.client.isCommandFlag()){
                     print("Insert login of the user to follow>");
-                    String hisLogin = User.readString();
+                    String hisLogin = Input.readString();
                     sendAddUser(this.client.getLogin(), hisLogin);
                 }
                 else
