@@ -94,7 +94,14 @@ public class Main {
                 switch(inter.welcomeMenu()) {
                     case 1:
                         inter.login();
-
+                        /*  waits for receiver thread confirmation  */
+                        synchronized(Main.class) {
+                            try {
+                                Main.class.wait();
+                            } catch (InterruptedException ex) {
+                                System.out.println("Error waiting for login confirmation");
+                            }
+                        }
                         break;
                     case 2:
                         inter.register();

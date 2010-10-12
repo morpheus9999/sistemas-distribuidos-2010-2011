@@ -98,9 +98,9 @@ public class Queries {
 
         System.out.println("recebido");
         System.out.println("name: "+ lg.getName());
-        System.out.println("bet: "+ lg.getBetGame());
+        //System.out.println("bet: "+ lg.getBetGame());
         //n sei que nome dar
-        System.out.println("bet: "+ lg.getBetXpto());
+        //System.out.println("bet: "+ lg.getBetXpto());
         try {
             Class.forName("com.mysql.jdbc.Driver");
             String connectionUrl = "jdbc:mysql://localhost/sd?"+ "user=root&password=root";

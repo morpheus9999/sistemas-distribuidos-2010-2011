@@ -10,12 +10,12 @@ import java.awt.event.*;
  * @author Paulo Marques (pmarques@dei.uc.pt)
  */
 
-public class User
+public class Input
 {
 	private static final int BUF_SIZE = 1024;
 
 	// Disable default constructor
-	private User()
+	private Input()
 	{
 	}
 
