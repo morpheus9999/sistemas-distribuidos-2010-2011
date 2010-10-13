@@ -31,7 +31,7 @@ public class Queries {
 
         try {
                 Class.forName("com.mysql.jdbc.Driver");
-                String connectionUrl = "jdbc:mysql://localhost/sd?"
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
                         + "user=root&password=root";
                 Connection con = DriverManager.getConnection(connectionUrl);
                 Statement stmt = con.createStatement();
@@ -39,7 +39,7 @@ public class Queries {
 
                 int rowCount = -1;
                 stmt = con.createStatement();
-                rs = stmt.executeQuery("SELECT COUNT(nome) FROM users WHERE nome='" + lg.getName() + "'and password=" +  lg.getPassword());
+                rs = stmt.executeQuery("SELECT COUNT(Nome) FROM Cliente WHERE Nome='" + lg.getName() + "' and Password=" +  lg.getPassword()+";");
                 rs.next();
                 rowCount = rs.getInt(1);
 
@@ -73,11 +73,12 @@ public class Queries {
         System.out.println("bet: "+ lg.getCredit());
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String connectionUrl = "jdbc:mysql://localhost/sd?"+ "user=root&password=root";
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"+ "user=root&password=root";
             Connection con = DriverManager.getConnection(connectionUrl);
             Statement stmt = con.createStatement();
-            
-            boolean flag = stmt.execute("INSERT INTO sd.users VALUES ('" + lg.getName() + "','" +lg.getPassword() + "','" + lg.getMail() + "','" + lg.getCredit() +")");
+           // INSERT INTO `mydb`.`Cliente` (`Nome`, `Password`, `Mail`, `Credito`) VALUES ('Jorge', '123', 'morpheus@gmail.com', '70');
+
+            boolean flag = stmt.execute("INSERT INTO Cliente VALUES ('" + lg.getName() + "','" +lg.getPassword() + "','" + lg.getMail() + "'," + lg.getCredit() +")");
             if (!flag) {
                 return true;
             }
@@ -103,7 +104,7 @@ public class Queries {
         //System.out.println("bet: "+ lg.getBetXpto());
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String connectionUrl = "jdbc:mysql://localhost/sd?"+ "user=root&password=root";
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"+ "user=root&password=root";
             Connection con = DriverManager.getConnection(connectionUrl);
             Statement stmt = con.createStatement();
 

@@ -76,6 +76,7 @@ class ClientThreadTCP extends Thread{
                         temp = this.login(temp);
                         break;
                     case Constants.regCode:
+                        temp =this.register(temp);
                         break;
                     default:
                         break;
@@ -126,10 +127,10 @@ class ClientThreadTCP extends Thread{
      */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
-        //if(Queries.login(gen))
+        if(Queries.login(gen))
             gen.setConfirmation(true);
-        /*else
-            gen.setConfirmation(false);*/
+        else
+            gen.setConfirmation(false);
 
         return gen;
     }
@@ -139,6 +140,7 @@ class ClientThreadTCP extends Thread{
      */
     private Generic logout(Generic gen) throws IOException {
         /*  sends confirmation of session ending    */
+        
         gen.setConfirmation(true);
         
         /*  exits thread    */
@@ -147,6 +149,20 @@ class ClientThreadTCP extends Thread{
         return gen;
     }
 
+    /*
+     * Register
+     */
+    private Generic register(Generic gen) throws IOException {
+        /*  sends confirmation of session ending    */
+
+        if(Queries.register(gen))
+            gen.setConfirmation(true);
+        else
+            gen.setConfirmation(true);
+        
+
+        return gen;
+    }
 
 
 
