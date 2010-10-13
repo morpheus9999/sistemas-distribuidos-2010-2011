@@ -2,6 +2,7 @@ package Server;
 
 
 import Client_Server.Generic;
+import Client_Server.Login;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,36 +24,132 @@ import java.util.logging.Logger;
  *
  * @author Jorge
  */
-class ClientThreadTCP {
-    private boolean stop;
+class ClientThreadTCP extends Thread{
+    private boolean logout;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private OutputStream outStream;
-    private InputStream inStream;
 
     ClientThreadTCP(Socket clientSocket) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.socket = clientSocket;
+        this.logout = false;
+        this.openComChannels();
     }
 
+    /**
+     * Thread main method
+     */
     public void run() {
+        Generic gen;
 
-        while (!stop) {
-            if (socket == null) {
-                ;
-            } else {
-                try {
-                    executa();
-                } catch (Exception e) {
-                    e.printStackTrace();
+        while (!this.logout) {
+            try {
+                /*  receives request from client    */
+                gen = (Generic) this.in.readObject();
+
+                System.out.println("received code: "+gen.getCode());
+
+                /*  parses received object  */
+                switch (gen.getCode()) {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        /*  logout  */
+                        gen = this.logout(gen);
+                        break;
+                    case 100:
+                        /*  LOGIN   */
+                        gen = this.login(gen);
+                        break;
+                    case 101:
+                        break;
+                    default:
+                        break;
                 }
 
+                /*  sends confirmation of the action to the client  */
+                this.out.writeObject(gen);
+                this.out.flush();
+            } catch (IOException ex) {
+                System.out.println("Error receiving/sending generic object!");
+            } catch (ClassNotFoundException ex) {
+                System.out.println("Class unindentified!");
             }
         }
 
-
-        
+        /*  close comunication channels */
+        this.closeComChannels();
     }
+    
+    
+    /**
+     * open comunication channels
+     */
+    private void openComChannels() {
+        try {
+            this.out = new ObjectOutputStream(this.socket.getOutputStream());
+            this.in = new ObjectInputStream(this.socket.getInputStream());
+        } catch (IOException ex) {
+            System.out.println("Error opening comunication channels: "+ex.getMessage());
+        }
+    }
+
+    /**
+     * close comunication channels
+     */
+    private void closeComChannels() {
+        try {
+            this.out.close();
+            this.in.close();
+            this.socket.close();
+        } catch (IOException ex) {
+            System.out.println("Error closing comunication channels: "+ex.getMessage());
+        }
+    }
+
+    /*
+     * Login
+     */
+    private Generic login(Generic gen) throws IOException {
+        /*  faz query   */
+        //if(Queries.login(gen))
+            gen.setConfirmation(true);
+        /*else
+            gen.setConfirmation(false);*/
+
+        return gen;
+    }
+
+    /*
+     * Logout
+     */
+    private Generic logout(Generic gen) throws IOException {
+        /*  sends confirmation of session ending    */
+        gen.setConfirmation(true);
+        
+        /*  exits thread    */
+        this.logout = true;
+
+        return gen;
+    }
+
+
+
+
+
+/*
     private void executa() {
 
         try {
@@ -71,7 +168,7 @@ class ClientThreadTCP {
             e1.printStackTrace();
         }
 
-        while (!stop) {
+        while (!logout) {
 
             try {
                 Object obj = in.readObject();
@@ -91,7 +188,7 @@ class ClientThreadTCP {
                     socket.close();
                     in.close();
                     out.close();
-                    stop = true;
+                    logout = true;
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -103,24 +200,8 @@ class ClientThreadTCP {
         }
 
     }
-
-    private void envia(){
-
-
-        
-
-    }
-    private void closed() {
-        try {
-            socket.close();
-            in.close();
-            out.close();
-            // acabar o run
-
-        } catch (IOException e) {
-            System.err.println("[TwitterTCP-exectuta]:Erro ao fechar streams");
-            
-        }
-    }
-
+ *
+ *
+ * 
+ */
 }
