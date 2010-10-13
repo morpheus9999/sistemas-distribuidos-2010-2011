@@ -1,6 +1,7 @@
 package Server;
 
 
+import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
 import java.io.DataInputStream;
@@ -40,47 +41,48 @@ class ClientThreadTCP extends Thread{
      * Thread main method
      */
     public void run() {
-        Generic gen;
+        Generic gen, temp;
 
         while (!this.logout) {
             try {
                 /*  receives request from client    */
                 gen = (Generic) this.in.readObject();
 
-                System.out.println("received code: "+gen.getCode());
-
+                /*  creates a new object with the received info to send to the client   */
+                temp = new Generic();
+                temp.setCode(gen.getCode());
+                temp.setObj(gen.getObj());
+                
                 /*  parses received object  */
                 switch (gen.getCode()) {
-                    case 1:
+                    case Constants.creditCode:
                         break;
-                    case 2:
+                    case Constants.resetCode:
                         break;
-                    case 3:
+                    case Constants.matchesCode:
                         break;
-                    case 4:
+                    case Constants.betCode:
                         break;
-                    case 5:
+                    case Constants.onlineUsersCode:
                         break;
-                    case 6:
+                    case Constants.messageCode:
                         break;
-                    case 7:
+                    case Constants.messageAllCode:
                         break;
-                    case 8:
-                        /*  logout  */
-                        gen = this.logout(gen);
+                    case Constants.logoutCode:
+                        temp = this.logout(temp);
                         break;
-                    case 100:
-                        /*  LOGIN   */
-                        gen = this.login(gen);
+                    case Constants.loginCode:
+                        temp = this.login(temp);
                         break;
-                    case 101:
+                    case Constants.regCode:
                         break;
                     default:
                         break;
                 }
 
                 /*  sends confirmation of the action to the client  */
-                this.out.writeObject(gen);
+                this.out.writeObject(temp);
                 this.out.flush();
             } catch (IOException ex) {
                 System.out.println("Error receiving/sending generic object!");

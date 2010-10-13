@@ -111,7 +111,7 @@ public class receiverThread extends Thread{
                             System.out.println("Register failed!");
                         break;
                     default:
-                        System.out.println("Code not recognized :X");
+                        System.out.println("Code not recognized :X: "+gen.getCode());
                         break;
                 }
             } catch (IOException ex) {

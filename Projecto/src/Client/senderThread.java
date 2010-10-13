@@ -27,10 +27,10 @@ public class senderThread extends Thread{
      * the main method of the sender thread
      */
     public void run() {
-        Generic gen = new Generic();
-
         while(true) {
             try {
+                Generic gen = new Generic();
+                
                 switch(Main.opt.getOption()) {
                     case 1:
                         /*  get credit balance  */
@@ -76,14 +76,11 @@ public class senderThread extends Thread{
                     case 8:
                         /*  logout and exit */
                         gen.setCode(Constants.logoutCode);
-
-
-                        System.out.println("enviei este codigo para acabar: "+gen.getCode());
-
-
+                        
                         /*  sends the request to the server */
                         Main.out.writeObject(gen);
                         Main.out.flush();
+                        /*  ends the thread  */
                         return;
                     case 100:
                         /*  login   */
