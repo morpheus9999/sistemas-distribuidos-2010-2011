@@ -19,6 +19,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,72 +29,30 @@ import java.util.logging.Logger;
  * @author JLA
  */
 public class Main {
-
-    private static OutputStream outStream;
-    private static InputStream inStream;
-    private static ObjectOutputStream out;
-    private static ObjectInputStream in;
-
+    
     public static void main(String args[]) {
         try {
             /*  opens a port to check for requests  */
             ServerSocket listener = new ServerSocket(Constants.serverPort);
-            
-            Socket sock = listener.accept();
 
-            ClientThreadTCP client = new ClientThreadTCP(sock);
-            client.start();
-            client.join();
-/*
-            outStream = sock.getOutputStream();
-            out = new ObjectOutputStream(outStream);
+            /*  creates a thread pool   */
+            ExecutorService pool = Executors.newCachedThreadPool();
 
+            int counter = 0;
 
-            inStream = sock.getInputStream();
-            in = new ObjectInputStream(inStream);
+            while(true) {
+                System.out.println("Waiting for connection...");
 
-            Generic gen = (Generic) in.readObject();
-            System.out.println("received code: "+gen.getCode());
-            gen.setConfirmation(true);
-            out.writeObject(gen);
+                /*  waits for a connection  */
+                Socket sock = listener.accept();
 
-            gen = (Generic) in.readObject();
-            System.out.println("2º received code: "+gen.getCode());
-            gen.setConfirmation(true);
-            out.writeObject(gen);
+                System.out.println(++counter+"º conection!");
+                System.out.println("Running Thread...");
 
-            
-            
-            System.out.println("lê objecto");
-            Generic gen = (Generic) in.readObject();
-            System.out.println("faz query");
-            Boolean teste = Queries.login(gen);
-
-
-            
-            System.out.println("envia resposta");
-            Generic envia =new Generic(100);
-            envia.setConfirmation(true);
-
-
-
-            while(true){
-                out.writeObject(envia);
-                try {
-                    Thread.sleep(10000);
-                    break;
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                /*  runs the thread */
+                pool.submit(new ClientThreadTCP(sock));
             }
 
-
-        //} catch (ClassNotFoundException ex) {
-        //    System.out.println("nao encontra classe");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);    */
-        } catch (InterruptedException ex) {
-            System.out.println("error ending thread");
         } catch (IOException ex) {
             System.out.println("io exception");
         }
