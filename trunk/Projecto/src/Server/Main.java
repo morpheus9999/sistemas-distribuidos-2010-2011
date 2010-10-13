@@ -40,11 +40,14 @@ public class Main {
             
             Socket sock = listener.accept();
 
-            /*  outputStreams   */
+            ClientThreadTCP client = new ClientThreadTCP(sock);
+            client.start();
+            client.join();
+/*
             outStream = sock.getOutputStream();
             out = new ObjectOutputStream(outStream);
 
-            /*  inputStreams    */
+
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
@@ -71,24 +74,13 @@ public class Main {
                 }
             }
 
-            /*
-            Login lg = (Login) in.readObject();
-
-            System.out.println("Login enviado pelo cliente:");
-            System.out.println("name: "+lg.getName());
-            System.out.println("password: "+lg.getPassword());
-
-            out.writeUTF("login recebido");
-            out.flush();
-            
-            System.out.println("confirmacao enviada");
-            */
-
 
         //} catch (ClassNotFoundException ex) {
         //    System.out.println("nao encontra classe");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);             */
+        } catch (InterruptedException ex) {
+            System.out.println("error ending thread");
         } catch (IOException ex) {
             System.out.println("io exception");
         }

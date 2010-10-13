@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    /*
+    /**
      * Global/Static variables
      */
     private static Socket sock;
@@ -48,14 +48,8 @@ public class Main {
     public static void main(String args[]) {
 
         try {
-
-            //System.out.println("estabelecer ligacao");
-
-            // Socket creation.
+            // Socket creation
             sock = new Socket(host, Constants.serverPort);
-
-
-            //System.out.println("ligacao estabelecida");
 
             //  outputStreams
             outStream = sock.getOutputStream();
@@ -65,24 +59,13 @@ public class Main {
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
-
-
-            //System.out.println("thread time");
-
-
-            
             /*  sender thread   */
             senderThread sender = new senderThread();
             sender.start();
 
-            //System.out.println("arrouxas aqui?");
-
-
             /*  receiver thread */
             receiverThread receiver = new receiverThread();
             receiver.start();
-
-            //System.out.println("ou aqui??");
 
             /*  initates interface  */
             Interface inter = new Interface();
@@ -94,6 +77,7 @@ public class Main {
                 switch(inter.welcomeMenu()) {
                     case 1:
                         inter.login();
+
                         /*  waits for receiver thread confirmation  */
                         synchronized(Main.class) {
                             try {
@@ -156,7 +140,14 @@ public class Main {
             /*  closes comunication channels with user  */
             inter.closeTIChannel();
 
+            System.out.println("i'm going to terminate the threads");
+            /*  wait for threads termination    */
+            sender.join();
+            receiver.join();
 
+
+        } catch (InterruptedException ex) {
+            System.out.println("error closing threads");
         } catch (UnknownHostException ex) {
             System.out.println("unknown host");
         } catch (IOException ex) {

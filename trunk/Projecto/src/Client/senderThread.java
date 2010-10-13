@@ -76,6 +76,14 @@ public class senderThread extends Thread{
                     case 8:
                         /*  logout and exit */
                         gen.setCode(Constants.logoutCode);
+
+
+                        System.out.println("enviei este codigo para acabar: "+gen.getCode());
+
+
+                        /*  sends the request to the server */
+                        Main.out.writeObject(gen);
+                        Main.out.flush();
                         return;
                     case 100:
                         /*  login   */
@@ -94,6 +102,7 @@ public class senderThread extends Thread{
                 
                 /*  sends the request to the server */
                 Main.out.writeObject(gen);
+                Main.out.flush();
             } catch (IOException ex) {
                 System.out.println("IOException sending object: "+ex.getMessage());
             }
