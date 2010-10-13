@@ -116,6 +116,16 @@ public class receiverThread extends Thread{
                 }
             } catch (IOException ex) {
                 System.out.println("Error receiving object: "+ ex.getMessage());
+                try {
+                    Thread.currentThread().sleep(1000);
+                    //reconect
+                    
+                    this.run();
+                } catch (InterruptedException ex1) {
+                    Logger.getLogger(receiverThread.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+                
+
             } catch (ClassNotFoundException ex) {
                 System.out.println("Class not found when receiving: "+ ex.getMessage());
             }

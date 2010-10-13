@@ -1,4 +1,4 @@
-package Client;
+package exemplo.Client;
 
 import java.io.*;
 import java.awt.*;
