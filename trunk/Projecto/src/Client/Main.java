@@ -75,7 +75,7 @@ public class Main {
             /*  initiates interaction with user */
             while(!logged) {
                 switch(inter.welcomeMenu()) {
-                    case 1:
+                    case Constants.loginCode:
                         inter.login();
 
                         /*  waits for receiver thread confirmation  */
@@ -87,7 +87,7 @@ public class Main {
                             }
                         }
                         break;
-                    case 2:
+                    case Constants.regCode:
                         inter.register();
                         break;
                     default:
@@ -98,35 +98,35 @@ public class Main {
 
             while(!exit) {
                 switch(inter.mainMenu()) {
-                    case 1:
+                    case Constants.creditCode:
                         /*  Credit  */
                         inter.credit();
                         break;
-                    case 2:
+                    case Constants.resetCode:
                         /*  Reset credit    */
                         inter.resetCredit();
                         break;
-                    case 3:
+                    case Constants.matchesCode:
                         /*  Current matches */
                         inter.checkMatches();
                         break;
-                    case 4:
+                    case Constants.betCode:
                         /*  Bet */
                         inter.bet();
                         break;
-                    case 5:
+                    case Constants.onlineUsersCode:
                         /*  Online users    */
                         inter.onlineUsers();
                         break;
-                    case 6:
+                    case Constants.messageCode:
                         /*  Message user    */
                         inter.messageSingleUsers();
                         break;
-                    case 7:
+                    case Constants.messageAllCode:
                         /*  Message all users   */
                         inter.messageAllUsers();
                         break;
-                    case 8:
+                    case Constants.logoutCode:
                         /*  logout  */
                         inter.logout();
                         exit = true;
@@ -139,8 +139,7 @@ public class Main {
 
             /*  closes comunication channels with user  */
             inter.closeTIChannel();
-
-            System.out.println("i'm going to terminate the threads");
+            
             /*  wait for threads termination    */
             sender.join();
             receiver.join();

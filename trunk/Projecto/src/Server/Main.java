@@ -51,6 +51,18 @@ public class Main {
             inStream = sock.getInputStream();
             in = new ObjectInputStream(inStream);
 
+            Generic gen = (Generic) in.readObject();
+            System.out.println("received code: "+gen.getCode());
+            gen.setConfirmation(true);
+            out.writeObject(gen);
+
+            gen = (Generic) in.readObject();
+            System.out.println("2º received code: "+gen.getCode());
+            gen.setConfirmation(true);
+            out.writeObject(gen);
+
+            
+            
             System.out.println("lê objecto");
             Generic gen = (Generic) in.readObject();
             System.out.println("faz query");
@@ -78,7 +90,7 @@ public class Main {
         //} catch (ClassNotFoundException ex) {
         //    System.out.println("nao encontra classe");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);             */
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);    */
         } catch (InterruptedException ex) {
             System.out.println("error ending thread");
         } catch (IOException ex) {

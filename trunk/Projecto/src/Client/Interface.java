@@ -6,6 +6,7 @@
 package Client;
 
 
+import Client_Server.Constants;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -59,6 +60,11 @@ public class Interface {
             
 
         } while (opt < 1 || opt > 2);
+
+        if (opt == 1)
+            opt = Constants.loginCode;
+        else
+            opt = Constants.regCode;
 
         return opt;
     }
