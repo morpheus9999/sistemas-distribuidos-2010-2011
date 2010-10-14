@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -29,17 +30,19 @@ import java.util.logging.Logger;
  * @author JLA
  */
 public class Main {
-    
+
+    /*  stores info about online users  */
+    public static Hashtable<String, ClientThreadTCP> onlineUsers = new Hashtable<String, ClientThreadTCP>();
+
     public static void main(String args[]) {
+        int counter = 0;
+
         try {
             /*  opens a port to check for requests  */
             ServerSocket listener = new ServerSocket(Constants.serverPort);
 
             /*  creates a thread pool   */
             ExecutorService pool = Executors.newCachedThreadPool();
-
-            int counter = 0;
-
             while(true) {
                 System.out.println("Waiting for connection...");
 

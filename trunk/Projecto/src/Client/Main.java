@@ -152,7 +152,5 @@ public class Main {
         } catch (IOException ex) {
             System.out.println("io exception "+ex.getMessage());
         }
-
-
     }
 }
