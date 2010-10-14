@@ -25,39 +25,40 @@ public class Queries {
         System.out.println("name: " + lg.getName());
         System.out.println("pass: " + lg.getPassword());
 
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                        + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                ResultSet rs;
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
-                    + "user=root&password=root";
-            Connection con = DriverManager.getConnection(connectionUrl);
-            Statement stmt = con.createStatement();
-            ResultSet rs;
+                int rowCount = -1;
+                stmt = con.createStatement();
+                rs = stmt.executeQuery("SELECT COUNT(Nome) FROM Cliente WHERE Nome='" + lg.getName() + "' and Password=" + lg.getPassword() + ";");
+                rs.next();
+                rowCount = rs.getInt(1);
 
-            int rowCount = -1;
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(Nome) FROM Cliente WHERE Nome='" + lg.getName() + "' and Password=" + lg.getPassword() + ";");
-            rs.next();
-            rowCount = rs.getInt(1);
+                if (rowCount == 1) {
 
-            if (rowCount == 1) {
-
-                //e falta adicionar a lista de clientes logados
-                return true;
+                    //e falta adicionar a lista de clientes logados
+                    return true;
 
 
-            } else {
+                } else {
+                    return false;
+                }
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
                 return false;
+
             }
-        } catch (SQLException e) {
-
-            System.out.println("SQL Exception: " + e.toString());
-            return false;
-        } catch (ClassNotFoundException cE) {
-            System.out.println("Class Not Found Exception: " + cE.toString());
-            return false;
         }
-
 
     }
 
@@ -69,25 +70,30 @@ public class Queries {
         System.out.println("pass: " + lg.getPassword());
         System.out.println("pass: " + lg.getMail());
         System.out.println("bet: " + lg.getCredit());
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
-            Connection con = DriverManager.getConnection(connectionUrl);
-            Statement stmt = con.createStatement();
-            // INSERT INTO `mydb`.`Cliente` (`Nome`, `Password`, `Mail`, `Credito`) VALUES ('Jorge', '123', 'morpheus@gmail.com', '70');
 
-            boolean flag = stmt.execute("INSERT INTO Cliente VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "'," + lg.getCredit() + ")");
-            if (!flag) {
-                return true;
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                // INSERT INTO `mydb`.`Cliente` (`Nome`, `Password`, `Mail`, `Credito`) VALUES ('Jorge', '123', 'morpheus@gmail.com', '70');
+
+                boolean flag = stmt.execute("INSERT INTO Cliente VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "'," + lg.getCredit() + ")");
+                if (!flag) {
+                    return true;
+                }
+                return false;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                return false;
             }
-            return false;
-        } catch (SQLException e) {
 
-            System.out.println("SQL Exception: " + e.toString());
-            return false;
-        } catch (ClassNotFoundException cE) {
-            System.out.println("Class Not Found Exception: " + cE.toString());
-            return false;
+
         }
 
     }
@@ -101,24 +107,29 @@ public class Queries {
         //System.out.println("bet: "+ lg.getBetGame());
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
-            Connection con = DriverManager.getConnection(connectionUrl);
-            Statement stmt = con.createStatement();
 
-            boolean flag = stmt.execute("INSERT INTO Aposta VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "','" + lg.getCredit() + ")");
-            if (!flag) {
-                return true;
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+
+                boolean flag = stmt.execute("INSERT INTO Aposta VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "','" + lg.getCredit() + ")");
+                if (!flag) {
+                    return true;
+                }
+                return false;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                return false;
             }
-            return false;
-        } catch (SQLException e) {
 
-            System.out.println("SQL Exception: " + e.toString());
-            return false;
-        } catch (ClassNotFoundException cE) {
-            System.out.println("Class Not Found Exception: " + cE.toString());
-            return false;
+
         }
     }
 
