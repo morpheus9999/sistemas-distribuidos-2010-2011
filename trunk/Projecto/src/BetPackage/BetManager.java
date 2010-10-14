@@ -1,6 +1,5 @@
 package BetPackage;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,10 @@ public class BetManager implements IBetManager {
     public BetManager() {
         refreshMatches();
     }
-    
+    public BetManager(int size) {
+        this.size = size;
+        refreshMatches();
+    }
     public List<IMatch> getMatches() {
         return matches;
     }
