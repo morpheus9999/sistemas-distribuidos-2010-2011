@@ -27,31 +27,32 @@ public class senderThread extends Thread{
      * the main method of the sender thread
      */
     public void run() {
-        while(true) {
-            try {
+        try {
+            while(true) {
                 Generic gen = new Generic();
-                
-                switch(Main.opt.getOption()) {
-                    case 1:
+                int opt = Main.opt.getOption();
+
+                switch(opt) {
+                    case Constants.creditCode:
                         /*  get credit balance  */
                         gen.setCode(Constants.creditCode);
                         gen.setObj(new Credit());
                         break;
-                    case 2:
+                    case Constants.resetCode:
                         /*  resets credit balance   */
                         gen.setCode(Constants.regCode);
 
                         /*  adicionar o objecto com a informacao do registo  */
 
                         break;
-                    case 3:
+                    case Constants.matchesCode:
                         /*  lists current matches   */
                         gen.setCode(Constants.matchesCode);
 
                         /*  adicionar o objecto com a informacao dos jogos  */
 
                         break;
-                    case 4:
+                    case Constants.betCode:
                         /*  bets on a match */
                         gen.setCode(Constants.betCode);
 
@@ -59,21 +60,21 @@ public class senderThread extends Thread{
                         /*  !!!!!!!!!!preciso de saber as variaveis para fazer a classe !!!!!!!!!!!!!!!*/
 
                         break;
-                    case 5:
+                    case Constants.onlineUsersCode:
                         /*  lists online users  */
                         gen.setCode(Constants.onlineUsersCode);
                         break;
-                    case 6:
+                    case Constants.messageCode:
                         /*  messages a user */
                         gen.setCode(Constants.messageCode);
                         gen.setObj(Main.message);
                         break;
-                    case 7:
+                    case Constants.messageAllCode:
                         /*  messages all users  */
                         gen.setCode(Constants.messageAllCode);
                         gen.setObj(Main.message);
                         break;
-                    case 8:
+                    case Constants.logoutCode:
                         /*  logout and exit */
                         gen.setCode(Constants.logoutCode);
                         
@@ -82,12 +83,12 @@ public class senderThread extends Thread{
                         Main.out.flush();
                         /*  ends the thread  */
                         return;
-                    case 100:
+                    case Constants.loginCode:
                         /*  login   */
                         gen.setCode(Constants.loginCode);
                         gen.setObj(Main.log);
                         break;
-                    case 101:
+                    case Constants.regCode:
                         /*  register    */
                         gen.setCode(Constants.regCode);
                         gen.setObj(Main.reg);
@@ -100,9 +101,10 @@ public class senderThread extends Thread{
                 /*  sends the request to the server */
                 Main.out.writeObject(gen);
                 Main.out.flush();
-            } catch (IOException ex) {
-                System.out.println("IOException sending object: "+ex.getMessage());
             }
+        } catch (IOException ex) {
+            //  System.out.println("IOException sending object: "+ex.getMessage());
+            //  System.out.println("Error ocurred. Ending sending thread");
         }
     }
 }

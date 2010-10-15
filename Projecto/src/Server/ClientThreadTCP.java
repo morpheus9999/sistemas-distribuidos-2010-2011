@@ -29,7 +29,7 @@ class ClientThreadTCP extends Thread{
     private boolean logout;
     private Socket socket;
 
-    private Login lg;                   //  stores info about the logged user
+    private Login lg = null;                   //  stores info about the logged user
 
     public ObjectOutputStream out;      //  streams made public so other threads can send annoucements
     public ObjectInputStream in;
@@ -48,53 +48,55 @@ class ClientThreadTCP extends Thread{
         /*  opens comunication channels */
         this.openComChannels();
 
-        while (!this.logout) {
-            try {
-                /*  receives request from client    */
-                gen = (Generic) this.in.readObject();
+        try {
+            while (!this.logout) {
+                try {
+                    /*  receives request from client    */
+                    gen = (Generic) this.in.readObject();
 
-                /*  creates a new object with the received info to send to the client   */
-                temp = new Generic();
-                temp.setCode(gen.getCode());
-                temp.setObj(gen.getObj());
-                
-                /*  parses received object  */
-                switch (gen.getCode()) {
-                    case Constants.creditCode:
-                        break;
-                    case Constants.resetCode:
-                        break;
-                    case Constants.matchesCode:
-                        break;
-                    case Constants.betCode:
-                        break;
-                    case Constants.onlineUsersCode:
-                        break;
-                    case Constants.messageCode:
-                        break;
-                    case Constants.messageAllCode:
-                        break;
-                    case Constants.logoutCode:
-                        temp = this.logout(temp);
-                        break;
-                    case Constants.loginCode:
-                        temp = this.login(temp);
-                        break;
-                    case Constants.regCode:
-                        temp =this.register(temp);
-                        break;
-                    default:
-                        break;
+                    /*  creates a new object with the received info to send to the client   */
+                    temp = new Generic();
+                    temp.setCode(gen.getCode());
+                    temp.setObj(gen.getObj());
+
+                    /*  parses received object  */
+                    switch (gen.getCode()) {
+                        case Constants.creditCode:
+                            break;
+                        case Constants.resetCode:
+                            break;
+                        case Constants.matchesCode:
+                            break;
+                        case Constants.betCode:
+                            break;
+                        case Constants.onlineUsersCode:
+                            break;
+                        case Constants.messageCode:
+                            break;
+                        case Constants.messageAllCode:
+                            break;
+                        case Constants.logoutCode:
+                            temp = this.logout(temp);
+                            break;
+                        case Constants.loginCode:
+                            temp = this.login(temp);
+                            break;
+                        case Constants.regCode:
+                            temp = this.register(temp);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    /*  sends confirmation of the action to the client  */
+                    this.out.writeObject(temp);
+                    this.out.flush();
+                } catch (ClassNotFoundException ex) {
+                    //System.out.println("Class unindentified!");
                 }
-
-                /*  sends confirmation of the action to the client  */
-                this.out.writeObject(temp);
-                this.out.flush();
-            } catch (IOException ex) {
-                System.out.println("Error receiving/sending generic object!");
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Class unindentified!");
             }
+        } catch  (IOException ex) {
+            System.out.println("Error receiving/sending generic object!");
         }
 
         /*  close comunication channels */
@@ -132,14 +134,14 @@ class ClientThreadTCP extends Thread{
      */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
-        if(Queries.login(gen)) {
+//       if(Queries.login(gen)) {
             /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
-            Main.onlineUsers.put(lg.getName(), this);
-        }
-        else
-            gen.setConfirmation(false);
+            Main.onlineUsers.put(this.lg.getName(), this);
+ //       }
+ //       else
+  //          gen.setConfirmation(false);
 
         return gen;
     }
@@ -154,7 +156,7 @@ class ClientThreadTCP extends Thread{
         Main.onlineUsers.remove(this.lg.getName());
         /*  exits thread    */
         this.logout = true;
-
+        
         return gen;
     }
 
