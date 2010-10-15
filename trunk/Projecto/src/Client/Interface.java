@@ -90,7 +90,7 @@ public class Interface {
         Main.log.setPassword(temp);
 
         /*  flag 100 to Login   */
-        Main.opt.setOption(100);
+        Main.opt.setOption(Constants.loginCode);
         
     }
 
@@ -132,7 +132,7 @@ public class Interface {
         Main.reg.setPassword(temp);
 
         /*  flag 101 to register   */
-        Main.opt.setOption(101);
+        Main.opt.setOption(Constants.regCode);
     }
 
     /**
@@ -160,12 +160,31 @@ public class Interface {
     }
 
     /**
+     * Offline Menu
+     */
+    public int offlineMenu() {
+        int opt = -1;
+
+        do {
+            System.out.println("#### Offline Menu ####");
+            System.out.println("6 - Message User");
+            System.out.println("7 - Message All");
+            System.out.println("8 - Logout");
+
+            System.out.print("Option: ");
+            opt = Input.readInt();
+        } while (opt < 6 || opt > 8);
+
+        return opt;
+    }
+
+    /**
      * Credit
      * asks for the actual user credit
      */
     public void credit() {
         System.out.println("#### Credit ####");
-        Main.opt.setOption(1);
+        Main.opt.setOption(Constants.creditCode);
     }
 
     /**
@@ -174,7 +193,7 @@ public class Interface {
      */
     public void resetCredit() {
         System.out.println("#### Reset ####");
-        Main.opt.setOption(2);
+        Main.opt.setOption(Constants.resetCode);
     }
 
     /**
@@ -183,7 +202,7 @@ public class Interface {
      */
     public void checkMatches() {
         System.out.println("#### Matches ####");
-        Main.opt.setOption(3);
+        Main.opt.setOption(Constants.matchesCode);
     }
 
     /**
@@ -195,7 +214,7 @@ public class Interface {
 
         /*  pedir dados antes   */
 
-        Main.opt.setOption(4);
+        Main.opt.setOption(Constants.betCode);
     }
 
     /**
@@ -204,7 +223,7 @@ public class Interface {
      */
     public void onlineUsers() {
         System.out.println("#### Online Users ####");
-        Main.opt.setOption(5);
+        Main.opt.setOption(Constants.onlineUsersCode);
     }
 
     /**
@@ -213,7 +232,7 @@ public class Interface {
      */
     public void messageSingleUsers() {
         System.out.println("#### Message to user ####");
-        Main.opt.setOption(6);
+        Main.opt.setOption(Constants.messageCode);
     }
 
     /**
@@ -222,7 +241,7 @@ public class Interface {
      */
     public void messageAllUsers() {
         System.out.println("#### Message to all users ####");
-        Main.opt.setOption(7);
+        Main.opt.setOption(Constants.messageAllCode);
     }
 
     /**
@@ -231,6 +250,6 @@ public class Interface {
      */
     public void logout() {
         System.out.println("#### Logout ####");
-        Main.opt.setOption(8);
+        Main.opt.setOption(Constants.logoutCode);
     }
 }

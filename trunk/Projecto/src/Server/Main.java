@@ -49,8 +49,7 @@ public class Main {
                 /*  waits for a connection  */
                 Socket sock = listener.accept();
 
-                System.out.println(++counter+"º conection!");
-                System.out.println("Running Thread...");
+                System.out.println("Running "+(++counter)+"º conection!");
 
                 /*  runs the thread */
                 pool.submit(new ClientThreadTCP(sock));
