@@ -37,6 +37,6 @@ public class OnlineUsers implements Serializable{
             System.out.println("There are no users online! (is this even possible?)");
 
         for(int i = 0; i < this.list.size(); i++)
-            System.out.println(">"+this.list.get(i));
+            System.out.println("> "+this.list.get(i));
     }
 }
