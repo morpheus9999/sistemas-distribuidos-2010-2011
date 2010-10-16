@@ -180,20 +180,48 @@ class ClientThreadTCP extends Thread{
         return gen;
     }
 
+     /**
+     * Message a user
+     * */
+    private void messageUser(String fromUser, String toUser, String message) throws IOException {
+        /*  creates individual message  */
+        Message mes = new Message();
+        mes.setAuthor(fromUser);
+        mes.addEntry(toUser, message);
+
+        /*  wrapes in a generic object  */
+        Generic gen = new Generic();
+        gen.setCode(Constants.receiveMessage);
+        gen.setConfirmation(true);
+        gen.setObj(mes);
+
+        /*  checks if the user is online and sends  */
+        if(Main.onlineUsers.containsKey(toUser)) {
+            ClientThreadTCP sock = Main.onlineUsers.get(toUser);
+
+            sock.out.writeObject(gen);
+        }
+        else { /*    or stores to send later accordingly    */
+
+
+            // ###################QUERIES AQUI########################
+            
+            System.out.println(toUser+" esta offline");
+        }
+    }
+
     /**
      * Message to user
      * */
     private Generic message(Generic gen) throws IOException {
-        String fromUser = null;
-        String toUser = null;
-        String message = null;
-
-        /*  envia dados para a base de dados e utilizadores */
+        String fromUser = null, toUser = null, message = null;
         Message mes = (Message) gen.getObj();
+
+/*
         System.out.println("From: "+mes.getAuthor());
         System.out.println("To: "+mes.getKeysEnumeration().nextElement());
         System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-
+*/
         /*  runs through the received buffer and sends/stores messages  */
         Enumeration<String> enumerator = mes.getKeysEnumeration();
         fromUser = mes.getAuthor();
@@ -211,39 +239,47 @@ class ClientThreadTCP extends Thread{
     }
 
     /**
-     * Message a user
-     * */
-    private void messageUser(String fromUser, String toUser, String message) throws IOException {
-        /*  creates individual message  */
-        Message mes = new Message();
-        mes.setAuthor(fromUser);
-        mes.addEntry(toUser, message);
-
-        /*  wrapes in a generic object  */
-        Generic gen = new Generic();
-        gen.setCode(Constants.receiveMessage);
-        gen.setConfirmation(true);
-        gen.setObj(mes);
-        
-        /*  checks if the user is online and sends  */
-        if(Main.onlineUsers.containsKey(toUser)) {
-            ClientThreadTCP sock = Main.onlineUsers.get(toUser);
-            
-            sock.out.writeObject(gen);
-        }
-        else { /*    or stores to send later accordingly    */
-            System.out.println(toUser+" esta offline");
-        }
-    }
-
-    /**
      * Message to all users
      * */
     private Generic messageAll(Generic gen) throws IOException {
-        /*  envia dados para a base de dados e utilizadores */
+        String fromUser = null, toUser = null, message = null;
         Message mes = (Message) gen.getObj();
+
+/*
         System.out.println("From: "+mes.getAuthor());
         System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
+*/
+
+        /*
+         *  runs through the received buffer and sends/stores messages
+         *  to all people registered
+         */
+        Enumeration<String> enumerator = mes.getKeysEnumeration();
+        fromUser = mes.getAuthor();
+
+        while(enumerator.hasMoreElements()) {
+            /*
+             *  since message is for all
+             *  the key doesn't matter, only for obtaining each message
+             */
+            toUser = enumerator.nextElement();
+            message = mes.getEntry(toUser);
+
+            /*  first send to online users  */
+            Enumeration<String> onlineEnumerator = Main.onlineUsers.keys();
+            while(onlineEnumerator.hasMoreElements()) {
+                toUser = onlineEnumerator.nextElement();
+
+                this.messageUser(fromUser, toUser, message);
+            }
+
+            /*  after that it stores in database
+             *  to send later to the rest of the users
+             */
+            //  ###################QUERIES AQUI########################
+            //  nao esquecer da proteccao de dados (nao guardar para utilizadores que estejam online e recebido)
+        }
+
 
         gen.setConfirmation(true);
 
