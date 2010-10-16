@@ -175,7 +175,7 @@ class ClientThreadTCP extends Thread{
         if(Queries.register(gen))
             gen.setConfirmation(true);
         else
-            gen.setConfirmation(true);
+            gen.setConfirmation(false);
         
         return gen;
     }
@@ -184,6 +184,10 @@ class ClientThreadTCP extends Thread{
      * Message to user
      * */
     private Generic message(Generic gen) throws IOException {
+        String fromUser = null;
+        String toUser = null;
+        String message = null;
+
         /*  envia dados para a base de dados e utilizadores */
         Message mes = (Message) gen.getObj();
         System.out.println("From: "+mes.getAuthor());
@@ -191,9 +195,16 @@ class ClientThreadTCP extends Thread{
         System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
 
         /*  runs through the received buffer and sends/stores messages  */
-        //for(String )
+        Enumeration<String> enumerator = mes.getKeysEnumeration();
+        fromUser = mes.getAuthor();
 
+        while(enumerator.hasMoreElements()) {
+            toUser = enumerator.nextElement();
+            message = mes.getEntry(toUser);
 
+            this.messageUser(fromUser, toUser, message);
+        }
+        
         gen.setConfirmation(true);
 
         return gen;
@@ -212,10 +223,12 @@ class ClientThreadTCP extends Thread{
         Generic gen = new Generic();
         gen.setCode(Constants.receiveMessage);
         gen.setConfirmation(true);
-
+        gen.setObj(mes);
+        
         /*  checks if the user is online and sends  */
         if(Main.onlineUsers.containsKey(toUser)) {
             ClientThreadTCP sock = Main.onlineUsers.get(toUser);
+            
             sock.out.writeObject(gen);
         }
         else { /*    or stores to send later accordingly    */

@@ -92,7 +92,6 @@ public class Interface {
 
         /*  flag 100 to Login   */
         Main.opt.setOption(Constants.loginCode);
-        
     }
 
     /**
@@ -264,7 +263,7 @@ public class Interface {
         /*  define autor da mensagem    */
         Main.bufferAll.setAuthor(Main.log.getName());
         /*  adiciona mensagem ao buffer */
-        Main.bufferAll.addEntry(Integer.toString(Main.bufferAll.getHashtable().size()), message);
+        Main.bufferAll.addEntry(Integer.toString(Main.bufferAll.getHashtable().size()+1), message);
         
         Main.opt.setOption(Constants.messageAllCode);
     }

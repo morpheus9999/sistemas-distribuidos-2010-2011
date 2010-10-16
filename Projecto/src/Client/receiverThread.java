@@ -9,6 +9,7 @@ import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
 import Client_Server.Login;
+import Client_Server.Message;
 import Client_Server.OnlineUsers;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -75,7 +76,7 @@ public class receiverThread extends Thread{
                             if(gen.getConfirmation()) {
                                 System.out.println("Message sent!");
                                 /*  clears buffer   */
-                                Main.buffer.clearHashtable();
+                               Main.buffer.clearHashtable();
                             }
                             else
                                 /*  does not remove message from buffer and tries again later   */
@@ -121,6 +122,14 @@ public class receiverThread extends Thread{
                                 System.out.println("Register successful!");
                             else
                                 System.out.println("Register failed!");
+                            break;
+                        case Constants.receiveMessage:
+                            /*  receiving messages  */
+                            Message mes = (Message) gen.getObj();
+                            System.out.println("\nMessage Received");
+                            System.out.println("From: "+mes.getAuthor());
+                            System.out.println("Message:");
+                            System.out.println("> "+mes.getEntry(Main.log.getName()));
                             break;
                         default:
                             System.out.println("Code not recognized :X: "+gen.getCode());
