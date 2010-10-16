@@ -8,6 +8,7 @@ package Client;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
+import Client_Server.Message;
 import java.io.IOException;
 
 /**
@@ -67,7 +68,10 @@ public class senderThread extends Thread{
                     case Constants.messageCode:
                         /*  messages a user */
                         gen.setCode(Constants.messageCode);
-                        gen.setObj(Main.buffer);
+                        Message mes = new Message();
+                        mes.setHashtable(Main.buffer.getHashtable());
+                        mes.setAuthor(Main.buffer.getAuthor());
+                        gen.setObj(mes);
                         break;
                     case Constants.messageAllCode:
                         /*  messages all users  */

@@ -31,7 +31,7 @@ public class Message implements Serializable{
     }
 
     public void setHashtable(Hashtable<String, String> temp) {
-        this.messageBuffer = temp;
+        this.messageBuffer.putAll(temp);
     }
 
     public Hashtable<String, String> getHashtable() {
