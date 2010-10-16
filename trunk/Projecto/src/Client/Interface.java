@@ -83,6 +83,7 @@ public class Interface {
         System.out.print("Username: ");
         temp = Input.readString().trim();
         Main.log.setName(temp);
+        Main.buffer.setAuthor(temp);
         
         /*  get password    */
         System.out.print("Password: ");
@@ -230,8 +231,22 @@ public class Interface {
      * Message User
      * sends a message to a specific user
      */
-    public void messageSingleUsers() {
+    public void messageSingleUser() {
+        String message = null;
+        String toUser = null;
+
         System.out.println("#### Message to user ####");
+        System.out.print("To: ");
+        toUser = Input.readString();
+        System.out.println("Message: ");
+        System.out.print("> ");
+        message = Input.readString();
+
+        /*  define autor da mensagem    */
+        Main.buffer.setAuthor(Main.log.getName());
+        /*  adiciona mensagem ao buffer */
+        Main.buffer.addEntry(toUser, message);
+
         Main.opt.setOption(Constants.messageCode);
     }
 
@@ -240,7 +255,17 @@ public class Interface {
      * sends a message to all online users
      */
     public void messageAllUsers() {
+        String message;
         System.out.println("#### Message to all users ####");
+        System.out.println("Message: ");
+        System.out.print("> ");
+        message = Input.readString();
+
+        /*  define autor da mensagem    */
+        Main.bufferAll.setAuthor(Main.log.getName());
+        /*  adiciona mensagem ao buffer */
+        Main.bufferAll.addEntry(Integer.toString(Main.bufferAll.getHashtable().size()), message);
+        
         Main.opt.setOption(Constants.messageAllCode);
     }
 

@@ -4,6 +4,8 @@ package Server;
 import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
+import Client_Server.Message;
+import Client_Server.OnlineUsers;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +63,7 @@ class ClientThreadTCP extends Thread{
                     temp.setObj(gen.getObj());
 
                     /*  parses received object  */
-                    switch (gen.getCode()) {
+                    switch (temp.getCode()) {
                         case Constants.creditCode:
                             break;
                         case Constants.resetCode:
@@ -70,10 +73,13 @@ class ClientThreadTCP extends Thread{
                         case Constants.betCode:
                             break;
                         case Constants.onlineUsersCode:
+                            temp = this.onlineUsers(gen);
                             break;
                         case Constants.messageCode:
+                            temp = this.message(temp);
                             break;
                         case Constants.messageAllCode:
+                            temp = this.messageAll(temp);
                             break;
                         case Constants.logoutCode:
                             temp = this.logout(temp);
@@ -98,6 +104,10 @@ class ClientThreadTCP extends Thread{
         } catch  (IOException ex) {
             System.out.println("Error receiving/sending generic object!");
         }
+
+        /*  removes user from onlineUsers list  */
+        if(lg != null)
+            Main.onlineUsers.remove(lg.getName());
 
         /*  close comunication channels */
         this.closeComChannels();
@@ -129,9 +139,9 @@ class ClientThreadTCP extends Thread{
         }
     }
 
-    /*
+    /**
      * Login
-     */
+     * */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
 //       if(Queries.login(gen)) {
@@ -146,29 +156,100 @@ class ClientThreadTCP extends Thread{
         return gen;
     }
 
-    /*
+    /**
      * Logout
-     */
+     * */
     private Generic logout(Generic gen) throws IOException {
         /*  sends confirmation of session ending    */
         gen.setConfirmation(true);
-        /*  removes user from online users  */
-        Main.onlineUsers.remove(this.lg.getName());
         /*  exits thread    */
         this.logout = true;
         
         return gen;
     }
 
-    /*
+    /**
      * Register
-     */
+     * */
     private Generic register(Generic gen) throws IOException {
         if(Queries.register(gen))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(true);
         
+        return gen;
+    }
+
+    /**
+     * Message to user
+     * */
+    private Generic message(Generic gen) throws IOException {
+        /*  envia dados para a base de dados e utilizadores */
+        Message mes = (Message) gen.getObj();
+        System.out.println("From: "+mes.getAuthor());
+        System.out.println("To: "+mes.getKeysEnumeration().nextElement());
+        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
+
+        /*  runs through the received buffer and sends/stores messages  */
+        //for(String )
+
+
+        gen.setConfirmation(true);
+
+        return gen;
+    }
+
+    /**
+     * Message a user
+     * */
+    private void messageUser(String fromUser, String toUser, String message) throws IOException {
+        /*  creates individual message  */
+        Message mes = new Message();
+        mes.setAuthor(fromUser);
+        mes.addEntry(toUser, message);
+
+        /*  wrapes in a generic object  */
+        Generic gen = new Generic();
+        gen.setCode(Constants.receiveMessage);
+        gen.setConfirmation(true);
+
+        /*  checks if the user is online and sends  */
+        if(Main.onlineUsers.containsKey(toUser)) {
+            ClientThreadTCP sock = Main.onlineUsers.get(toUser);
+            sock.out.writeObject(gen);
+        }
+        else { /*    or stores to send later accordingly    */
+            System.out.println(toUser+" esta offline");
+        }
+    }
+
+    /**
+     * Message to all users
+     * */
+    private Generic messageAll(Generic gen) throws IOException {
+        /*  envia dados para a base de dados e utilizadores */
+        Message mes = (Message) gen.getObj();
+        System.out.println("From: "+mes.getAuthor());
+        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
+
+        gen.setConfirmation(true);
+
+        return gen;
+    }
+
+    /**
+     *
+     * */
+    private Generic onlineUsers(Generic gen) throws IOException {
+        OnlineUsers list = new OnlineUsers();
+        Enumeration<String> temp = Main.onlineUsers.keys();
+
+        while(temp.hasMoreElements())
+            list.addEntry(temp.nextElement());
+        
+        gen.setConfirmation(true);
+        gen.setObj(list);
+
         return gen;
     }
 }

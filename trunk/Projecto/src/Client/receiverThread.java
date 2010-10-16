@@ -9,6 +9,7 @@ import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
 import Client_Server.Login;
+import Client_Server.OnlineUsers;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,22 +66,30 @@ public class receiverThread extends Thread{
                             break;
                         case Constants.onlineUsersCode:
                             /*  lists online users  */
-
-                            /*  em que formato vem? num vector? */
-
+                            OnlineUsers list = (OnlineUsers) gen.getObj();
+                            /*  prints the list */
+                            list.printOnlineUsers();
                             break;
                         case Constants.messageCode:
                             /*  messages a user */
-                            if(gen.getConfirmation())
+                            if(gen.getConfirmation()) {
                                 System.out.println("Message sent!");
+                                /*  clears buffer   */
+                                Main.buffer.clearHashtable();
+                            }
                             else
+                                /*  does not remove message from buffer and tries again later   */
                                 System.out.println("Message failed!");
                             break;
                         case Constants.messageAllCode:
                             /*  messages all users  */
-                            if(gen.getConfirmation())
+                            if(gen.getConfirmation()) {
                                 System.out.println("Message sent!");
+                                /*  clears buffer   */
+                                Main.bufferAll.clearHashtable();
+                            }
                             else
+                                 /*  does not remove message from buffer and tries again later   */
                                 System.out.println("Message failed!");
                             break;
                         case Constants.logoutCode:

@@ -67,12 +67,12 @@ public class senderThread extends Thread{
                     case Constants.messageCode:
                         /*  messages a user */
                         gen.setCode(Constants.messageCode);
-                        gen.setObj(Main.message);
+                        gen.setObj(Main.buffer);
                         break;
                     case Constants.messageAllCode:
                         /*  messages all users  */
                         gen.setCode(Constants.messageAllCode);
-                        gen.setObj(Main.message);
+                        gen.setObj(Main.bufferAll);
                         break;
                     case Constants.logoutCode:
                         /*  logout and exit */

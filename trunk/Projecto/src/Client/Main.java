@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import Client_Server.Constants;
+import Client_Server.Message;
 import Client_Server.User;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -35,7 +36,8 @@ public class Main {
     public static ObjectInputStream in;
     public static Login log = new Login();
     public static User reg = new User();
-    public static String message = null;
+    public static Message buffer = new Message();
+    public static Message bufferAll = new Message();
     public static boolean logged = false;
     public static boolean connected = false;
     public static Selection opt = new Selection();
@@ -125,7 +127,7 @@ public class Main {
                         break;
                     case Constants.messageCode:
                         /*  Message user    */
-                        inter.messageSingleUsers();
+                        inter.messageSingleUser();
                         break;
                     case Constants.messageAllCode:
                         /*  Message all users   */
@@ -144,7 +146,7 @@ public class Main {
                 switch(inter.offlineMenu()) {
                     case Constants.messageCode:
                         /*  Message user    */
-                        inter.messageSingleUsers();
+                        inter.messageSingleUser();
                         break;
                     case Constants.messageAllCode:
                         /*  Message all users   */
