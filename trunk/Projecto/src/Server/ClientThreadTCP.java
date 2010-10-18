@@ -65,12 +65,15 @@ class ClientThreadTCP extends Thread{
                     /*  parses received object  */
                     switch (temp.getCode()) {
                         case Constants.creditCode:
+                            temp=this.getCredito(temp);
                             break;
                         case Constants.resetCode:
                             break;
                         case Constants.matchesCode:
                             break;
                         case Constants.betCode:
+                            temp=this.bet(temp);
+
                             break;
                         case Constants.onlineUsersCode:
                             temp = this.onlineUsers(gen);
@@ -112,8 +115,8 @@ class ClientThreadTCP extends Thread{
         /*  close comunication channels */
         this.closeComChannels();
     }
-    
-    
+
+
     /**
      * open comunication channels
      */
@@ -144,14 +147,14 @@ class ClientThreadTCP extends Thread{
      * */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
-//       if(Queries.login(gen)) {
+       if(Queries.login(gen)) {
             /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
             Main.onlineUsers.put(this.lg.getName(), this);
- //       }
- //       else
-  //          gen.setConfirmation(false);
+        }
+        else
+            gen.setConfirmation(false);
 
         return gen;
     }
@@ -164,7 +167,7 @@ class ClientThreadTCP extends Thread{
         gen.setConfirmation(true);
         /*  exits thread    */
         this.logout = true;
-        
+
         return gen;
     }
 
@@ -176,7 +179,7 @@ class ClientThreadTCP extends Thread{
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
-        
+
         return gen;
     }
 
@@ -205,7 +208,7 @@ class ClientThreadTCP extends Thread{
 
 
             // ###################QUERIES AQUI########################
-            
+
             System.out.println(toUser+" esta offline");
         }
     }
@@ -232,7 +235,7 @@ class ClientThreadTCP extends Thread{
 
             this.messageUser(fromUser, toUser, message);
         }
-        
+
         gen.setConfirmation(true);
 
         return gen;
@@ -295,10 +298,25 @@ class ClientThreadTCP extends Thread{
 
         while(temp.hasMoreElements())
             list.addEntry(temp.nextElement());
-        
+
         gen.setConfirmation(true);
         gen.setObj(list);
 
         return gen;
+    }
+
+    private Generic bet(Generic gen) {
+         //meter a variavel da ronda....
+        if(Queries.newBet(gen,lg,Main.game.getRonda()))
+            gen.setConfirmation(true);
+        else
+            gen.setConfirmation(false);
+
+        return gen;
+    }
+
+    private Generic getCredito(Generic temp) {
+        return Queries.getCredit(temp, lg);
+
     }
 }

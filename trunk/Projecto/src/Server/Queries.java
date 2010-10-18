@@ -9,13 +9,31 @@ import BetPackage.IMatch;
 import Client_Server.User;
 import Client_Server.Generic;
 import Client_Server.Login;
+import Client_Server.Credit;
+import Client_Server.Bet;
+import Client_Server.Constants;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author JLA
  */
 public class Queries {
+
+    private Connection connection;
+    private Statement statement;
+
+    public Queries() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root");
+        } catch (Exception e) {
+            System.out.println("Erro iniciar queries:" + e.toString());
+
+        }
+    }
 
     static boolean login(Generic generic) {
         Login lg = (Login) generic.getObj();
@@ -24,14 +42,14 @@ public class Queries {
         System.out.println("recebido");
         System.out.println("name: " + lg.getName());
         System.out.println("pass: " + lg.getPassword());
-
+        Statement stmt=null;
         while (true) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
                         + "user=root&password=root";
                 Connection con = DriverManager.getConnection(connectionUrl);
-                Statement stmt = con.createStatement();
+                stmt = con.createStatement();
                 ResultSet rs;
 
                 int rowCount = -1;
@@ -43,10 +61,12 @@ public class Queries {
                 if (rowCount == 1) {
 
                     //e falta adicionar a lista de clientes logados
+                    stmt.close();
                     return true;
 
 
                 } else {
+                    stmt.close();
                     return false;
                 }
             } catch (SQLException e) {
@@ -55,9 +75,16 @@ public class Queries {
 
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
+                
                 return false;
 
-            }
+            } finally {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+        }
         }
 
     }
@@ -81,11 +108,13 @@ public class Queries {
 
                 boolean flag = stmt.execute("INSERT INTO Cliente VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "'," + lg.getCredit() + ")");
                 if (!flag) {
+                    stmt.close();
                     return true;
                 }
+                stmt.close();
                 return false;
             } catch (SQLException e) {
-
+                
                 System.out.println("SQL Exception: " + e.toString());
 
             } catch (ClassNotFoundException cE) {
@@ -98,9 +127,11 @@ public class Queries {
 
     }
 
-    static boolean newBet(Generic generic) {
-        // nao deverá ser user 
-        User lg = (User) generic.getObj();
+    static boolean newBet(Generic generic, Login lg,int ronda) {
+
+         
+        Bet bet = (Bet) generic.getObj();
+        
 
         System.out.println("recebido");
         System.out.println("name: " + lg.getName());
@@ -108,21 +139,49 @@ public class Queries {
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
 
+
         while (true) {
             try {
+                
                 Class.forName("com.mysql.jdbc.Driver");
                 String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
                 Connection con = DriverManager.getConnection(connectionUrl);
                 Statement stmt = con.createStatement();
+                ResultSet credit =stmt.executeQuery("SELECT Credito from Cliente where Nome='"+lg.getName()+"'");
+                
+                credit.next();
+                int credito=credit.getInt("Credito");
+                    if(credito<bet.getBet()){
+                        System.out.println("NAO TEM CREDITO Nome="+lg.getName());
+                        stmt.close();
+                        return false;
+                        }
+                
 
-                boolean flag = stmt.execute("INSERT INTO Aposta VALUES ('" + lg.getName() + "','" + lg.getPassword() + "','" + lg.getMail() + "','" + lg.getCredit() + ")");
-                if (!flag) {
-                    return true;
+
+                ResultSet m=stmt.executeQuery("SELECT idJogo from Jogo WHERE ronda="+ronda);
+                while(m.next()){
+                    if(m.getInt("idJogo")==bet.getIdGame()){
+                        //INSERT INTO  `mydb`.`Aposta` (`idAposta` ,`bet` ,`Aposta_equipa` ,`Jogo_idJogo` ,`Cliente_Nome`)VALUES (NULL ,  '2',  '2',  '18',  'Jorge');
+                        boolean flag = stmt.execute("INSERT INTO  `mydb`.`Aposta` (`idAposta` ,`bet` ,`Aposta_equipa` ,`Jogo_idJogo` ,`Cliente_Nome`)VALUES (NULL ,'"+ bet.getBet() + "','" + bet.getAposta() + "','" + bet.getIdGame()+"','" +lg.getName()+"'"+ ")");
+                        if (!flag) {
+                            //UPDATE  `mydb`.`Cliente` SET  `Credito` =
+                            boolean rs= stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ (credito-bet.getBet()) +"' WHERE `Cliente`.`Nome`= '"+lg.getName()+"'");
+                            stmt.close();
+                            return true;
+                        }else{
+                        
+                        }
+                
+                        }
                 }
-                return false;
+
+                
+
+                stmt.close();
             } catch (SQLException e) {
 
-                System.out.println("SQL Exception: " + e.toString());
+                System.out.println("SQL Exception (new Bet): " + e.toString());
 
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
@@ -155,9 +214,22 @@ public class Queries {
 
 
                 for (IMatch m : man.getMatches()) {
-                    boolean flag = stmt.execute("INSERT INTO Jogo ('Casa', 'Fora', 'Ronda') VALUES ('" + m.getHomeTeam() + "','" + m.getAwayTeam() + "'," + ronda + ")");
+                    int result=0;
+                        switch (man.getResult(m)) {
+                            case HOME:
+                                result=1;
+                                break;
+                            case AWAY:
+                                result=2;
+                                break;
+                            default:
+                                result=0;
+                                break;
+                        }
+                    //INSERT INTO `mydb`.`Jogo` (`idJogo`, `Resultado`, `Casa`, `Fora`, `Ronda`) VALUES (NULL, NULL, 'sdaf', 'sdfa', '1');
+                    boolean flag = stmt.execute("INSERT INTO `mydb`.`Jogo` (`idJogo`, `Resultado`, `Casa`, `Fora`, `Ronda`) VALUES (NULL,"+ result+", '" + m.getHomeTeam() + "','" + m.getAwayTeam() + "'," + ronda + ")");
                 }
-
+                stmt.close();
                 return true;
             } catch (SQLException e) {
 
@@ -170,4 +242,96 @@ public class Queries {
         }
 
     }
+
+    static Generic getCredit(Generic gen, Login lg) {
+         // nao deverá ser user
+        Credit cr = (Credit) gen.getObj();
+
+        System.out.println("recebido");
+        //System.out.println("name: " + lg.getName());
+        //System.out.println("bet: "+ lg.getBetGame());
+        //n sei que nome dar
+        //System.out.println("bet: "+ lg.getBetXpto());
+
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                ResultSet rs1;
+                    rs1 = stmt.executeQuery("SELECT Credito FROM Cliente WHERE Nome = '" + lg.getName()+"'" );
+                    rs1.next();
+                    int bet = rs1.getInt("Credito");
+ 
+                    cr.setCredit(bet);
+                    gen.setConfirmation(true);
+                    gen.setObj(cr);
+                    stmt.close();
+                    return gen;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                gen.setConfirmation(false);
+                gen.setObj(cr);
+                return gen;
+                
+            }
+
+
+        }
+    }
+
+    static void updateBets(int ronda) {
+
+
+        //Bet bet = (Bet) generic.getObj();
+
+
+        System.out.println("recebido : updateBets-->");
+        //SELECT Cliente_Nome, bet
+        //FROM Aposta, Jogo
+        //WHERE Jogo_idJogo = idJogo
+        //AND ronda =1
+
+
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+
+                ResultSet rr=stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda ="+ronda+" AND Aposta_equipa =Resultado");
+
+                while(rr.next()){
+                    String Nome = rr.getString("Cliente_Nome");
+                    int bet = rr.getInt("bet");
+
+
+                    boolean rs;
+                    //UPDATE  `mydb`.`Cliente` SET  `Credito` =  '2' WHERE  `Cliente`.`Nome` =  'JJJJ'
+                    rs= stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ bet*Constants.reward +"' WHERE `Cliente`.`Nome` = '"+Nome+"'");
+
+                }
+                stmt.close();
+                return;
+                
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception (1): " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                
+                continue;
+            }
+
+
+        }
+    }
+
 }
