@@ -15,6 +15,7 @@ import java.net.Socket;
 import Client_Server.Constants;
 import Client_Server.Message;
 import Client_Server.User;
+import Client_Server.Bet;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ public class Main {
     public static ObjectInputStream in;
     public static Login log = new Login();
     public static User reg = new User();
+    public static Bet bet = new Bet();
     public static Message buffer = new Message();
     public static Message bufferAll = new Message();
     public static boolean logged = false;

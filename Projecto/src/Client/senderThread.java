@@ -30,14 +30,14 @@ public class senderThread extends Thread{
      * the main method of the sender thread
      */
     public void run() {
-        
+
         while(!Main.exit) {
             try {
                 Generic gen = new Generic();
                 Message mes = new Message();
                 Login log = new Login();
                 User reg = new User();
-                
+
                 int opt = Main.opt.getOption();
                 switch(opt) {
                     case Constants.creditCode:
@@ -62,8 +62,10 @@ public class senderThread extends Thread{
                     case Constants.betCode:
                         /*  bets on a match */
                         gen.setCode(Constants.betCode);
-
                         
+                        gen.setObj(Main.bet);
+
+
                         /*  !!!!!!!!!!preciso de saber as variaveis para fazer a classe !!!!!!!!!!!!!!!*/
 
                         break;
@@ -83,7 +85,7 @@ public class senderThread extends Thread{
                         /*  messages all users  */
                         mes.setHashtable(Main.bufferAll.getHashtable());
                         mes.setAuthor(Main.bufferAll.getAuthor());
-                        
+
                         gen.setCode(Constants.messageAllCode);
                         gen.setObj(mes);
                         break;
@@ -133,7 +135,7 @@ public class senderThread extends Thread{
                 //  System.out.println("Error ocurred. Ending sending thread");
             }
         }
-        
+
 
         System.out.println("sender thread down!!");
     }

@@ -11,7 +11,7 @@ package Client_Server;
  * @author JLA
  */
 public class Constants {
-
+    final public static int numJogos=8;
     final public static int serverPort = 3500;
     final public static int tries = 5;
     final public static int sleepTime = 500;
@@ -28,5 +28,6 @@ public class Constants {
     final public static int loginCode = 100;
     final public static int regCode = 101;
     final public static int receiveMessage = 200;
+    final public static int reward=3;
 
 }

@@ -211,7 +211,14 @@ public class Interface {
      */
     public void bet() {
         System.out.println("#### Bet ####");
-
+        System.out.print("ID Jogo: ");
+        int idJogo = Input.readInt();
+        System.out.print("Victoria Casa (1) Victoria fora (2) Empate (0): ");
+        int aposta =Input.readInt();
+        System.out.print("Quantos creditos pretende apostar: ");
+        int bet =Input.readInt();
+        Main.bet.setIdGame(idJogo);
+        Main.bet.setBet(bet);
         /*  pedir dados antes   */
 
         Main.opt.setOption(Constants.betCode);
