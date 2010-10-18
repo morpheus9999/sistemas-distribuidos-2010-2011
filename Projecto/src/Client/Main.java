@@ -41,35 +41,32 @@ public class Main {
     public static boolean logged = false;
     public static boolean connected = false;
     public static Selection opt = new Selection();
-    private static boolean exit = false;
-    private static senderThread sender;
-    private static receiverThread receiver;
+    public static boolean exit = false;
+    public static senderThread sender;
+    public static receiverThread receiver;
     
     /**
      * Main method
      */
     public static void main(String args[]) {
         /*  init    */
-        if(!connect())
-            /*  if it cannot connect at first, try to reconnect */
-            if(!reconnect()) {
-                System.out.println("Bye Bye");
-                /*  exit if it cannot reconnect  */
-                return;
-            }
+        /*  tries to connect 1 time, if it fails, the app ends  */
+        if(!connect()) {
+            System.out.println("System is down :(\nBye Bye");
+            return;
+        }
 
         /*  initates interface  */
         Interface inter = new Interface();
         inter.openTIChannel();
 
         /*  initiates interaction with user */
-        while(!logged) {
+        while(!logged && !exit) {
             switch(inter.welcomeMenu()) {
                 case Constants.loginCode:
                     inter.login();
 
-                    /*  only blocks for response if threads are alive   */
-                    if(threadsAlive()) {
+                    if(Main.connected)
                         /*  waits for receiver thread confirmation  */
                         synchronized(Main.class) {
                             try {
@@ -78,10 +75,10 @@ public class Main {
                                 //System.out.println("Error waiting for login confirmation");
                             }
                         }
-                    } else
-                        System.out.println("Error waiting for login confirmation");
+                    else
+                        /*  if connection is down, the app ends */
+                        exit = true;
                     break;
-
                 case Constants.regCode:
                     inter.register();
                     break;
@@ -90,16 +87,6 @@ public class Main {
                     System.out.println("Wrong code!");
                     break;
             }
-
-            /*  if threads are down, it means the connection went down  */
-            if(!threadsAlive())
-                if(!reconnect()) {
-                    System.out.println("Bye Bye");
-                    /*  it exits if it cannot connect in the welcome screen */
-                    closeThreads();
-                    closeChannels();
-                    return;
-                }
         }
 
         while(!exit) {
@@ -134,9 +121,9 @@ public class Main {
                         inter.messageAllUsers();
                         break;
                     case Constants.logoutCode:
+                        exit = true;
                         /*  logout  */
                         inter.logout();
-                        exit = true;
                         break;
                     default:
                         System.out.println("Wrong code!");
@@ -162,14 +149,6 @@ public class Main {
                         break;
                 }
             }
-
-
-            /*  if threads are down, it means the connection went down  */
-            if(!threadsAlive() && !exit)
-                /*  tries to reconnect
-                 * if it fails, there is limited usage to the user
-                 */
-                reconnect();
         }
 
         /*  closes comunication channels with user  */
@@ -184,7 +163,7 @@ public class Main {
     /**
      * opens comunication channels
      * */
-    public static void openChannels() {
+    public static boolean openChannels() {
         try {
             sock = null;
             sock = new Socket(host, Constants.serverPort);
@@ -197,7 +176,7 @@ public class Main {
                 in = new ObjectInputStream(inStream);
 
                 Main.connected = true;
-                return;
+                return true;
             }
         } catch (UnknownHostException ex) {
             //System.out.println("unknown host");
@@ -206,6 +185,7 @@ public class Main {
         }
         
         Main.connected = false;
+        return false;
     }
 
     /**
@@ -276,21 +256,17 @@ public class Main {
      * reconnect
      * */
     public static boolean reconnect() {
+        Main.connected = false;
+        
         try {
-            for (int i = 1; i <= Constants.tries && !Main.connected; i++, Thread.sleep(Constants.reconnectTime)) {
+            for (int i = 1; i <= Constants.tries && !Main.connected && !Main.exit; i++, Thread.sleep(Constants.reconnectTime)) {
                 if (i == 1)
                     System.out.println("Connection lost. Trying to reconnect...");
 
-                if(connect() && threadsAlive()) {
-                    if(Main.logged == true) {
-
-
-                        /*  !!!!!!!!!!! NAO TIRAR O SLEEP !!!!!!!!!!!!!!    */
-                        Thread.sleep(Constants.sleepTime);
-                        /*  !!!!!!!!!!! QUEM TIRAR E AMALDIÇOADO !!!!!!!    */
-
+                if(openChannels()) {
+                    if(Main.logged == true)
                         Main.opt.setOption(Constants.loginCode);
-                    }
+
                     return true;
                 }
                 else

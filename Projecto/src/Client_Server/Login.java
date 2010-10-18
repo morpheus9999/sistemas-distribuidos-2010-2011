@@ -46,8 +46,8 @@ public class Login implements Serializable {
         return this.name;
     }
 
-    public void setName(String mail) {
-        this.name = mail;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword(){
