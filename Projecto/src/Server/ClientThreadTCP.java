@@ -161,7 +161,7 @@ class ClientThreadTCP extends Thread{
 
     /**
      * Logout
-     * */
+     */
     private Generic logout(Generic gen) throws IOException {
         /*  sends confirmation of session ending    */
         gen.setConfirmation(true);
@@ -173,7 +173,7 @@ class ClientThreadTCP extends Thread{
 
     /**
      * Register
-     * */
+     */
     private Generic register(Generic gen) throws IOException {
         if(Queries.register(gen))
             gen.setConfirmation(true);
