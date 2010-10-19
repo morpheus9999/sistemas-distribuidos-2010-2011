@@ -5,6 +5,7 @@
 
 package Client;
 
+import Client_Server.Bet;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
@@ -38,6 +39,7 @@ public class senderThread extends Thread{
                 Message mes = new Message();
                 Login log = new Login();
                 User reg = new User();
+                Bet bet = new Bet();
 
                 int opt = Main.opt.getOption();
                 switch(opt) {
@@ -50,25 +52,25 @@ public class senderThread extends Thread{
                         /*  resets credit balance   */
                         gen.setCode(Constants.resetCode);
                         gen.setObj(new Credit());
-                        /*  adicionar o objecto com a informacao do registo  */
-
                         break;
                     case Constants.matchesCode:
                         /*  lists current matches   */
                         gen.setCode(Constants.matchesCode);
-                        gen.setObj(log);
-                        /*  adicionar o objecto com a informacao dos jogos  */
+                        /*  new Login object    */
+                        log.setName(Main.log.getName());
+                        log.setPassword(Main.log.getPassword());
 
+                        gen.setObj(log);
                         break;
                     case Constants.betCode:
                         /*  bets on a match */
                         gen.setCode(Constants.betCode);
+                        /*  new Bet object  */
+                        bet.setAposta(Main.bet.getAposta());
+                        bet.setBet(Main.bet.getBet());
+                        bet.setIdGame(Main.bet.getIdGame());
                         
-                        gen.setObj(Main.bet);
-
-
-                        /*  !!!!!!!!!!preciso de saber as variaveis para fazer a classe !!!!!!!!!!!!!!!*/
-
+                        gen.setObj(bet);
                         break;
                     case Constants.onlineUsersCode:
                         /*  lists online users  */
