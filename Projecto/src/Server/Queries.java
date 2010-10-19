@@ -12,7 +12,9 @@ import Client_Server.Login;
 import Client_Server.Credit;
 import Client_Server.Bet;
 import Client_Server.Constants;
+import Client_Server.ViewMatch;
 import java.sql.*;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,62 @@ import java.util.logging.Logger;
  * @author JLA
  */
 public class Queries {
+
+    static Generic resetCredit(Generic temp, Login lg) {
+        Statement stmt = null;
+        System.out.println("RESET CRL!!!!");
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                        + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                stmt = con.createStatement();
+                
+                boolean rs = stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '" + Constants.resetCredito + "' WHERE `Cliente`.`Nome`= '" + lg.getName() + "'");
+                Credit m = (Credit) temp.getObj();
+                m.setCredit(Constants.resetCredito);
+                temp.setObj(m);
+                temp.setConfirmation(true);
+                stmt.close();
+                return temp;
+            } catch (Exception e) {
+                System.out.println("Erro iniciar queries:" + e.toString());
+
+            }
+
+        }
+    }
+
+    static Generic viewMatches(Generic temp, int ronda) {
+        Statement stmt = null;
+        System.out.println("RESET CRL!!!!");
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                        + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                stmt = con.createStatement();
+                ResultSet rs;
+                rs = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
+                Vector<ViewMatch> m= new <ViewMatch>Vector();
+                while(rs.next()){
+                    m.addElement(new ViewMatch(rs.getInt("idJogo"), rs.getString("Casa"), rs.getString("Fora")));
+                     
+                    
+                }
+                temp.setObj(m);
+                temp.setConfirmation(true);
+                stmt.close();
+                return temp;
+            } catch (Exception e) {
+                System.out.println("Erro iniciar queries:" + e.toString());
+
+            }
+
+        }
+    }
 
     private Connection connection;
     private Statement statement;
@@ -310,20 +368,24 @@ public class Queries {
                 while(rr.next()){
                     String Nome = rr.getString("Cliente_Nome");
                     int bet = rr.getInt("bet");
-
-
-                    boolean rs;
-                    //UPDATE  `mydb`.`Cliente` SET  `Credito` =  '2' WHERE  `Cliente`.`Nome` =  'JJJJ'
-                    rs= stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ bet*Constants.reward +"' WHERE `Cliente`.`Nome` = '"+Nome+"'");
-
+                    System.out.println("Vai fazer update da aposta do "+Nome+" "+bet);
+                        stmt=con.createStatement();
+                     ResultSet mm=stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='"+Nome+"'");
+                     mm.next();
+                     int credito_antigo=mm.getInt("Credito");
+                     stmt=con.createStatement();
+                     stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ (credito_antigo+(bet*Constants.reward)) +"' WHERE `Cliente`.`Nome` = '"+Nome+"'");
+                     
                 }
+                
                 stmt.close();
                 return;
                 
             } catch (SQLException e) {
-
+                
+                e.printStackTrace(System.out);
                 System.out.println("SQL Exception (1): " + e.toString());
-
+                return;
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
                 

@@ -215,6 +215,7 @@ public class Interface {
         int idJogo = Input.readInt();
         System.out.print("Victoria Casa (1) Victoria fora (2) Empate (0): ");
         int aposta =Input.readInt();
+        Main.bet.setAposta(aposta);
         System.out.print("Quantos creditos pretende apostar: ");
         int bet =Input.readInt();
         Main.bet.setIdGame(idJogo);

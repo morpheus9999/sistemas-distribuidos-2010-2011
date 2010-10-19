@@ -11,6 +11,7 @@ import Client_Server.Generic;
 import Client_Server.Login;
 import Client_Server.Message;
 import Client_Server.User;
+import Client_Server.ViewMatch;
 import java.io.IOException;
 
 /**
@@ -47,15 +48,15 @@ public class senderThread extends Thread{
                         break;
                     case Constants.resetCode:
                         /*  resets credit balance   */
-                        gen.setCode(Constants.regCode);
-
+                        gen.setCode(Constants.resetCode);
+                        gen.setObj(new Credit());
                         /*  adicionar o objecto com a informacao do registo  */
 
                         break;
                     case Constants.matchesCode:
                         /*  lists current matches   */
                         gen.setCode(Constants.matchesCode);
-
+                        gen.setObj(log);
                         /*  adicionar o objecto com a informacao dos jogos  */
 
                         break;
