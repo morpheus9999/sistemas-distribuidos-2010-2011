@@ -11,7 +11,10 @@ import Client_Server.Generic;
 import Client_Server.Login;
 import Client_Server.Message;
 import Client_Server.OnlineUsers;
+import Client_Server.ViewMatch;
 import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,12 +48,19 @@ public class receiverThread extends Thread{
                         break;
                     case Constants.resetCode:
                         /*  resets credit balance   */
+                        cred = (Credit) gen.getObj();
                         if (gen.getConfirmation())
-                            System.out.println("Credit reset success!");
+                            System.out.println("Credit reset success!"+cred.getCredit());
                         else
                             System.out.println("Credit reset failed!");
                         break;
                     case Constants.matchesCode:
+                        System.out.println("ENTRA MATCHES");
+                        Vector <ViewMatch> matches= (Vector<ViewMatch>) gen.getObj();
+                        System.out.println("MATCHES:");
+                        for(int x=0;x<matches.size();x++){
+                            System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
+                        }
                         /*  lists current matches   */
 
                         /*  fazer print dos jogos   */
@@ -137,8 +147,8 @@ public class receiverThread extends Thread{
             } catch (ClassNotFoundException ex) {
                 System.out.println("Class not found when receiving: "+ ex.getMessage());
             } catch (IOException ex) {
-                //  System.out.println("Error receiving object: "+ ex.getMessage());
-                //  System.out.println("Ending receiving thread");
+                  System.out.println("Error receiving object: "+ ex.getMessage());
+                  System.out.println("Ending receiving thread");
                 Main.connected = false;
                 while(!Main.connected && !Main.exit)
                     Main.reconnect();

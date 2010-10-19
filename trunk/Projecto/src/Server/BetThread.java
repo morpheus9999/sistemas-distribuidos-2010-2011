@@ -43,8 +43,9 @@ class BetThread extends Thread{
             //Hashtable<String, Generic> envia = new Hashtable();
             System.out.println("Actualiza valores das bets....");
             Queries.updateBets(ronda-1);
+            //DELETE jogos
 
-
+            //Delete apostas
 
 
         }

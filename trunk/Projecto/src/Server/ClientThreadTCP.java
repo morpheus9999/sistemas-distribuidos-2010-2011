@@ -61,19 +61,21 @@ class ClientThreadTCP extends Thread{
                     temp = new Generic();
                     temp.setCode(gen.getCode());
                     temp.setObj(gen.getObj());
-
+                    
                     /*  parses received object  */
                     switch (temp.getCode()) {
                         case Constants.creditCode:
                             temp=this.getCredito(temp);
                             break;
                         case Constants.resetCode:
+                            temp=this.resetCredit(temp);
                             break;
                         case Constants.matchesCode:
+                            System.out.println("WTF");
+                            temp=this.viewMatches(temp);
                             break;
                         case Constants.betCode:
                             temp=this.bet(temp);
-
                             break;
                         case Constants.onlineUsersCode:
                             temp = this.onlineUsers(gen);
@@ -318,5 +320,13 @@ class ClientThreadTCP extends Thread{
     private Generic getCredito(Generic temp) {
         return Queries.getCredit(temp, lg);
 
+    }
+
+    private Generic resetCredit(Generic temp) {
+        return Queries.resetCredit(temp,lg);
+    }
+
+    private Generic viewMatches(Generic temp) {
+        return Queries.viewMatches(temp,Main.game.getRonda());
     }
 }
