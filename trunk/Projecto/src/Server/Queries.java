@@ -26,7 +26,6 @@ public class Queries {
 
     static Generic resetCredit(Generic temp, Login lg) {
         Statement stmt = null;
-        System.out.println("RESET CRL!!!!");
         while (true) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -49,6 +48,122 @@ public class Queries {
 
         }
     }
+    static int rondaActual(){
+        System.out.println("RONDA ACTUAL ");
+        Statement stmt = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                    + "user=root&password=root";
+            Connection con = DriverManager.getConnection(connectionUrl);
+            stmt = con.createStatement();
+
+            ResultSet m = stmt.executeQuery("SELECT idRonda from Ronda");
+            int ronda;
+
+            if (m.next()) {
+
+                ronda = m.getInt("idRonda");
+
+            } else {
+                ronda = 0;
+            }
+            stmt.close();
+
+            return ronda;
+
+        } catch (Exception e) {
+            System.out.println("Erro iniciar queries:" + e.toString());
+            return 0;
+        }
+
+    }
+    static int tipoActual(){
+        System.out.println("TIPO ACTUAL ");
+        Statement stmt = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                    + "user=root&password=root";
+            Connection con = DriverManager.getConnection(connectionUrl);
+            stmt = con.createStatement();
+
+            ResultSet m = stmt.executeQuery("SELECT Tipo from Ronda");
+            int ronda;
+
+            if (m.next()) {
+
+                ronda = m.getInt("Tipo");
+
+            } else {
+                ronda = 0;
+            }
+            stmt.close();
+
+            return ronda;
+
+        } catch (Exception e) {
+            System.out.println("Erro iniciar queries:" + e.toString());
+            return 0;
+        }
+
+    }
+    static void actualiza(int idRonda,int tipo){
+         System.out.println("ACTUALIZA ");
+        Statement stmt = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                    + "user=root&password=root";
+            Connection con = DriverManager.getConnection(connectionUrl);
+            stmt = con.createStatement();
+            ResultSet k = stmt.executeQuery("SELECT CURRENT_TIMESTAMP");
+            k.next();
+            Timestamp data2 = k.getTimestamp(1);
+            int min=data2.getMinutes();
+            data2.setMinutes(min+1);
+            System.out.println(data2.toString().substring(0,data2.toString().length()-2 ));
+            String p=data2.toString().substring(0,data2.toString().length()-2 );
+            boolean m = stmt.execute("UPDATE  `mydb`.`Ronda` SET  `idRonda` =  '"+idRonda+"',`Data` =  '"+p+"',`Tipo` =  '"+tipo+"' WHERE  `Ronda`.`id` =1 ;");
+            stmt.close();
+
+        } catch (Exception e) {
+                    e.printStackTrace();
+            
+        }
+
+    }
+    static long espera(){
+        System.out.println("ESPERA ");
+        Statement stmt = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String connectionUrl = "jdbc:mysql://localhost:8889/mydb?"
+                    + "user=root&password=root";
+            Connection con = DriverManager.getConnection(connectionUrl);
+            stmt = con.createStatement();
+            ResultSet k = stmt.executeQuery("SELECT CURRENT_TIMESTAMP");
+            k.next();
+            Timestamp data1 = k.getTimestamp(1);
+            
+            
+            ResultSet l = stmt.executeQuery("SELECT Data from Ronda where id=1");
+
+            l.next();
+            Timestamp data2 = l.getTimestamp(1);
+
+            long espera= data2.getTime()-data1.getTime();
+
+            //ResultSet m = stmt.executeQuery("UPDATE  `mydb`.`Ronda` SET  `idRonda` =  '"+idRonda+"',`Data` =  '"+data2.toString()+"',`Tipo` =  '"+tipo+"' WHERE  `Ronda`.`id` =1 ;");
+            stmt.close();
+            return espera;
+        } catch (Exception e) {
+            System.out.println("Erro iniciar queries:" + e.toString());
+            return 0;
+        }
+        
+    }
+
 
     static Generic viewMatches(Generic temp, int ronda) {
         Statement stmt = null;
