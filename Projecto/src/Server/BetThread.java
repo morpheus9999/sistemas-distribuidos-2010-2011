@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Server;
 
 import BetPackage.BetManager;
@@ -19,70 +18,73 @@ import java.util.logging.Logger;
  *
  * @author jojo
  */
- 
-class BetThread extends Thread{
+class BetThread extends Thread {
 
     int numJogos;
     private int ronda;
     int tipo;
+
     BetThread(int numJogos) {
         this.numJogos = numJogos;
-        tipo=0;
+        tipo = 0;
     }
 
-
     public void run() {
-         ronda=Queries.rondaActual();
-         tipo=Queries.tipoActual();
+        ronda = Queries.rondaActual();
+        tipo = Queries.tipoActual();
 
-        while(true){
-            if(tipo==0){
-            IBetManager man = new BetManager(numJogos);
-             System.out.println("ENTRA1");
-            Queries.NewRound(man, ronda);
-            tipo++;
-            Queries.actualiza(ronda, 1);
+        while (true) {
+            if (tipo == 0) {
+                IBetManager man = new BetManager(numJogos);
+                System.out.println("ENTRA1");
+                Queries.NewRound(man, ronda);
+                tipo++;
+                Queries.actualiza(ronda, 1);
 
-            }else if(tipo==1){
+            } else if (tipo == 1) {
                 try {
-                    long espera =Queries.espera();
-                    System.out.println("ENTRA2"+espera);
-                    if(espera>0)
+                    long espera = Queries.espera();
+                    System.out.println("ENTRA2" + espera);
+                    if (espera > 0) {
                         BetThread.sleep(espera);
+                    }
                 } catch (InterruptedException ex) {
                     System.out.println(ex);
                 }
                 ronda++;
                 tipo++;
-            Queries.actualiza(ronda, 2);
-            }else if(tipo==2){
-            
-            //Hashtable<String, Generic> envia = new Hashtable();
-            System.out.println("Actualiza valores das bets....");
-            Vector<Message> m =Queries.updateBets(ronda-1);
+                Queries.actualiza(ronda, 2);
+            } else if (tipo == 2) {
+
+                //Hashtable<String, Generic> envia = new Hashtable();
+                System.out.println("Actualiza valores das bets....");
+                Vector<Message> m = Queries.updateBets(ronda - 1);
+                ClientThreadTCP tcp;
+                if(m!=null){
+                for (int k = 0; k < m.size(); k++) {
+
+                    tcp = (ClientThreadTCP) (Main.onlineUsers.get(m.elementAt(k).getAuthor()));
+                    try {
+                        tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
+                    } catch (IOException ex) {
+                        Logger.getLogger(BetThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
 
+                    
+                    //DELETE jogos
+                    Queries.actualiza(ronda, 0);
+                    //Delete apostas
 
-            ClientThreadTCP tcp = (ClientThreadTCP)(Main.onlineUsers.get("Jorge"));
-                try {
-                    tcp.messageUser("Admin", "Jorge", "Ganhou a aposta!");
-                } catch (IOException ex) {
-                    Logger.getLogger(BetThread.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-
-            tipo=0;
-            //DELETE jogos
-            Queries.actualiza(ronda, 0);
-            //Delete apostas
-
+                }
+                tipo = 0;
             }
         }
-        
-    }
-    public int getRonda(){
-        return this.ronda;
+
     }
 
-    
+    public int getRonda() {
+        return this.ronda;
+    }
 }

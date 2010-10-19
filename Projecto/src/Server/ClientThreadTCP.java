@@ -198,9 +198,10 @@ class ClientThreadTCP extends Thread{
         gen.setCode(Constants.receiveMessage);
         gen.setConfirmation(true);
         gen.setObj(mes);
-
+        System.out.println("USER vai enviar:"+toUser);
         /*  checks if the user is online and sends  */
         if(Main.onlineUsers.containsKey(toUser)) {
+            System.out.println("USER vai enviar:"+toUser);
             ClientThreadTCP sock = Main.onlineUsers.get(toUser);
 
             sock.out.writeObject(gen);
