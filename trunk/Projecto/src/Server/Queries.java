@@ -460,6 +460,44 @@ public class Queries {
         }
     }
 
+    static Vector<String> getUsers() {
+         // nao deverá ser user
+        
+        //n sei que nome dar
+        //System.out.println("bet: "+ lg.getBetXpto());
+        Vector <String> m= new <String> Vector();
+        String nome;
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                ResultSet rs1;
+                    rs1 = stmt.executeQuery("SELECT Nome FROM Cliente" );
+                    while(rs1.next()){
+                     nome= rs1.getString("Nome");
+                    //System.out.println(" credito:"+bet);
+                    m.addElement(nome);
+
+                    }
+                    stmt.close();
+                    return m;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                return null;
+                
+
+            }
+
+
+        }
+    }
+
     static Vector<Message> updateBets(int ronda) {
 
 
