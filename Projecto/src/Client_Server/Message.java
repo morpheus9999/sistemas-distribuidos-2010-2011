@@ -16,10 +16,15 @@ import java.util.Hashtable;
 public class Message implements Serializable{
     private String author = null;
     private Hashtable<String, String> messageBuffer = null;
+    private String text;
 
     public Message() {
         this.author = null;
         this.messageBuffer = new Hashtable<String, String>();
+    }
+    public Message(String author, String text) {
+        this.author = author;
+        this.text = text;
     }
 
     public void setAuthor(String author) {

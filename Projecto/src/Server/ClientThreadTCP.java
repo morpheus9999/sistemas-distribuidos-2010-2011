@@ -187,7 +187,7 @@ class ClientThreadTCP extends Thread{
      /**
      * Message a user
      * */
-    private void messageUser(String fromUser, String toUser, String message) throws IOException {
+    public static void messageUser(String fromUser, String toUser, String message) throws IOException {
         /*  creates individual message  */
         Message mes = new Message();
         mes.setAuthor(fromUser);

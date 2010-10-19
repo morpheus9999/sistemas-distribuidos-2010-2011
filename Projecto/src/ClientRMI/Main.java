@@ -28,10 +28,9 @@ import java.util.Vector;
  */
 public class Main {
 
-    public static Login lg;
+    public static Login lg = new Login();
 
     public static void main(String args[]) {
-        Generic gen;
         Credit cred;
         Bet bet;
         OnlineUsers online;
@@ -75,20 +74,25 @@ public class Main {
                     break;
                 }
 
-            while(!exit)
+            while(!exit) {
+                Generic gen = new Generic();
+
                 if(connected)
                     /*  main menu   */
                     switch(screen.mainMenu()) {
                         case Constants.creditCode:
+                            System.out.println(""+Main.lg.getName());
                             /*  credit  */
-                            gen = obj.getCredit(new Generic(), Main.lg);
+                            gen.setObj(new Credit());
+                            gen = obj.getCredit(gen, Main.lg);
                             cred = (Credit) gen.getObj();
 
                             System.out.println("Your credit is: "+cred.getCredit());
                         break;
                         case Constants.resetCode:
                             /*  reset credit    */
-                            gen = obj.getCredit(new Generic(), Main.lg);
+                            gen.setObj(new Credit());
+                            gen = obj.resetCredit(gen, Main.lg);
                             cred = (Credit) gen.getObj();
 
                             System.out.println("Your credit (reseted) is: "+cred.getCredit());
@@ -171,7 +175,7 @@ public class Main {
                             System.out.println("Wrong code");
                         break;
                     }
-
+            }
 
         } catch (NotBoundException ex) {
             System.out.println("Object not found");

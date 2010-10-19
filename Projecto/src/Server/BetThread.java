@@ -8,7 +8,10 @@ package Server;
 import BetPackage.BetManager;
 import BetPackage.IBetManager;
 import Client_Server.Generic;
+import Client_Server.Message;
+import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +59,18 @@ class BetThread extends Thread{
             
             //Hashtable<String, Generic> envia = new Hashtable();
             System.out.println("Actualiza valores das bets....");
-            Queries.updateBets(ronda-1);
+            Vector<Message> m =Queries.updateBets(ronda-1);
+
+
+
+            ClientThreadTCP tcp = (ClientThreadTCP)(Main.onlineUsers.get("Jorge"));
+                try {
+                    tcp.messageUser("Admin", "Jorge", "Ganhou a aposta!");
+                } catch (IOException ex) {
+                    Logger.getLogger(BetThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+
             tipo=0;
             //DELETE jogos
             Queries.actualiza(ronda, 0);

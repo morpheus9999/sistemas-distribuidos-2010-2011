@@ -111,12 +111,14 @@ public class Interface {
         System.out.print("Username: ");
         temp = Input.readString().trim();
         lg.setName(temp);
+        Main.lg.setName(temp);
 
         /*  get password    */
         System.out.print("Password: ");
         temp = Input.readString().trim();
         lg.setPassword(temp);
-
+        Main.lg.setPassword(temp);
+        
         gen.setObj(lg);
         gen.setConfirmation(false);
         
