@@ -35,6 +35,10 @@ public class Message implements Serializable{
         return this.author;
     }
 
+    public String getText() {
+        return this.text;
+    }
+
     public void setHashtable(Hashtable<String, String> temp) {
         this.messageBuffer.putAll(temp);
     }

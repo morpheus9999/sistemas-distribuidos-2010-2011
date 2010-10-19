@@ -471,8 +471,8 @@ public class Queries {
         //FROM Aposta, Jogo
         //WHERE Jogo_idJogo = idJogo
         //AND ronda =1
-        Vector<Message> m=new Vector();
-        
+        Vector<Message> m = new Vector();
+
 
         while (true) {
             try {
@@ -480,37 +480,77 @@ public class Queries {
                 String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
                 Connection con = DriverManager.getConnection(connectionUrl);
                 Statement stmt = con.createStatement();
+                String Nome;
+                int bet;
+                ResultSet rr = stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa =Resultado");
+                String game = "";
+                while (rr.next()) {
+                    System.out.println("ENTRA 1aaaaaaaaaa");
+                    Nome = rr.getString("Cliente_Nome");
 
-                ResultSet rr=stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda ="+ronda+" AND Aposta_equipa =Resultado");
+                    bet = rr.getInt("bet");
+                    System.out.println("Vai fazer update da aposta do " + Nome + " " + bet);
+                    stmt = con.createStatement();
+                    ResultSet mm = stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='" + Nome + "'");
+                    mm.next();
 
-                while(rr.next()){
+                    int credito_antigo = mm.getInt("Credito");
                     
-                    String Nome = rr.getString("Cliente_Nome");
 
-                    int bet = rr.getInt("bet");
-                    System.out.println("Vai fazer update da aposta do "+Nome+" "+bet);
-                        stmt=con.createStatement();
-                     ResultSet mm=stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='"+Nome+"'");
-                     mm.next();
+                    //tratar de sacar kal é o jogo
+                    stmt.close();
+                    stmt = con.createStatement();
+                    ResultSet rs;
+                    
+                    rs = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
+                    rs.next();
+                    game = rs.getString("Casa") + rs.getString("Fora");
 
-                     int credito_antigo=mm.getInt("Credito");
-                     m.addElement(new Message(Nome,"Ganhou aposta"));
-                     stmt=con.createStatement();
-                     stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ (credito_antigo+(bet*Constants.reward)) +"' WHERE `Cliente`.`Nome` = '"+Nome+"'");
-                     
+
+
+                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " de (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
+                    stmt.close();
+                    stmt = con.createStatement();
+                    stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '" + (credito_antigo + (bet * Constants.reward)) + "' WHERE `Cliente`.`Nome` = '" + Nome + "'");
+
                 }
-                
+
+                ResultSet rperdeu = stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa !=Resultado");
+
+                while (rperdeu.next()) {
+                    System.out.println("ENTRA 2aaaaaaaaaa");
+                    Nome = rperdeu.getString("Cliente_Nome");
+                    bet = rperdeu.getInt("bet");
+                    stmt = con.createStatement();
+                    ResultSet mp = stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='" + Nome + "'");
+                    mp.next();
+                    int credito_antigo = mp.getInt("Credito");
+                    game = "";
+
+                    //tratar de sacar kal é o jogo
+                    stmt.close();
+                    stmt = con.createStatement();
+                    ResultSet rc;
+                    rc = stmt.executeQuery("SELECT Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
+
+                    game = rc.getString("Casa") + rc.getString("Fora");
+                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " de (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
+                    stmt.close();
+
+                }
+
+
                 stmt.close();
                 return m;
-                
+
             } catch (SQLException e) {
-                
+
                 e.printStackTrace(System.out);
                 System.out.println("SQL Exception (1): " + e.toString());
                 return null;
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
-                
+
                 continue;
             }
 
