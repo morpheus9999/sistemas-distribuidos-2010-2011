@@ -532,7 +532,7 @@ public class Queries {
                     stmt = con.createStatement();
                     ResultSet rc;
                     rc = stmt.executeQuery("SELECT Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
-
+                    rc.next();
                     game = rc.getString("Casa") + rc.getString("Fora");
                     m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " de (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
                     stmt.close();
