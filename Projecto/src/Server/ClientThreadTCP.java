@@ -308,7 +308,7 @@ class ClientThreadTCP extends Thread{
     }
 
     private Generic bet(Generic gen) {
-         //meter a variavel da ronda....
+        //meter a variavel da ronda....
         if(Queries.newBet(gen,lg,Main.game.getRonda()))
             gen.setConfirmation(true);
         else

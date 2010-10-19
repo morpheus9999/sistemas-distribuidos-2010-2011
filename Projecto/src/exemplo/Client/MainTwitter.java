@@ -1,6 +1,6 @@
 package exemplo.Client;
 
-import Client.Input;
+import Client_Server.Input;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -5,6 +5,7 @@
 
 package Server;
 
+
 import Client_Server.RMIInterface;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -24,11 +25,11 @@ public class ClientThreadRMI extends Thread {
         try {
             RMIInterface obj = new RMIMethods();
             LocateRegistry.createRegistry(1099).rebind("RMIMethods", obj);
+
             
+
         } catch (RemoteException ex) {
             System.out.println("RMI connection error");
         }
     }
-
-
 }
