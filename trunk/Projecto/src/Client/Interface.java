@@ -6,6 +6,7 @@
 package Client;
 
 
+import Client_Server.Input;
 import Client_Server.Constants;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -73,7 +74,6 @@ public class Interface {
      * Login menu
      */
     public void login() {
-        Boolean flag = true;
         
         String temp;
         

@@ -1,4 +1,4 @@
-package Client;
+package Client_Server;
 
 import java.io.*;
 import java.awt.*;

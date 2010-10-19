@@ -1,6 +1,6 @@
 package exemplo.Client;
 
-import Client.Input;
+import Client_Server.Input;
 import java.io.*;
 import java.sql.Timestamp;
 
