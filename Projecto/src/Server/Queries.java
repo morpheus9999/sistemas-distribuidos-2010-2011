@@ -482,12 +482,13 @@ public class Queries {
                 Statement stmt = con.createStatement();
                 String Nome;
                 int bet;
-                ResultSet rr = stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa =Resultado");
+                int idJogo;
+                ResultSet rr = stmt.executeQuery("SELECT Cliente_Nome, bet,idJogo FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa =Resultado");
                 String game = "";
                 while (rr.next()) {
                     System.out.println("ENTRA 1aaaaaaaaaa");
                     Nome = rr.getString("Cliente_Nome");
-
+                    idJogo=rr.getInt("idJogo");
                     bet = rr.getInt("bet");
                     System.out.println("Vai fazer update da aposta do " + Nome + " " + bet);
                     stmt = con.createStatement();
@@ -502,25 +503,26 @@ public class Queries {
                     stmt = con.createStatement();
                     ResultSet rs;
                     
-                    rs = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
+                    rs = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "' and idJogo='"+idJogo+"'");
                     rs.next();
-                    game = rs.getString("Casa") + rs.getString("Fora");
+                    game = rs.getString("Casa") +" VS "+ rs.getString("Fora");
 
 
 
-                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " de (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
+                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " com (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
                     stmt.close();
                     stmt = con.createStatement();
                     stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '" + (credito_antigo + (bet * Constants.reward)) + "' WHERE `Cliente`.`Nome` = '" + Nome + "'");
 
                 }
 
-                ResultSet rperdeu = stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa !=Resultado");
+                ResultSet rperdeu = stmt.executeQuery("SELECT Cliente_Nome, bet, idJogo FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa !=Resultado");
 
                 while (rperdeu.next()) {
                     System.out.println("ENTRA 2aaaaaaaaaa");
                     Nome = rperdeu.getString("Cliente_Nome");
                     bet = rperdeu.getInt("bet");
+                    idJogo=rperdeu.getInt("idJogo");
                     stmt = con.createStatement();
                     ResultSet mp = stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='" + Nome + "'");
                     mp.next();
@@ -531,10 +533,10 @@ public class Queries {
                     stmt.close();
                     stmt = con.createStatement();
                     ResultSet rc;
-                    rc = stmt.executeQuery("SELECT Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
+                    rc = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "' and idJogo='"+idJogo+"'");
                     rc.next();
-                    game = rc.getString("Casa") + rc.getString("Fora");
-                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " de (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
+                    game = rc.getString("Casa") +" VS "+ rc.getString("Fora");
+                    m.addElement(new Message(Nome, "Perdeu apostou no jogo " + game + " com (" + bet + ") creditos, vai ficar com (" + (credito_antigo ) + ") Creditos"));
                     stmt.close();
 
                 }
