@@ -39,10 +39,6 @@ public class Bet implements Serializable{
         return this.bet;
     }
 
-    public void setName(int bet) {
-        this.bet = bet;
-    }
-
     public int getAposta(){
         return this.aposta;
     }

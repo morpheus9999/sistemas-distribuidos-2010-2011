@@ -71,7 +71,6 @@ class ClientThreadTCP extends Thread{
                             temp=this.resetCredit(temp);
                             break;
                         case Constants.matchesCode:
-                            System.out.println("WTF");
                             temp=this.viewMatches(temp);
                             break;
                         case Constants.betCode:
