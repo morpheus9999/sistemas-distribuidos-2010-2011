@@ -12,6 +12,7 @@ import Client_Server.Login;
 import Client_Server.Credit;
 import Client_Server.Bet;
 import Client_Server.Constants;
+import Client_Server.Message;
 import Client_Server.ViewMatch;
 import java.sql.*;
 import java.util.Vector;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 public class Queries {
 
     static Generic resetCredit(Generic temp, Login lg) {
+        System.out.println("reset login:"+lg.getName());
         Statement stmt = null;
         while (true) {
             try {
@@ -227,7 +229,7 @@ public class Queries {
 
                 int rowCount = -1;
                 stmt = con.createStatement();
-                rs = stmt.executeQuery("SELECT COUNT(Nome) FROM Cliente WHERE Nome='" + lg.getName() + "' and Password=" + lg.getPassword() + ";");
+                rs = stmt.executeQuery("SELECT COUNT(Nome) FROM Cliente WHERE Nome='" + lg.getName() + "' and Password= '" + lg.getPassword() + "';");
                 rs.next();
                 rowCount = rs.getInt(1);
 
@@ -419,10 +421,10 @@ public class Queries {
     static Generic getCredit(Generic gen, Login lg) {
          // nao deverá ser user
         Credit cr = (Credit) gen.getObj();
-
-        System.out.println("recebido");
-        //System.out.println("name: " + lg.getName());
-        //System.out.println("bet: "+ lg.getBetGame());
+        
+        System.out.println("recebido GETCREDITO");
+        System.out.println("name: " + lg.getName());
+        //System.out.println("bet: "+ );
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
 
@@ -436,7 +438,7 @@ public class Queries {
                     rs1 = stmt.executeQuery("SELECT Credito FROM Cliente WHERE Nome = '" + lg.getName()+"'" );
                     rs1.next();
                     int bet = rs1.getInt("Credito");
- 
+                    System.out.println(" credito:"+bet);
                     cr.setCredit(bet);
                     gen.setConfirmation(true);
                     gen.setObj(cr);
@@ -458,7 +460,7 @@ public class Queries {
         }
     }
 
-    static void updateBets(int ronda) {
+    static Vector<Message> updateBets(int ronda) {
 
 
         //Bet bet = (Bet) generic.getObj();
@@ -469,7 +471,8 @@ public class Queries {
         //FROM Aposta, Jogo
         //WHERE Jogo_idJogo = idJogo
         //AND ronda =1
-
+        Vector<Message> m=new Vector();
+        
 
         while (true) {
             try {
@@ -481,26 +484,30 @@ public class Queries {
                 ResultSet rr=stmt.executeQuery("SELECT Cliente_Nome, bet FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda ="+ronda+" AND Aposta_equipa =Resultado");
 
                 while(rr.next()){
+                    
                     String Nome = rr.getString("Cliente_Nome");
+
                     int bet = rr.getInt("bet");
                     System.out.println("Vai fazer update da aposta do "+Nome+" "+bet);
                         stmt=con.createStatement();
                      ResultSet mm=stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='"+Nome+"'");
                      mm.next();
+
                      int credito_antigo=mm.getInt("Credito");
+                     m.addElement(new Message(Nome,"Ganhou aposta"));
                      stmt=con.createStatement();
                      stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '"+ (credito_antigo+(bet*Constants.reward)) +"' WHERE `Cliente`.`Nome` = '"+Nome+"'");
                      
                 }
                 
                 stmt.close();
-                return;
+                return m;
                 
             } catch (SQLException e) {
                 
                 e.printStackTrace(System.out);
                 System.out.println("SQL Exception (1): " + e.toString());
-                return;
+                return null;
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
                 

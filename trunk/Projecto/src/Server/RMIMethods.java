@@ -68,6 +68,17 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     }
 
     /**
+     * resetCredit
+     * @param gen - a generic object that will store the solution
+     * @param log - a object containing info about the user
+     * @return gen - the solution to the problem
+     * @throws java.rmi.RemoteException
+     */
+    public Generic resetCredit(Generic gen, Login log) throws java.rmi.RemoteException {
+        return Queries.resetCredit(gen, log);
+    }
+
+    /**
      * View current matches
      * @param gen
      * @return

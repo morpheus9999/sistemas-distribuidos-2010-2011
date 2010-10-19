@@ -37,35 +37,35 @@ public class Main {
     public static void main(String args[]) {
         int counter = 0;
 
-//        try {
+        try {
             /*  opens a port to check for requests  */
-//            game = new BetThread(Constants.numJogos);
-//            game.start();
+            game = new BetThread(Constants.numJogos);
+            game.start();
 
             /*  opens RMI thread    */
             ClientThreadRMI thr = new ClientThreadRMI();
             thr.start();
 
             /*  opens socket to listen for connections  */
-//            ServerSocket listener = new ServerSocket(Constants.serverPort);
+            ServerSocket listener = new ServerSocket(Constants.serverPort);
 
             /*  creates a thread pool   */
- //           ExecutorService pool = Executors.newCachedThreadPool();
- //           while(true) {
- //               System.out.println("Waiting for connection...");
+            ExecutorService pool = Executors.newCachedThreadPool();
+            while(true) {
+                System.out.println("Waiting for connection...");
 
                 /*  waits for a connection  */
-//                Socket sock = listener.accept();
+                Socket sock = listener.accept();
 
-//                System.out.println("Running "+(++counter)+"º conection!");
+                System.out.println("Running "+(++counter)+"º conection!");
 
                 /*  runs the thread */
-//                pool.submit(new ClientThreadTCP(sock));
-//            }
+                pool.submit(new ClientThreadTCP(sock));
+            }
 
-//        } catch (IOException ex) {
-//            System.out.println("io exception");
-//        }
+        } catch (IOException ex) {
+            System.out.println("io exception");
+        }
 
 
     }
