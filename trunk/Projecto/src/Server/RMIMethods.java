@@ -174,9 +174,9 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         }
         else { /*    or stores to send later accordingly    */
 
-
             // ###################QUERIES AQUI########################
-
+            Queries.setMensagens(fromUser, toUser, message);
+            
             System.out.println(toUser+" esta offline");
         }
     }
