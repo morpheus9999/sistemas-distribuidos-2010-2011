@@ -54,22 +54,22 @@ public class senderThread extends Thread{
                         gen.setObj(new Credit());
                         break;
                     case Constants.matchesCode:
-                        /*  lists current matches   */
-                        gen.setCode(Constants.matchesCode);
                         /*  new Login object    */
                         log.setName(Main.log.getName());
                         log.setPassword(Main.log.getPassword());
 
+                        /*  lists current matches   */
+                        gen.setCode(Constants.matchesCode);
                         gen.setObj(log);
                         break;
                     case Constants.betCode:
-                        /*  bets on a match */
-                        gen.setCode(Constants.betCode);
                         /*  new Bet object  */
                         bet.setAposta(Main.bet.getAposta());
                         bet.setBet(Main.bet.getBet());
                         bet.setIdGame(Main.bet.getIdGame());
-                        
+
+                        /*  bets on a match */
+                        gen.setCode(Constants.betCode);
                         gen.setObj(bet);
                         break;
                     case Constants.onlineUsersCode:
@@ -105,21 +105,21 @@ public class senderThread extends Thread{
                         /*  ends the thread  */
                         return;
                     case Constants.loginCode:
-                        /*  login   */
-                        gen.setCode(Constants.loginCode);
                         /*  new Login object    */
                         log.setName(Main.log.getName());
                         log.setPassword(Main.log.getPassword());
+                        /*  login   */
+                        gen.setCode(Constants.loginCode);
                         gen.setObj(log);
                         break;
                     case Constants.regCode:
-                        /*  register    */
-                        gen.setCode(Constants.regCode);
                         /*  new user profile object */
                         reg.setName(Main.reg.getName());
                         reg.setMail(Main.reg.getMail());
                         reg.setPassword(Main.reg.getPassword());
                         reg.setCredit(Main.reg.getCredit());
+                        /*  register    */
+                        gen.setCode(Constants.regCode);
                         gen.setObj(reg);
                         break;
                     default:

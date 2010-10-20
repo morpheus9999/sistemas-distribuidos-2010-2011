@@ -126,16 +126,20 @@ public class Main {
                         case Constants.messageCode:
                             /*  send a message to a single person   */
                             gen = screen.messageSingleUser(lg);
-                            if(obj.messageUser(gen))
+                            if(obj.messageUser(gen)) {
                                 System.out.println("Message sent");
+                                Interface.buffer.clearHashtable();
+                            }
                             else
                                 System.out.println("Message failed");
                         break;
                         case Constants.messageAllCode:
                             /*  send a message to everyone  */
                             gen = screen.messageAllUsers(lg);
-                            if(obj.messageAll(gen))
+                            if(obj.messageAll(gen)) {
                                 System.out.println("Message sent");
+                                Interface.bufferAll.clearHashtable();
+                            }
                             else
                                 System.out.println("Message failed");
                         break;

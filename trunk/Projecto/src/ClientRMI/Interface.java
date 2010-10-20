@@ -23,6 +23,9 @@ import java.util.StringTokenizer;
  */
 public class Interface {
 
+    public static Message buffer = new Message();
+    public static Message bufferAll = new Message();
+
     /**
      * Welcome menu
      */
@@ -215,21 +218,11 @@ public class Interface {
         gen.setCode(Constants.messageCode);
         gen.setObj(mes);
 
+        /*  guarda no buffer a mensagem */
+        Interface.buffer.setAuthor(lg.getName());
+        Interface.buffer.addEntry(toUser, message);
+
         return gen;
-        /*  define autor da mensagem    */
-//       Main.buffer.setAuthor(Main.log.getName());
-        /*  adiciona mensagem ao buffer */
-//        Main.buffer.addEntry(toUser, message);
-
-
-
-
-
-        //  ########### INACABADO #####################
-
-
-
-
 
     }
 
@@ -251,6 +244,10 @@ public class Interface {
 
         gen.setCode(Constants.messageAllCode);
         gen.setObj(mes);
+
+        /*  guarda no buffer a mensagem */
+        Interface.bufferAll.setAuthor(lg.getName());
+        Interface.bufferAll.addEntry(Integer.toString(Interface.bufferAll.getHashtable().size()), message);
 
         return gen;
     }

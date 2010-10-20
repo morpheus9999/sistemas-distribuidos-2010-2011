@@ -34,13 +34,14 @@ public class Main {
     /*  stores info about online users  */
     public static Hashtable<String, ClientThreadTCP> onlineUsers = new Hashtable<String, ClientThreadTCP>();
     public static BetThread game;
+    
     public static void main(String args[]) {
         int counter = 0;
 
         try {
             /*  opens a port to check for requests  */
-            game = new BetThread(Constants.numJogos);
-            game.start();
+//            game = new BetThread(Constants.numJogos);
+//            game.start();
 
             /*  opens RMI thread    */
             ClientThreadRMI thr = new ClientThreadRMI();

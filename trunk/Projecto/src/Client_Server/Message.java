@@ -8,6 +8,7 @@ package Client_Server;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  *
@@ -15,12 +16,12 @@ import java.util.Hashtable;
  */
 public class Message implements Serializable{
     private String author = null;
-    private Hashtable<String, String> messageBuffer = null;
+    private Hashtable<String, Vector<String>> messageBuffer = null;
     private String text;
 
     public Message() {
         this.author = null;
-        this.messageBuffer = new Hashtable<String, String>();
+        this.messageBuffer = new Hashtable<String, Vector<String>>();
     }
     public Message(String author, String text) {
         this.author = author;
@@ -39,23 +40,34 @@ public class Message implements Serializable{
         return this.text;
     }
 
-    public void setHashtable(Hashtable<String, String> temp) {
+    public void setHashtable(Hashtable<String, Vector<String>> temp) {
         this.messageBuffer.putAll(temp);
     }
 
-    public Hashtable<String, String> getHashtable() {
+    public Hashtable<String, Vector<String>> getHashtable() {
         return this.messageBuffer;
     }
 
     public boolean addEntry(String key, String message) {
+        Vector<String> temp;
         if(key != null && message != null) {
-            this.messageBuffer.put(key, message);
+            if(this.messageBuffer.containsKey(key)) {
+                /*  if entry exists, adds to list   */
+                temp = this.messageBuffer.get(key);
+                temp.add(message);
+                this.messageBuffer.put(key, temp);
+            } else {
+                /*  otherwise, creates a new entry  */
+                temp = new Vector<String>();
+                temp.add(message);
+                this.messageBuffer.put(key, temp);
+            }
             return true;
         } else
             return false;
     }
 
-    public String getEntry(String key) {
+    public Vector<String> getEntry(String key) {
         if(key != null)
             return this.messageBuffer.get(key);
         else
@@ -67,7 +79,7 @@ public class Message implements Serializable{
     }
 
     /*  to ease searches in the hashtable   */
-    public Enumeration<String> getMessagesEnumeration() {
+    public Enumeration<Vector<String>> getMessagesEnumeration() {
         return this.messageBuffer.elements();
     }
 
