@@ -461,11 +461,11 @@ public class Queries {
     }
 
     static Vector<String> getUsers() {
-         // nao deverá ser user
-        
+        // nao deverá ser user
+
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
-        Vector <String> m= new <String> Vector();
+        Vector<String> m = new <String>Vector();
         String nome;
         while (true) {
             try {
@@ -474,15 +474,13 @@ public class Queries {
                 Connection con = DriverManager.getConnection(connectionUrl);
                 Statement stmt = con.createStatement();
                 ResultSet rs1;
-                    rs1 = stmt.executeQuery("SELECT Nome FROM Cliente" );
-                    while(rs1.next()){
-                     nome= rs1.getString("Nome");
-                    //System.out.println(" credito:"+bet);
+                rs1 = stmt.executeQuery("SELECT Nome FROM Cliente");
+                while (rs1.next()) {
+                    nome = rs1.getString("Nome");
                     m.addElement(nome);
-
-                    }
-                    stmt.close();
-                    return m;
+                }
+                stmt.close();
+                return m;
             } catch (SQLException e) {
 
                 System.out.println("SQL Exception: " + e.toString());
@@ -490,7 +488,92 @@ public class Queries {
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
                 return null;
+
+
+            }
+
+
+        }
+    }
+
+    static Message getMensagens(String nome) {
+        // nao deverá ser user
+
+        //n sei que nome dar
+        //System.out.println("bet: "+ lg.getBetXpto());
+        Message k;
+        int id;
+        
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                ResultSet rs1;
+                rs1 = stmt.executeQuery("SELECT id,Mensagens,DE FROM Mensagens where Cliente_Nome='"+nome+"'");
+                if(rs1.next()){
+                    String mensagens=rs1.getString("Mensagens");
+                    String de=rs1.getString("DE");
+                    id= rs1.getInt("id");
+                    k= new Message(de, mensagens, nome);
+                    stmt.execute("DELETE FROM `mydb`.`Mensagens` WHERE `Mensagens`.`id` = '"+id+"'");
+
+
+
+                }else{
+                    k=null;
+                }
+                    //m.addElement();
                 
+                stmt.close();
+                return k;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                return null;
+
+
+            }
+
+
+        }
+    }
+
+    static boolean setMensagens(String de, String para ,String mensagem) {
+        // nao deverá ser user
+
+        //n sei que nome dar
+        //System.out.println("bet: "+ lg.getBetXpto());
+        Message k;
+
+
+        while (true) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String connectionUrl = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+                Connection con = DriverManager.getConnection(connectionUrl);
+                Statement stmt = con.createStatement();
+                
+                boolean m = stmt.execute("INSERT INTO `mydb`.`Mensagens` (`id`, `Cliente_Nome`, `Mensagens`, `DE`) VALUES (NULL, '"+para+"', '"+mensagem+"', '"+de+"');");
+                
+
+                
+                    //m.addElement();
+
+                stmt.close();
+                return m;
+            } catch (SQLException e) {
+
+                System.out.println("SQL Exception: " + e.toString());
+
+            } catch (ClassNotFoundException cE) {
+                System.out.println("Class Not Found Exception: " + cE.toString());
+                return false;
+
 
             }
 
