@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -148,14 +149,14 @@ class ClientThreadTCP extends Thread{
      * */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
-       if(Queries.login(gen)) {
-            /*  sets user is logged  */
+//       if(Queries.login(gen)) {
+//            /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
             Main.onlineUsers.put(this.lg.getName(), this);
-        }
-        else
-            gen.setConfirmation(false);
+//        }
+//        else
+//            gen.setConfirmation(false);
 
         return gen;
     }
@@ -189,19 +190,17 @@ class ClientThreadTCP extends Thread{
      * */
     public static void messageUser(String fromUser, String toUser, String message) throws IOException {
         /*  creates individual message  */
-        Message mes = new Message();
+        Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
-        mes.addEntry(toUser, message);
 
         /*  wrapes in a generic object  */
         Generic gen = new Generic();
         gen.setCode(Constants.receiveMessage);
         gen.setConfirmation(true);
         gen.setObj(mes);
-        System.out.println("USER vai enviar:"+toUser);
+        
         /*  checks if the user is online and sends  */
         if(Main.onlineUsers.containsKey(toUser)) {
-            System.out.println("USER vai enviar:"+toUser);
             ClientThreadTCP sock = Main.onlineUsers.get(toUser);
 
             sock.out.writeObject(gen);
@@ -219,7 +218,9 @@ class ClientThreadTCP extends Thread{
      * Message to user
      * */
     private Generic message(Generic gen) throws IOException {
-        String fromUser = null, toUser = null, message = null;
+        String fromUser = null, toUser = null;
+        Vector<String> messageVector;
+        Enumeration<String> message;
         Message mes = (Message) gen.getObj();
 
 /*
@@ -227,15 +228,20 @@ class ClientThreadTCP extends Thread{
         System.out.println("To: "+mes.getKeysEnumeration().nextElement());
         System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
 */
+        fromUser = mes.getAuthor();
+        
         /*  runs through the received buffer and sends/stores messages  */
         Enumeration<String> enumerator = mes.getKeysEnumeration();
-        fromUser = mes.getAuthor();
+        
 
+        /*  goes through all the messages for the desired user  */
         while(enumerator.hasMoreElements()) {
             toUser = enumerator.nextElement();
-            message = mes.getEntry(toUser);
+            messageVector = mes.getEntry(toUser);
+            message = messageVector.elements();
 
-            this.messageUser(fromUser, toUser, message);
+            while(message.hasMoreElements())
+                ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
         }
 
         gen.setConfirmation(true);
@@ -247,35 +253,36 @@ class ClientThreadTCP extends Thread{
      * Message to all users
      * */
     private Generic messageAll(Generic gen) throws IOException {
-        String fromUser = null, toUser = null, message = null;
+        String fromUser = null, toUser = null, id = null;
+        Vector<String> messageVector;
         Message mes = (Message) gen.getObj();
+        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, message;
+        
 
-/*
-        System.out.println("From: "+mes.getAuthor());
-        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-*/
-
+        fromUser = mes.getAuthor();
         /*
          *  runs through the received buffer and sends/stores messages
          *  to all people registered
          */
-        Enumeration<String> enumerator = mes.getKeysEnumeration();
-        fromUser = mes.getAuthor();
-
-        while(enumerator.hasMoreElements()) {
+        keys = mes.getKeysEnumeration();
+        while(keys.hasMoreElements()) {
             /*
              *  since message is for all
              *  the key doesn't matter, only for obtaining each message
              */
-            toUser = enumerator.nextElement();
-            message = mes.getEntry(toUser);
+            id = keys.nextElement();
+            messageVector = mes.getEntry(id);
 
             /*  first send to online users  */
-            Enumeration<String> onlineEnumerator = Main.onlineUsers.keys();
-            while(onlineEnumerator.hasMoreElements()) {
-                toUser = onlineEnumerator.nextElement();
+            onlineEnumeratorTCP = Main.onlineUsers.keys();
+            
+            while(onlineEnumeratorTCP.hasMoreElements()) {
+                toUser = onlineEnumeratorTCP.nextElement();
 
-                this.messageUser(fromUser, toUser, message);
+                message = messageVector.elements();
+
+                while(message.hasMoreElements())
+                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
             }
 
             /*  after that it stores in database

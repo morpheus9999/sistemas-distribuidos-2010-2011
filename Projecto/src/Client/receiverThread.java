@@ -138,7 +138,7 @@ public class receiverThread extends Thread{
                         System.out.println("\nMessage Received");
                         System.out.println("From: "+mes.getAuthor());
                         System.out.println("Message:");
-                        System.out.println("> "+mes.getEntry(Main.log.getName()));
+                        System.out.println("> "+mes.getText());
                         break;
                     default:
                         System.out.println("Code not recognized :X: "+gen.getCode());

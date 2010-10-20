@@ -14,6 +14,7 @@ import Client_Server.OnlineUsers;
 import Client_Server.RMIInterface;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  *
@@ -158,65 +159,66 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws RemoteException
      */
     public boolean messageUser(Generic gen) throws RemoteException {
-        String fromUser = null, toUser = null, message = null;
-        Message mes = (Message) gen.getObj();
+        String fromUser = null, toUser = null;
+        Vector<String> messageVector;
+        Enumeration<String> message, keys;
 
-/*
-        System.out.println("From: "+mes.getAuthor());
-        System.out.println("To: "+mes.getKeysEnumeration().nextElement());
-        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-*/
+        
+        Message mes = (Message) gen.getObj();
         /*  runs through the received buffer and sends/stores messages  */
-        Enumeration<String> enumerator = mes.getKeysEnumeration();
+        keys = mes.getKeysEnumeration();
         fromUser = mes.getAuthor();
 
-        while(enumerator.hasMoreElements()) {
-            toUser = enumerator.nextElement();
-            message = mes.getEntry(toUser);
-
-            this.message(fromUser, toUser, message);
+        while(keys.hasMoreElements()) {
+            /*  gets user to receive the message    */
+            toUser = keys.nextElement();
+            /*  gets messages to send   */
+            messageVector = mes.getEntry(toUser);
+            /*  sends messages  */
+            message = messageVector.elements();
+            while(message.hasMoreElements())
+                this.message(fromUser, toUser, message.nextElement());
         }
 
         return true;
     }
 
     public boolean messageAll(Generic gen) throws RemoteException {
-        String fromUser = null, toUser = null, message = null;
+        String fromUser = null, toUser = null, temp = null;
+        Enumeration<String> keys, onlineEnumerator, message;
         Message mes = (Message) gen.getObj();
-
-/*
-        System.out.println("From: "+mes.getAuthor());
-        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-*/
+        Vector<String> messageVector;
 
         /*
          *  runs through the received buffer and sends/stores messages
          *  to all people registered
          */
-        Enumeration<String> enumerator = mes.getKeysEnumeration();
+        keys = mes.getKeysEnumeration();
         fromUser = mes.getAuthor();
 
-        while(enumerator.hasMoreElements()) {
+        while(keys.hasMoreElements()) {
             /*
              *  since message is for all
              *  the key doesn't matter, only for obtaining each message
              */
-            toUser = enumerator.nextElement();
-            message = mes.getEntry(toUser);
+            toUser = keys.nextElement();
+            /*  gets vector with messages   */
+            messageVector = mes.getEntry(toUser);
+            message = messageVector.elements();
 
-            /*  first send to online users  */
-            Enumeration<String> onlineEnumerator = Main.onlineUsers.keys();
-            while(onlineEnumerator.hasMoreElements()) {
-                toUser = onlineEnumerator.nextElement();
+            while(message.hasMoreElements()) {
+                temp = message.nextElement();
 
-                this.message(fromUser, toUser, message);
+                /*  first send to online users  */
+                onlineEnumerator = Main.onlineUsers.keys();
+                while(onlineEnumerator.hasMoreElements()) {
+                    toUser = onlineEnumerator.nextElement();
+
+                    this.message(fromUser, toUser, temp);
+                }
+                
+                //  #####################falta os utilizadores offline!!!!!#####################
             }
-
-            /*  after that it stores in database
-             *  to send later to the rest of the users
-             */
-            //  ###################QUERIES AQUI########################
-            //  nao esquecer da proteccao de dados (nao guardar para utilizadores que estejam online e recebido)
         }
 
 
