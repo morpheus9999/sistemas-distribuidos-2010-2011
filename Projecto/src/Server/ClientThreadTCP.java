@@ -211,7 +211,7 @@ class ClientThreadTCP extends Thread{
         else { /*    or stores to send later accordingly    */
 
             // ###################QUERIES AQUI########################
-            Queries.setMensagens(fromUser, message, toUser);
+            Queries.setMensagens(fromUser, toUser, message);
 
             System.out.println(toUser+" esta offline");
         }
