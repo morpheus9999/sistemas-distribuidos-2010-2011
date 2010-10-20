@@ -210,8 +210,8 @@ class ClientThreadTCP extends Thread{
         }
         else { /*    or stores to send later accordingly    */
 
-
             // ###################QUERIES AQUI########################
+            Queries.setMensagens(fromUser, message, toUser);
 
             System.out.println(toUser+" esta offline");
         }
@@ -257,9 +257,9 @@ class ClientThreadTCP extends Thread{
      * */
     private Generic messageAll(Generic gen) throws IOException {
         String fromUser = null, toUser = null, id = null;
-        Vector<String> messageVector;
+        Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, message;
+        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
         
 
         fromUser = mes.getAuthor();
@@ -276,38 +276,41 @@ class ClientThreadTCP extends Thread{
             id = keys.nextElement();
             messageVector = mes.getEntry(id);
 
-            /*  first send to online users TCP */
-            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
-            
-            while(onlineEnumeratorTCP.hasMoreElements()) {
-                toUser = onlineEnumeratorTCP.nextElement();
+            userVector = Queries.getUsers();
+            userEnumerator = userVector.elements();
 
+            while(userEnumerator.hasMoreElements()) {
+                toUser = userEnumerator.nextElement();
                 message = messageVector.elements();
 
                 while(message.hasMoreElements())
                     ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
             }
 
-            /*  first send to online users TCP */
-            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
-            
-            while(onlineEnumeratorRMI.hasMoreElements()) {
-                toUser = onlineEnumeratorRMI.nextElement();
-
-                message = messageVector.elements();
-
-                while(message.hasMoreElements())
-                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
-            }
-
-            /*  after that it stores in database
-             *  to send later to the rest of the users
-             */
-            //  ###################QUERIES AQUI########################
-            //  nao esquecer da proteccao de dados (nao guardar para utilizadores que estejam online e recebido)
+//            /*  first send to online users TCP */
+//            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
+//
+//            while(onlineEnumeratorTCP.hasMoreElements()) {
+//                toUser = onlineEnumeratorTCP.nextElement();
+//
+//                message = messageVector.elements();
+//
+//                while(message.hasMoreElements())
+//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+//            }
+//
+//            /*  after that it sends to online users RMI */
+//            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
+//
+//            while(onlineEnumeratorRMI.hasMoreElements()) {
+//                toUser = onlineEnumeratorRMI.nextElement();
+//
+//                message = messageVector.elements();
+//
+//                while(message.hasMoreElements())
+//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
         }
-
-
+        
         gen.setConfirmation(true);
 
         return gen;

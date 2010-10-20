@@ -226,9 +226,9 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
       */
     public boolean messageAll(Generic gen) throws RemoteException, IOException {
         String fromUser = null, toUser = null, id = null;
-        Vector<String> messageVector;
+        Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, message;
+        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
 
 
         fromUser = mes.getAuthor();
@@ -245,29 +245,44 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
             id = keys.nextElement();
             messageVector = mes.getEntry(id);
 
-            /*  first send to online users TCP */
-            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
+            id = keys.nextElement();
+            messageVector = mes.getEntry(id);
 
-            while(onlineEnumeratorTCP.hasMoreElements()) {
-                toUser = onlineEnumeratorTCP.nextElement();
+            userVector = Queries.getUsers();
+            userEnumerator = userVector.elements();
 
+            while(userEnumerator.hasMoreElements()) {
+                toUser = userEnumerator.nextElement();
                 message = messageVector.elements();
 
                 while(message.hasMoreElements())
                     ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
             }
 
-            /*  first send to online users TCP */
-            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
 
-            while(onlineEnumeratorRMI.hasMoreElements()) {
-                toUser = onlineEnumeratorRMI.nextElement();
-
-                message = messageVector.elements();
-
-                while(message.hasMoreElements())
-                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
-            }
+//            /*  first send to online users TCP */
+//            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
+//
+//            while(onlineEnumeratorTCP.hasMoreElements()) {
+//                toUser = onlineEnumeratorTCP.nextElement();
+//
+//                message = messageVector.elements();
+//
+//                while(message.hasMoreElements())
+//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+//            }
+//
+//            /*  first send to online users TCP */
+//            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
+//
+//            while(onlineEnumeratorRMI.hasMoreElements()) {
+//                toUser = onlineEnumeratorRMI.nextElement();
+//
+//                message = messageVector.elements();
+//
+//                while(message.hasMoreElements())
+//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+//            }
 
             /*  after that it stores in database
              *  to send later to the rest of the users
