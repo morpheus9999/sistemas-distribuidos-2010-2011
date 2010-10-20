@@ -122,6 +122,9 @@ public class senderThread extends Thread{
                         gen.setCode(Constants.regCode);
                         gen.setObj(reg);
                         break;
+                    case Constants.requestMessage:
+                        gen.setCode(Constants.requestMessage);
+                        break;
                     default:
                         System.out.println("Wrong option :X");
                         break;
