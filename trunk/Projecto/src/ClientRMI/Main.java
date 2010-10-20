@@ -40,8 +40,6 @@ public class Main {
         boolean login = false;
         boolean exit = false;
         Interface screen = new Interface();
-        Message buffer = new Message();
-        Message bufferAll = new Message();
         
         try {
             /*  gets stub   */
@@ -80,28 +78,34 @@ public class Main {
             /*  main menu   */
             while(!exit) {
                 Generic gen = new Generic();
+                bet = new Bet();
+                cred = new Credit();
+                log = new Login();
+                
+                log.setName(Main.lg.getName());
+                log.setPassword(Main.lg.getPassword());
 
                 if(connected) {
                     switch(screen.mainMenu()) {
                         case Constants.creditCode:
                             /*  credit  */
-                            gen.setObj(new Credit());
-                            gen = obj.getCredit(gen, Main.lg);
+                            gen.setObj(cred);
+                            gen = obj.getCredit(gen, log);
                             cred = (Credit) gen.getObj();
 
                             System.out.println("Your credit is: "+cred.getCredit());
                         break;
                         case Constants.resetCode:
                             /*  reset credit    */
-                            gen.setObj(new Credit());
-                            gen = obj.resetCredit(gen, Main.lg);
+                            gen.setObj(cred);
+                            gen = obj.resetCredit(gen, log);
                             cred = (Credit) gen.getObj();
 
                             System.out.println("Your credit (reseted) is: "+cred.getCredit());
                         break;
                         case Constants.matchesCode:
                             /*  view matches    */
-                            gen = obj.viewMathces(new Generic());
+                            gen = obj.viewMathces(gen);
                             Vector <ViewMatch> matches= (Vector<ViewMatch>) gen.getObj();
                             System.out.println("MATCHES:");
                             for(int x=0;x<matches.size();x++){
@@ -111,7 +115,7 @@ public class Main {
                         case Constants.betCode:
                             /*  bet */
                             gen = screen.bet();
-                            gen = obj.bet(gen, lg);
+                            gen = obj.bet(gen, log);
 
                             if(gen.getConfirmation())
                                 System.out.println("Bet placed");
@@ -127,7 +131,7 @@ public class Main {
                         break;
                         case Constants.messageCode:
                             /*  send a message to a single person   */
-                            gen = screen.messageSingleUser(lg);
+                            gen = screen.messageSingleUser(log);
                             if(obj.messageUser(gen)) {
                                 System.out.println("Message sent");
                                 Interface.buffer.clearHashtable();
@@ -137,7 +141,7 @@ public class Main {
                         break;
                         case Constants.messageAllCode:
                             /*  send a message to everyone  */
-                            gen = screen.messageAllUsers(lg);
+                            gen = screen.messageAllUsers(log);
                             if(obj.messageAll(gen)) {
                                 System.out.println("Message sent");
                                 Interface.bufferAll.clearHashtable();
@@ -147,8 +151,7 @@ public class Main {
                         break;
                         case Constants.logoutCode:
                             /*  logout  */
-                            obj.logout(lg);
-                            System.out.println("Bye Bye");
+                            obj.logout(log);
                             exit = true;
                         break;
                         default:
@@ -159,7 +162,7 @@ public class Main {
                     switch(screen.offlineMenu()) {
                         case Constants.messageCode:
                             /*  send a message to a single person   */
-                            gen = screen.messageSingleUser(lg);
+                            gen = screen.messageSingleUser(log);
                             if(obj.messageUser(gen)) {
                                 System.out.println("Message sent");
                                 Interface.buffer.clearHashtable();
@@ -169,7 +172,7 @@ public class Main {
                         break;
                         case Constants.messageAllCode:
                             /*  send a message to everyone  */
-                            gen = screen.messageAllUsers(lg);
+                            gen = screen.messageAllUsers(log);
                             if(obj.messageAll(gen)) {
                                 System.out.println("Message sent");
                                 Interface.buffer.clearHashtable();
@@ -181,8 +184,7 @@ public class Main {
                         break;
                         case Constants.logoutCode:
                             /*  logout  */
-                            obj.logout(lg);
-                            System.out.println("Bye Bye");
+                            obj.logout(log);
                             exit = true;
                         break;
                         default:
@@ -202,5 +204,9 @@ public class Main {
         } catch (IOException error) {
             System.out.println("Error sending message through TCP");
         }
+
+
+        System.out.println("Bye Bye");
+        System.exit(0);
     }
 }

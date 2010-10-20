@@ -48,7 +48,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 //        if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
             Main.onlineUsersRMI.put(lg.getName(), this.call);
-            System.out.println("size of rmi table: "+Main.onlineUsersRMI.size());
             return true;
 //        } else
 //            return false;
@@ -61,8 +60,10 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean logout(Login lg) throws java.rmi.RemoteException {
-        if(Main.onlineUsersRMI.contains(lg.getName()))
+        if(Main.onlineUsersRMI.contains(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
+            System.out.println("removido");
+        }
         return true;
     }
 
@@ -186,77 +187,93 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @return
      * @throws RemoteException
      */
-    public boolean messageUser(Generic gen) throws RemoteException, IOException {
+     public boolean messageUser(Generic gen) throws RemoteException, IOException {
         String fromUser = null, toUser = null;
         Vector<String> messageVector;
-        Enumeration<String> message, keys;
-
-        
+        Enumeration<String> message;
         Message mes = (Message) gen.getObj();
-        /*  runs through the received buffer and sends/stores messages  */
+
+/*
+        System.out.println("From: "+mes.getAuthor());
+        System.out.println("To: "+mes.getKeysEnumeration().nextElement());
+        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
+*/
         fromUser = mes.getAuthor();
-        
-        keys = mes.getKeysEnumeration();
-        while(keys.hasMoreElements()) {
-            /*  gets user to receive the message    */
-            toUser = keys.nextElement();
-            /*  gets messages to send   */
+
+        /*  runs through the received buffer and sends/stores messages  */
+        Enumeration<String> enumerator = mes.getKeysEnumeration();
+
+
+        /*  goes through all the messages for the desired user  */
+        while(enumerator.hasMoreElements()) {
+            toUser = enumerator.nextElement();
             messageVector = mes.getEntry(toUser);
-            /*  sends messages  */
             message = messageVector.elements();
+
             while(message.hasMoreElements())
-                this.message(fromUser, toUser, message.nextElement());
+                message(fromUser, toUser, message.nextElement());
         }
 
         return true;
     }
 
+     /**
+      * Messages all users
+      * @param gen
+      * @return true
+      * @throws RemoteException
+      * @throws IOException
+      */
     public boolean messageAll(Generic gen) throws RemoteException, IOException {
-        String fromUser = null, toUser = null, temp = null;
-        Enumeration<String> keys, onlineEnumerator, message;
-        Message mes = (Message) gen.getObj();
+        String fromUser = null, toUser = null, id = null;
         Vector<String> messageVector;
+        Message mes = (Message) gen.getObj();
+        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, message;
 
+
+        fromUser = mes.getAuthor();
         /*
          *  runs through the received buffer and sends/stores messages
          *  to all people registered
          */
-        fromUser = mes.getAuthor();
-        
         keys = mes.getKeysEnumeration();
         while(keys.hasMoreElements()) {
             /*
              *  since message is for all
              *  the key doesn't matter, only for obtaining each message
              */
-            toUser = keys.nextElement();
-            /*  gets vector with messages   */
-            messageVector = mes.getEntry(toUser);
-            
-            message = messageVector.elements();
-            while(message.hasMoreElements()) {
-                temp = message.nextElement();
+            id = keys.nextElement();
+            messageVector = mes.getEntry(id);
 
-                /*  first send to online users  */
-                /*  TCP */
-                onlineEnumerator = Main.onlineUsersTCP.keys();
-                while(onlineEnumerator.hasMoreElements()) {
-                    toUser = onlineEnumerator.nextElement();
+            /*  first send to online users TCP */
+            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
 
-                    this.message(fromUser, toUser, temp);
-                }
+            while(onlineEnumeratorTCP.hasMoreElements()) {
+                toUser = onlineEnumeratorTCP.nextElement();
 
-                /*  RMI */
-                onlineEnumerator = Main.onlineUsersRMI.keys();
-                while(onlineEnumerator.hasMoreElements()) {
-                    toUser = onlineEnumerator.nextElement();
+                message = messageVector.elements();
 
-                    this.message(fromUser, toUser, temp);
-                }
-
-                
-                //  #####################falta os utilizadores offline!!!!!#####################
+                while(message.hasMoreElements())
+                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
             }
+
+            /*  first send to online users TCP */
+            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
+
+            while(onlineEnumeratorRMI.hasMoreElements()) {
+                toUser = onlineEnumeratorRMI.nextElement();
+
+                message = messageVector.elements();
+
+                while(message.hasMoreElements())
+                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+            }
+
+            /*  after that it stores in database
+             *  to send later to the rest of the users
+             */
+            //  ###################QUERIES AQUI########################
+            //  nao esquecer da proteccao de dados (nao guardar para utilizadores que estejam online e recebido)
         }
 
 
