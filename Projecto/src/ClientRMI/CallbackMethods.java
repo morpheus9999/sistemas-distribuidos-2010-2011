@@ -6,6 +6,7 @@
 package ClientRMI;
 
 import Client_Server.CallbackInterface;
+import java.rmi.RemoteException;
 
 /**
  *
@@ -24,5 +25,12 @@ public class CallbackMethods extends java.rmi.server.UnicastRemoteObject impleme
      */
     public void printOnClient(String s) throws java.rmi.RemoteException {
         System.out.println(s);
+    }
+
+    public void printMessage(String from, String message) throws RemoteException {
+        System.out.println("########    Message ##########");
+        System.out.println("From: "+from);
+        System.out.println("Message:");
+        System.out.println("> "+message);
     }
 }

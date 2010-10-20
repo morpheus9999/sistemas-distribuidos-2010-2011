@@ -8,6 +8,7 @@ package Server;
 import Client.Interface;
 import Client.receiverThread;
 import Client.senderThread;
+import Client_Server.CallbackInterface;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
@@ -32,7 +33,8 @@ import java.util.logging.Logger;
 public class Main {
 
     /*  stores info about online users  */
-    public static Hashtable<String, ClientThreadTCP> onlineUsers = new Hashtable<String, ClientThreadTCP>();
+    public static Hashtable<String, ClientThreadTCP> onlineUsersTCP = new Hashtable<String, ClientThreadTCP>();
+    public static Hashtable<String, CallbackInterface> onlineUsersRMI = new Hashtable<String, CallbackInterface>();
     public static BetThread game;
     
     public static void main(String args[]) {

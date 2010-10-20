@@ -63,7 +63,7 @@ class BetThread extends Thread {
                 if(m!=null){
                 for (int k = 0; k < m.size(); k++) {
 
-                    tcp = (ClientThreadTCP) (Main.onlineUsers.get(m.elementAt(k).getAuthor()));
+                    tcp = (ClientThreadTCP) (Main.onlineUsersTCP.get(m.elementAt(k).getAuthor()));
                     try {
                         tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
                     } catch (IOException ex) {

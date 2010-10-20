@@ -179,7 +179,7 @@ public class Queries {
                 stmt = con.createStatement();
                 ResultSet rs;
                 rs = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "'");
-                Vector<ViewMatch> m= new <ViewMatch>Vector();
+                Vector<ViewMatch> m= new Vector<ViewMatch>();
                 while(rs.next()){
                     m.addElement(new ViewMatch(rs.getInt("idJogo"), rs.getString("Casa"), rs.getString("Fora")));
                      
@@ -465,7 +465,7 @@ public class Queries {
 
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
-        Vector<String> m = new <String>Vector();
+        Vector <String> m= new Vector<String>();
         String nome;
         while (true) {
             try {
