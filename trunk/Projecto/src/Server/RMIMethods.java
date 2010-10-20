@@ -217,7 +217,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         return true;
     }
 
-     /**
+    /**
       * Messages all users
       * @param gen
       * @return true
@@ -245,9 +245,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
             id = keys.nextElement();
             messageVector = mes.getEntry(id);
 
-            id = keys.nextElement();
-            messageVector = mes.getEntry(id);
-
             userVector = Queries.getUsers();
             userEnumerator = userVector.elements();
 
@@ -256,7 +253,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                 message = messageVector.elements();
 
                 while(message.hasMoreElements())
-                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+                    message(fromUser, toUser, message.nextElement());
             }
 
 
