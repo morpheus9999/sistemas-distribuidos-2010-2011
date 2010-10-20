@@ -284,4 +284,12 @@ public class Interface {
         System.out.println("#### Logout ####");
         Main.opt.setOption(Constants.logoutCode);
     }
+
+    /**
+     * Requests offline messages from the server
+     */
+    public void requestMessage() {
+        System.out.println("#### Messages received offline  ####");
+        Main.opt.setOption(Constants.requestMessage);
+    }
 }

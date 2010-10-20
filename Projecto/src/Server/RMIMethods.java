@@ -291,4 +291,11 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 
         return true;
     }
+
+    public void getMessage(Login lg) throws  RemoteException, IOException {
+        Message temp;
+
+        for(temp = Queries.getMensagens(lg.getName()); temp != null; temp = Queries.getMensagens(lg.getName()))
+            message(temp.getAuthor(), temp.getTo(), temp.getText());
+    }
 }

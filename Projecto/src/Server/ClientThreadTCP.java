@@ -67,16 +67,16 @@ class ClientThreadTCP extends Thread{
                     /*  parses received object  */
                     switch (temp.getCode()) {
                         case Constants.creditCode:
-                            temp=this.getCredito(temp);
+                            temp = this.getCredito(temp);
                             break;
                         case Constants.resetCode:
-                            temp=this.resetCredit(temp);
+                            temp = this.resetCredit(temp);
                             break;
                         case Constants.matchesCode:
-                            temp=this.viewMatches(temp);
+                            temp = this.viewMatches(temp);
                             break;
                         case Constants.betCode:
-                            temp=this.bet(temp);
+                            temp = this.bet(temp);
                             break;
                         case Constants.onlineUsersCode:
                             temp = this.onlineUsers(gen);
@@ -95,6 +95,9 @@ class ClientThreadTCP extends Thread{
                             break;
                         case Constants.regCode:
                             temp = this.register(temp);
+                            break;
+                        case Constants.requestMessage:
+                            temp = this.requestMessage(temp);
                             break;
                         default:
                             break;
@@ -360,5 +363,15 @@ class ClientThreadTCP extends Thread{
 
     private Generic viewMatches(Generic temp) {
         return Queries.viewMatches(temp,Main.game.getRonda());
+    }
+
+    private Generic requestMessage(Generic temp) throws IOException {
+        Message mes;
+
+        for(mes = Queries.getMensagens(lg.getName()); mes != null; mes = Queries.getMensagens(lg.getName()))
+            ClientThreadTCP.messageUser(mes.getAuthor(), mes.getTo(), mes.getText());
+
+        temp.setConfirmation(true);
+        return temp;
     }
 }

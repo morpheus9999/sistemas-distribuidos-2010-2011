@@ -75,6 +75,10 @@ public class Main {
                 }
             }
 
+            /*  gets messages stored in the server  */
+            if(connected)
+                obj.getMessage(lg);
+            
             /*  main menu   */
             while(!exit) {
                 Generic gen = new Generic();
