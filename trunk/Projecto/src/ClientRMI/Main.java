@@ -16,6 +16,7 @@ import Client_Server.Message;
 import Client_Server.OnlineUsers;
 import Client_Server.RMIInterface;
 import Client_Server.ViewMatch;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -34,6 +35,7 @@ public class Main {
         Credit cred;
         Bet bet;
         OnlineUsers online;
+        Login log;
         boolean connected = false;
         boolean login = false;
         boolean exit = false;
@@ -52,8 +54,8 @@ public class Main {
             /*  sets connected to true  */
             connected = true;
 
-            while(!login)
-                /*  welcome screen  */
+            /*  welcome screen  */
+            while(!login) {
                 switch(screen.welcomeMenu()) {
                     case Constants.loginCode:
                         if(obj.login(screen.login())) {
@@ -73,15 +75,15 @@ public class Main {
                         System.out.println("Wrong code");
                     break;
                 }
+            }
 
+            /*  main menu   */
             while(!exit) {
                 Generic gen = new Generic();
 
-                if(connected)
-                    /*  main menu   */
+                if(connected) {
                     switch(screen.mainMenu()) {
                         case Constants.creditCode:
-                            System.out.println(""+Main.lg.getName());
                             /*  credit  */
                             gen.setObj(new Credit());
                             gen = obj.getCredit(gen, Main.lg);
@@ -119,7 +121,7 @@ public class Main {
                         break;
                         case Constants.onlineUsersCode:
                             /*  online users    */
-                            gen = obj.onlineUsers(new Generic());
+                            gen = obj.onlineUsers(gen);
                             online = (OnlineUsers)gen.getObj();
                             online.printOnlineUsers();
                         break;
@@ -145,6 +147,7 @@ public class Main {
                         break;
                         case Constants.logoutCode:
                             /*  logout  */
+                            obj.logout(lg);
                             System.out.println("Bye Bye");
                             exit = true;
                         break;
@@ -152,26 +155,33 @@ public class Main {
                             System.out.println("Wrong code");
                         break;
                     }
-                else
+                } else {
                     switch(screen.offlineMenu()) {
                         case Constants.messageCode:
                             /*  send a message to a single person   */
                             gen = screen.messageSingleUser(lg);
-                            if(obj.messageUser(gen))
+                            if(obj.messageUser(gen)) {
                                 System.out.println("Message sent");
+                                Interface.buffer.clearHashtable();
+                            }
                             else
                                 System.out.println("Message failed");
                         break;
                         case Constants.messageAllCode:
                             /*  send a message to everyone  */
                             gen = screen.messageAllUsers(lg);
-                            if(obj.messageAll(gen))
+                            if(obj.messageAll(gen)) {
                                 System.out.println("Message sent");
-                            else
+                                Interface.buffer.clearHashtable();
+                            }
+                            else {
                                 System.out.println("Message failed");
+                                Interface.bufferAll.clearHashtable();
+                            }
                         break;
                         case Constants.logoutCode:
                             /*  logout  */
+                            obj.logout(lg);
                             System.out.println("Bye Bye");
                             exit = true;
                         break;
@@ -179,6 +189,7 @@ public class Main {
                             System.out.println("Wrong code");
                         break;
                     }
+                }
             }
 
         } catch (NotBoundException ex) {
@@ -188,7 +199,8 @@ public class Main {
         } catch (RemoteException error) {
             System.out.println("RMI error: "+error.getMessage());
             connected = false;
+        } catch (IOException error) {
+            System.out.println("Error sending message through TCP");
         }
-
     }
 }

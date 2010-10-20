@@ -1,6 +1,7 @@
 package Server;
 
 
+import Client_Server.CallbackInterface;
 import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
@@ -110,9 +111,9 @@ class ClientThreadTCP extends Thread{
             System.out.println("Error receiving/sending generic object!");
         }
 
-        /*  removes user from onlineUsers list  */
+        /*  removes user from onlineUsersTCP list  */
         if(lg != null)
-            Main.onlineUsers.remove(lg.getName());
+            Main.onlineUsersTCP.remove(lg.getName());
 
         /*  close comunication channels */
         this.closeComChannels();
@@ -153,7 +154,7 @@ class ClientThreadTCP extends Thread{
 //            /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
-            Main.onlineUsers.put(this.lg.getName(), this);
+            Main.onlineUsersTCP.put(this.lg.getName(), this);
 //        }
 //        else
 //            gen.setConfirmation(false);
@@ -200,10 +201,12 @@ class ClientThreadTCP extends Thread{
         gen.setObj(mes);
         
         /*  checks if the user is online and sends  */
-        if(Main.onlineUsers.containsKey(toUser)) {
-            ClientThreadTCP sock = Main.onlineUsers.get(toUser);
-
+        if(Main.onlineUsersTCP.containsKey(toUser)) {
+            ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
             sock.out.writeObject(gen);
+        } else if(Main.onlineUsersRMI.containsKey(toUser)) {
+            CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
+            callback.printMessage(fromUser, message);
         }
         else { /*    or stores to send later accordingly    */
 
@@ -273,11 +276,23 @@ class ClientThreadTCP extends Thread{
             id = keys.nextElement();
             messageVector = mes.getEntry(id);
 
-            /*  first send to online users  */
-            onlineEnumeratorTCP = Main.onlineUsers.keys();
+            /*  first send to online users TCP */
+            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
             
             while(onlineEnumeratorTCP.hasMoreElements()) {
                 toUser = onlineEnumeratorTCP.nextElement();
+
+                message = messageVector.elements();
+
+                while(message.hasMoreElements())
+                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+            }
+
+            /*  first send to online users TCP */
+            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
+            
+            while(onlineEnumeratorRMI.hasMoreElements()) {
+                toUser = onlineEnumeratorRMI.nextElement();
 
                 message = messageVector.elements();
 
@@ -303,8 +318,15 @@ class ClientThreadTCP extends Thread{
      * */
     private Generic onlineUsers(Generic gen) throws IOException {
         OnlineUsers list = new OnlineUsers();
-        Enumeration<String> temp = Main.onlineUsers.keys();
+        Enumeration<String> temp;
 
+        /*  adds TCP users to the list  */
+        temp = Main.onlineUsersTCP.keys();
+        while(temp.hasMoreElements())
+            list.addEntry(temp.nextElement());
+
+        /*  adds RMI users to the list  */
+        temp = Main.onlineUsersRMI.keys();
         while(temp.hasMoreElements())
             list.addEntry(temp.nextElement());
 

@@ -32,6 +32,10 @@ public class OnlineUsers implements Serializable{
         this.list.add(temp);
     }
 
+    public void addVector(Vector<String> temp) {
+        this.list.addAll(temp);
+    }
+
     public void printOnlineUsers() {
         if(this.list.isEmpty())
             System.out.println("There are no users online! (is this even possible?)");
