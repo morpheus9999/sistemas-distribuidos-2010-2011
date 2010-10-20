@@ -31,6 +31,7 @@ public class Message implements Serializable{
     public Message(String author, String text, String to) {
         this.author = author;
         this.text = text;
+        this.to = to;
     }
 
     public void setAuthor(String author) {
