@@ -25,4 +25,5 @@ public interface RMIInterface extends java.rmi.Remote{
     public Generic onlineUsers(Generic gen) throws java.rmi.RemoteException;
     public boolean messageUser(Generic gen) throws java.rmi.RemoteException, java.io.IOException;
     public boolean messageAll(Generic gen) throws java.rmi.RemoteException, java.io.IOException;
+    public void getMessage(Login lg) throws  java.rmi.RemoteException, java.io.IOException;
 }

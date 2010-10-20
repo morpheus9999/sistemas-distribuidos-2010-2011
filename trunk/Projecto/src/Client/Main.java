@@ -91,6 +91,10 @@ public class Main {
             }
         }
 
+        /*  requests messages that were received while offline  */
+        if(Main.connected)
+            inter.requestMessage();
+
         while(!exit) {
             if(Main.connected) {
                 switch(inter.mainMenu()) {

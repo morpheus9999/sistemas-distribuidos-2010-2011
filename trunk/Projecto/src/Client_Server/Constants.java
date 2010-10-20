@@ -28,6 +28,7 @@ public class Constants {
     final public static int loginCode = 100;
     final public static int regCode = 101;
     final public static int receiveMessage = 200;
+    final public static int requestMessage = 201;
     final public static int reward=3;
     final public static int resetCredito=70;
 
