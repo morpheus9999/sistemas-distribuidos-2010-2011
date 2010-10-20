@@ -18,12 +18,17 @@ public class Message implements Serializable{
     private String author = null;
     private Hashtable<String, Vector<String>> messageBuffer = null;
     private String text;
+    private String to;
 
     public Message() {
         this.author = null;
         this.messageBuffer = new Hashtable<String, Vector<String>>();
     }
     public Message(String author, String text) {
+        this.author = author;
+        this.text = text;
+    }
+    public Message(String author, String text, String to) {
         this.author = author;
         this.text = text;
     }
@@ -38,6 +43,9 @@ public class Message implements Serializable{
 
     public String getText() {
         return this.text;
+    }
+    public String getTo() {
+        return this.to;
     }
 
     public void setHashtable(Hashtable<String, Vector<String>> temp) {
