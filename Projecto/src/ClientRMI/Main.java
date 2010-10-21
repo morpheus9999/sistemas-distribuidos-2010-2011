@@ -31,234 +31,139 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    public static Login lg = new Login();
+    static Selection opt = new Selection();
+    static Login lg = new Login();
+
     static boolean connected = false;
+    static boolean exit = false;
     static boolean login = false;
-    static Login log;
+    static Generic gen;
 
+
+    
     public static void main(String args[]) {
-        Credit cred;
-        Bet bet;
+
+
+
         OnlineUsers online;
+        Credit cred;
         Login log;
-        boolean exit = false;
+        Bet bet;
+
+
+        Main.gen = new Generic();
+        bet = new Bet();
+        cred = new Credit();
+        log = new Login();
+
+
+
         Interface screen = new Interface();
-        
-        try {
-            /*  gets stub   */
-            RMIInterface obj = (RMIInterface) Naming.lookup("rmi://localhost/RMIMethods");
 
-            /*  sets callback object    */
-            CallbackMethods callback = new CallbackMethods();
-            obj.setCallback((CallbackInterface)callback);
 
-            /*  sets connected to true  */
-            connected = true;
+        ClientRMIThread rmi = new ClientRMIThread();
+        rmi.start();
 
-            /*  welcome screen  */
-            while(!login) {
-                switch(screen.welcomeMenu()) {
-                    case Constants.loginCode:
-                        if(obj.login(screen.login())) {
-                            System.out.println("Login sucessfull");
-                            login = true;
-                        }
-                        else
-                            System.out.println("Login failed");
+        /*  welcome screen  */
+        while(!login) {
+
+            switch(screen.welcomeMenu()) {
+                case Constants.loginCode:
+                    Main.gen = screen.login();
+                    Main.opt.setOption(Constants.loginCode);
+                break;
+                case Constants.regCode:
+                    Main.gen = screen.register();
+                    Main.opt.setOption(Constants.regCode);
+                break;
+                default:
+                    System.out.println("Wrong code");
+                break;
+            }
+
+            Main.opt.getOption();
+        }
+
+        /*  gets messages stored in the server  */
+        if(connected)
+            Main.opt.setOption(Constants.requestMessage);
+
+        /*  main menu   */
+        while(!exit) {
+            log.setName(Main.lg.getName());
+            log.setPassword(Main.lg.getPassword());
+
+            if(connected) {
+                switch(screen.mainMenu()) {
+                    case Constants.creditCode:
+                        /*  credit  */
+                        System.out.println("entra");
+                        Main.gen.setObj(new Credit());
+                        Main.opt.setOption(Constants.creditCode);
                     break;
-                    case Constants.regCode:
-                        if(obj.register(screen.register()))
-                            System.out.println("Register sucessfull");
-                        else
-                            System.out.println("Register failed");
+                    case Constants.resetCode:
+                        /*  reset credit    */
+                        Main.gen.setObj(cred);
+                        Main.opt.setOption(Constants.resetCode);
+                    break;
+                    case Constants.matchesCode:
+                        /*  view matches    */
+                        Main.opt.setOption(Constants.matchesCode);
+                    break;
+                    case Constants.betCode:
+                        /*  bet */
+                        Main.gen = screen.bet();
+                        Main.opt.setOption(Constants.betCode);
+                    break;
+                    case Constants.onlineUsersCode:
+                        /*  online users    */
+                        Main.opt.setOption(Constants.onlineUsersCode);
+                    break;
+                    case Constants.messageCode:
+                        /*  send a message to a single person   */
+                        Main.gen = screen.messageSingleUser(log);
+                        Main.opt.setOption(Constants.messageCode);
+                    break;
+                    case Constants.messageAllCode:
+                        /*  send a message to everyone  */
+                        Main.gen = screen.messageAllUsers(log);
+                        Main.opt.setOption(Constants.messageAllCode);
+                    break;
+                    case Constants.logoutCode:
+                        /*  logout  */
+                        Main.opt.setOption(Constants.logoutCode);
+                        Main.exit = true;
+                    break;
+                    default:
+                        System.out.println("Wrong code");
+                    break;
+                }
+            } else {
+                switch(screen.offlineMenu()) {
+                    case Constants.messageCode:
+                        /*  send a message to a single person   */
+                        Main.gen = screen.messageSingleUser(log);
+                        Main.opt.setOption(Constants.messageCode);
+                    break;
+                    case Constants.messageAllCode:
+                        /*  send a message to everyone  */
+                        Main.gen = screen.messageAllUsers(log);
+                        Main.opt.setOption(Constants.messageAllCode);
+                    break;
+                    case Constants.logoutCode:
+                        /*  logout  */
+                        Main.opt.setOption(Constants.logoutCode);
+                        Main.exit = true;
                     break;
                     default:
                         System.out.println("Wrong code");
                     break;
                 }
             }
-
-            /*  gets messages stored in the server  */
-            if(connected)
-                obj.getMessage(lg);
-            
-            /*  main menu   */
-            while(!exit) {
-                Generic gen = new Generic();
-                bet = new Bet();
-                cred = new Credit();
-                log = new Login();
-                
-                log.setName(Main.lg.getName());
-                log.setPassword(Main.lg.getPassword());
-
-                if(connected) {
-                    switch(screen.mainMenu()) {
-                        case Constants.creditCode:
-                            /*  credit  */
-                            gen.setObj(cred);
-                            gen = obj.getCredit(gen, log);
-                            cred = (Credit) gen.getObj();
-
-                            System.out.println("Your credit is: "+cred.getCredit());
-                        break;
-                        case Constants.resetCode:
-                            /*  reset credit    */
-                            gen.setObj(cred);
-                            gen = obj.resetCredit(gen, log);
-                            cred = (Credit) gen.getObj();
-
-                            System.out.println("Your credit (reseted) is: "+cred.getCredit());
-                        break;
-                        case Constants.matchesCode:
-                            /*  view matches    */
-                            gen = obj.viewMathces(gen);
-                            Vector <ViewMatch> matches= (Vector<ViewMatch>) gen.getObj();
-                            System.out.println("MATCHES:");
-                            for(int x=0;x<matches.size();x++){
-                                System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
-                            }
-                        break;
-                        case Constants.betCode:
-                            /*  bet */
-                            gen = screen.bet();
-                            gen = obj.bet(gen, log);
-
-                            if(gen.getConfirmation())
-                                System.out.println("Bet placed");
-                            else
-                                System.out.println("Bet failed");
-                        break;
-                        case Constants.onlineUsersCode:
-                            /*  online users    */
-                            gen = obj.onlineUsers(gen);
-                            online = (OnlineUsers)gen.getObj();
-                            online.printOnlineUsers();
-                        break;
-                        case Constants.messageCode:
-                            /*  send a message to a single person   */
-                            gen = screen.messageSingleUser(log);
-                            if(obj.messageUser(gen)) {
-                                System.out.println("Message sent");
-                                Interface.buffer.clearHashtable();
-                            }
-                            else
-                                System.out.println("Message failed");
-                        break;
-                        case Constants.messageAllCode:
-                            /*  send a message to everyone  */
-                            gen = screen.messageAllUsers(log);
-                            if(obj.messageAll(gen)) {
-                                System.out.println("Message sent");
-                                Interface.bufferAll.clearHashtable();
-                            }
-                            else
-                                System.out.println("Message failed");
-                        break;
-                        case Constants.logoutCode:
-                            /*  logout  */
-                            obj.logout(log);
-                            exit = true;
-                        break;
-                        default:
-                            System.out.println("Wrong code");
-                        break;
-                    }
-                } else {
-                    switch(screen.offlineMenu()) {
-                        case Constants.messageCode:
-                            /*  send a message to a single person   */
-                            gen = screen.messageSingleUser(log);
-                            if(obj.messageUser(gen)) {
-                                System.out.println("Message sent");
-                                Interface.buffer.clearHashtable();
-                            }
-                            else
-                                System.out.println("Message failed");
-                        break;
-                        case Constants.messageAllCode:
-                            /*  send a message to everyone  */
-                            gen = screen.messageAllUsers(log);
-                            if(obj.messageAll(gen)) {
-                                System.out.println("Message sent");
-                                Interface.buffer.clearHashtable();
-                            }
-                            else {
-                                System.out.println("Message failed");
-                                Interface.bufferAll.clearHashtable();
-                            }
-                        break;
-                        case Constants.logoutCode:
-                            /*  logout  */
-                            obj.logout(log);
-                            exit = true;
-                        break;
-                        default:
-                            System.out.println("Wrong code");
-                        break;
-                    }
-                }
-            }
-
-        } catch (NotBoundException ex) {
-            System.out.println("Object not found");
-        } catch (MalformedURLException ex) {
-            System.out.println("Wrong IP/object name");
-        } catch (RemoteException error) {
-            System.out.println("RMI error: "+error.getMessage());
-            connected = false;
-        } catch (IOException error) {
-            System.out.println("Error sending message through TCP");
         }
 
 
         System.out.println("Bye Bye");
         System.exit(0);
-    }
-
-    public boolean reconnect() {
-        connected = false;
-        System.out.println("Connection lost");
-        System.out.print("Reconnecting");
-
-        try {
-            for(int i = 1; i <= Constants.tries; i++, Thread.sleep(Constants.reconnectTime)) {
-                try {
-                    System.out.print(".");
-
-                    RMIInterface obj = (RMIInterface) Naming.lookup(Constants.clientFirstServerRMI);
-                    
-                    /*  sets callback object    */
-                    CallbackMethods callback = new CallbackMethods();
-                    obj.setCallback((CallbackInterface)callback);
-
-                    /*  sets connected to true  */
-                    connected = true;
-
-                    /*  if the user was logged, it does the login automatically */
-                    if(login) {
-                        Generic gen = new Generic();
-                        gen.setCode(Constants.loginCode);
-                        gen.setObj(log);
-
-                        if(login)
-                            obj.login(gen);
-                    }
-                    System.out.println("");
-                    return true;
-                } catch (NotBoundException ex) {
-
-                } catch (MalformedURLException ex) {
-
-                } catch (RemoteException ex) {
-
-                }
-            }
-        } catch (InterruptedException ex) {
-            System.out.println("Error in sleeping thread");
-        }
-
-        System.out.println("");
-        return false;
     }
 }

@@ -359,8 +359,9 @@ public class Queries {
                 }
 
                 
-
+                
                 stmt.close();
+                return false;
             } catch (SQLException e) {
 
                 System.out.println("SQL Exception (new Bet): " + e.toString());
@@ -431,9 +432,7 @@ public class Queries {
         
         System.out.println("recebido GETCREDITO");
         System.out.println("name: " + lg.getName());
-        //System.out.println("bet: "+ );
-        //n sei que nome dar
-        //System.out.println("bet: "+ lg.getBetXpto());
+        
 
         while (true) {
             try {
