@@ -154,9 +154,8 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 
     private void message(String fromUser, String toUser, String message) throws RemoteException, IOException {
         /*  creates individual message  */
-        Message mes = new Message();
+        Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
-        mes.addEntry(toUser, message);
 
         /*  wrapes in a generic object  */
         Generic gen = new Generic();
