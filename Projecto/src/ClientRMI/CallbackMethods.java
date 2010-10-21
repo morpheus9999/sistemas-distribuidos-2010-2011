@@ -27,7 +27,7 @@ public class CallbackMethods extends java.rmi.server.UnicastRemoteObject impleme
         System.out.println(s);
     }
 
-    public void printMessage(String from, String message) throws RemoteException {
+    public void printMessage(String from, String message) throws java.rmi.RemoteException {
         System.out.println("########    Message ##########");
         System.out.println("From: "+from);
         System.out.println("Message:");
