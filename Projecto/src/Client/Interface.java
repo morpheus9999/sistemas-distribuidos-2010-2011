@@ -102,7 +102,7 @@ public class Interface {
         StringTokenizer token;
 
         System.out.println("#### Register ####");
-
+        int k=0;
         while (true) {
             System.out.print("Introduce your email: ");
 
@@ -122,15 +122,45 @@ public class Interface {
                 System.out.println("String inserted is not a email");
             }
         }
-        
-        System.out.print("Introduce you username: ");
-        temp = Input.readString().trim();
-        Main.reg.setName(temp);
+        k=0;
+        while (true) {
 
-        System.out.print("Introduce your password: ");
-        temp = Input.readString().trim();
-        Main.reg.setPassword(temp);
+            try {
+                if(k==0)
+                    System.out.print("Introduce your username: ");
+                else
+                    System.out.print("Introduce a valid username plz :P : ");
 
+                temp = Input.readString().trim();
+                Main.reg.setName(temp);
+                k++;
+                if (temp.length() > 0) {
+                    break;
+                }
+            } catch (NoSuchElementException error) {
+                System.out.println("String inserted is not correct");
+            }
+        }
+        k=0;
+        while (true) {
+
+            try {
+                if(k==0)
+                    System.out.print("Introduce your password: ");
+                else
+                    System.out.print("Introduce a valid password plz :P : ");
+
+                k++;
+                temp = Input.readString().trim();
+                Main.reg.setPassword(temp);
+
+                if (temp.length() > 0) {
+                    break;
+                }
+            } catch (NoSuchElementException error) {
+                System.out.println("String inserted is not correct");
+            }
+        }
         /*  flag 101 to register   */
         Main.opt.setOption(Constants.regCode);
     }

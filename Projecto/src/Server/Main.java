@@ -42,8 +42,8 @@ public class Main {
 
         try {
             /*  opens a port to check for requests  */
-//            game = new BetThread(Constants.numJogos);
-//            game.start();
+            game = new BetThread(Constants.numJogos);
+            game.start();
 
             /*  opens RMI thread    */
             ClientThreadRMI thr = new ClientThreadRMI();
