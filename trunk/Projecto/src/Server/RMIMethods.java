@@ -45,12 +45,12 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean login(Generic gen) throws java.rmi.RemoteException {
-//        if(Queries.login(gen)) {
+        if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
             Main.onlineUsersRMI.put(lg.getName(), this.call);
             return true;
-//        } else
-//            return false;
+        } else
+            return false;
     }
 
     /**

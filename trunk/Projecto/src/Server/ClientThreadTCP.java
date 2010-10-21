@@ -153,14 +153,14 @@ class ClientThreadTCP extends Thread{
      * */
     private Generic login(Generic gen) throws IOException {
         /*  faz query   */
-//       if(Queries.login(gen)) {
+       if(Queries.login(gen)) {
 //            /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
             Main.onlineUsersTCP.put(this.lg.getName(), this);
-//        }
-//        else
-//            gen.setConfirmation(false);
+        }
+        else
+            gen.setConfirmation(false);
 
         return gen;
     }

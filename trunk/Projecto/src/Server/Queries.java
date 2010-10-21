@@ -14,6 +14,7 @@ import Client_Server.Bet;
 import Client_Server.Constants;
 import Client_Server.Message;
 import Client_Server.ViewMatch;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -267,11 +268,11 @@ public class Queries {
     static boolean register(Generic generic) {
         User lg = (User) generic.getObj();
 
-        System.out.println("recebido");
-        System.out.println("name: " + lg.getName());
-        System.out.println("pass: " + lg.getPassword());
-        System.out.println("pass: " + lg.getMail());
-        System.out.println("bet: " + lg.getCredit());
+//        System.out.println("Regista:");
+//        System.out.println("name: " + lg.getName());
+//        System.out.println("pass: " + lg.getPassword());
+//        System.out.println("pass: " + lg.getMail());
+//        System.out.println("bet: " + lg.getCredit());
 
         while (true) {
             try {
@@ -285,10 +286,16 @@ public class Queries {
                 if (!flag) {
                     stmt.close();
                     return true;
-                }
+                }else{
+                    
                 stmt.close();
                 return false;
-            } catch (SQLException e) {
+                }
+            }catch (MySQLIntegrityConstraintViolationException e) {
+                return false;
+                //System.out.println("SQL Exception: " + e.toString());
+
+            }catch (SQLException e) {
                 
                 System.out.println("SQL Exception: " + e.toString());
 
@@ -529,8 +536,8 @@ public class Queries {
                 stmt.close();
                 return k;
             } catch (SQLException e) {
-
-                System.out.println("SQL Exception: " + e.toString());
+                e.printStackTrace(System.out);
+                System.out.println("SQL Exception (getMensagem): " + e.toString());
 
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
@@ -547,7 +554,8 @@ public class Queries {
         // nao deverá ser user
 
         //n sei que nome dar
-        //System.out.println("bet: "+ lg.getBetXpto());
+        //System.out.println("bet: "+ lg.getBetXpto());\
+        System.out.println("NOME SET MSG:"+para);
         Message k;
 
 
@@ -567,8 +575,8 @@ public class Queries {
                 stmt.close();
                 return m;
             } catch (SQLException e) {
-
-                System.out.println("SQL Exception: " + e.toString());
+                e.printStackTrace(System.out);
+                System.out.println("SQL Exception (setMensagens): " + e.toString());
 
             } catch (ClassNotFoundException cE) {
                 System.out.println("Class Not Found Exception: " + cE.toString());
