@@ -212,8 +212,6 @@ class ClientThreadTCP extends Thread{
             callback.printMessage(fromUser, message);
         }
         else { /*    or stores to send later accordingly    */
-
-            // ###################QUERIES AQUI########################
             Queries.setMensagens(fromUser, toUser, message);
 
             System.out.println(toUser+" esta offline");
@@ -229,11 +227,6 @@ class ClientThreadTCP extends Thread{
         Enumeration<String> message;
         Message mes = (Message) gen.getObj();
 
-/*
-        System.out.println("From: "+mes.getAuthor());
-        System.out.println("To: "+mes.getKeysEnumeration().nextElement());
-        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-*/
         fromUser = mes.getAuthor();
         
         /*  runs through the received buffer and sends/stores messages  */
@@ -289,29 +282,6 @@ class ClientThreadTCP extends Thread{
                 while(message.hasMoreElements())
                     ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
             }
-
-//            /*  first send to online users TCP */
-//            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
-//
-//            while(onlineEnumeratorTCP.hasMoreElements()) {
-//                toUser = onlineEnumeratorTCP.nextElement();
-//
-//                message = messageVector.elements();
-//
-//                while(message.hasMoreElements())
-//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
-//            }
-//
-//            /*  after that it sends to online users RMI */
-//            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
-//
-//            while(onlineEnumeratorRMI.hasMoreElements()) {
-//                toUser = onlineEnumeratorRMI.nextElement();
-//
-//                message = messageVector.elements();
-//
-//                while(message.hasMoreElements())
-//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
         }
         
         gen.setConfirmation(true);

@@ -22,6 +22,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,14 +32,15 @@ import java.util.Vector;
 public class Main {
 
     public static Login lg = new Login();
+    static boolean connected = false;
+    static boolean login = false;
+    static Login log;
 
     public static void main(String args[]) {
         Credit cred;
         Bet bet;
         OnlineUsers online;
         Login log;
-        boolean connected = false;
-        boolean login = false;
         boolean exit = false;
         Interface screen = new Interface();
         
@@ -76,8 +79,8 @@ public class Main {
             }
 
             /*  gets messages stored in the server  */
-            if(connected)
-                obj.getMessage(lg);
+//            if(connected)
+//                obj.getMessage(lg);
             
             /*  main menu   */
             while(!exit) {
@@ -125,7 +128,6 @@ public class Main {
                                 System.out.println("Bet placed");
                             else
                                 System.out.println("Bet failed");
-
                         break;
                         case Constants.onlineUsersCode:
                             /*  online users    */
@@ -212,5 +214,51 @@ public class Main {
 
         System.out.println("Bye Bye");
         System.exit(0);
+    }
+
+    public boolean reconnect() {
+        connected = false;
+        System.out.println("Connection lost");
+        System.out.print("Reconnecting");
+
+        try {
+            for(int i = 1; i <= Constants.tries; i++, Thread.sleep(Constants.reconnectTime)) {
+                try {
+                    System.out.print(".");
+
+                    RMIInterface obj = (RMIInterface) Naming.lookup("rmi://localhost/RMIMethods");
+                    
+                    /*  sets callback object    */
+                    CallbackMethods callback = new CallbackMethods();
+                    obj.setCallback((CallbackInterface)callback);
+
+                    /*  sets connected to true  */
+                    connected = true;
+
+                    /*  if the user was logged, it does the login automatically */
+                    if(login) {
+                        Generic gen = new Generic();
+                        gen.setCode(Constants.loginCode);
+                        gen.setObj(log);
+
+                        if(login)
+                            obj.login(gen);
+                    }
+                    System.out.println("");
+                    return true;
+                } catch (NotBoundException ex) {
+
+                } catch (MalformedURLException ex) {
+
+                } catch (RemoteException ex) {
+
+                }
+            }
+        } catch (InterruptedException ex) {
+            System.out.println("Error in sleeping thread");
+        }
+
+        System.out.println("");
+        return false;
     }
 }
