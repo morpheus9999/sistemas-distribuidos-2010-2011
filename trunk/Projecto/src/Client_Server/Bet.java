@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author jojo
+ * @author mmmm \n adfsafds jojo
  */
 public class Bet implements Serializable{
     
