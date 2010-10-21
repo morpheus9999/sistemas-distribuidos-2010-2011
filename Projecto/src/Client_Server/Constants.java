@@ -21,12 +21,18 @@ public class Constants {
     final public static int     firstServerTCPPort = 3500;
     final public static String  secondServerTCP = "localhost";
     final public static int     secondServerTCPPort = 3600;
-    
-    final public static int     firstServerRMIPort = 1099;
-    final public static String  firstServerRMIObj = "RMIMethods";
-    final public static int     secondServerRMIPort = 2000;
-    final public static String  secondServerRMIObj = "RMIMethods";
 
+    final private static String  firstServerRMIURL = "localhost";
+    final private static int     firstServerRMIPort = 1099;
+    final private static String  firstServerRMIObj = "RMIMethods";
+
+    final private static String  secondServerRMIURL = "localhost";
+    final private static int     secondServerRMIPort = 2000;
+    final private static String  secondServerRMIObj = "RMIMethods";
+
+    final public static String  clientFirstServerRMI = "rmi://"+firstServerRMIURL+":"+firstServerRMIPort+"/"+firstServerRMIObj;
+    final public static String  clientSecondServerRMI = "rmi://"+secondServerRMIURL+":"+secondServerRMIPort+"/"+secondServerRMIObj;
+    
     final public static int creditCode = 1;
     final public static int resetCode = 2;
     final public static int matchesCode = 3;
