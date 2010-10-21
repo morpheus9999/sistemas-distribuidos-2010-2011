@@ -166,7 +166,8 @@ public class Interface {
         System.out.print("Introduce your password: ");
         temp = Input.readString().trim();
         client.setPassword(temp);
-
+        gen.setObj(client);
+        gen.setConfirmation(false);
         return gen;
     }
 

@@ -67,6 +67,7 @@ public class Main {
             }
 
         } catch (IOException ex) {
+            ex.printStackTrace(System.out);
             System.out.println("io exception");
         }
 
