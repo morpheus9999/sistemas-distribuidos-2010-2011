@@ -60,9 +60,8 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean logout(Login lg) throws java.rmi.RemoteException {
-        if(Main.onlineUsersRMI.contains(lg.getName())) {
+        if(Main.onlineUsersRMI.containsKey(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
-            System.out.println("removido");
         }
         return true;
     }
@@ -172,8 +171,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
             callback.printMessage(fromUser, message);
         }
         else { /*    or stores to send later accordingly    */
-
-            // ###################QUERIES AQUI########################
             Queries.setMensagens(fromUser, toUser, message);
             
             System.out.println(toUser+" esta offline");
@@ -192,11 +189,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         Enumeration<String> message;
         Message mes = (Message) gen.getObj();
 
-/*
-        System.out.println("From: "+mes.getAuthor());
-        System.out.println("To: "+mes.getKeysEnumeration().nextElement());
-        System.out.println("Message: "+mes.getEntry(mes.getKeysEnumeration().nextElement()));
-*/
         fromUser = mes.getAuthor();
 
         /*  runs through the received buffer and sends/stores messages  */
@@ -254,37 +246,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                 while(message.hasMoreElements())
                     message(fromUser, toUser, message.nextElement());
             }
-
-
-//            /*  first send to online users TCP */
-//            onlineEnumeratorTCP = Main.onlineUsersTCP.keys();
-//
-//            while(onlineEnumeratorTCP.hasMoreElements()) {
-//                toUser = onlineEnumeratorTCP.nextElement();
-//
-//                message = messageVector.elements();
-//
-//                while(message.hasMoreElements())
-//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
-//            }
-//
-//            /*  first send to online users TCP */
-//            onlineEnumeratorRMI = Main.onlineUsersRMI.keys();
-//
-//            while(onlineEnumeratorRMI.hasMoreElements()) {
-//                toUser = onlineEnumeratorRMI.nextElement();
-//
-//                message = messageVector.elements();
-//
-//                while(message.hasMoreElements())
-//                    ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
-//            }
-
-            /*  after that it stores in database
-             *  to send later to the rest of the users
-             */
-            //  ###################QUERIES AQUI########################
-            //  nao esquecer da proteccao de dados (nao guardar para utilizadores que estejam online e recebido)
         }
 
 
