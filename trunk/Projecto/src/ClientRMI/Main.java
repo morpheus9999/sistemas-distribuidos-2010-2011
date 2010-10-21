@@ -226,7 +226,7 @@ public class Main {
                 try {
                     System.out.print(".");
 
-                    RMIInterface obj = (RMIInterface) Naming.lookup("rmi://localhost/RMIMethods");
+                    RMIInterface obj = (RMIInterface) Naming.lookup(Constants.clientFirstServerRMI);
                     
                     /*  sets callback object    */
                     CallbackMethods callback = new CallbackMethods();
