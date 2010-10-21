@@ -5,7 +5,7 @@
 
 package exemplo.Client;
 
-import common.Mensagem;
+//import common.Mensagem;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -15,5 +15,5 @@ import java.rmi.RemoteException;
  */
 public interface ClientInterface extends Remote{
 
-    public void broadcast(Mensagem msg)throws RemoteException;
+    //public void broadcast(Mensagem msg)throws RemoteException;
 }
