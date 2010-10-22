@@ -95,7 +95,7 @@ public class Main {
         if(Main.connected)
             inter.requestMessage();
 
-        while(!Main.exit) {
+        while(!exit) {
             if(Main.connected) {
                 switch(inter.mainMenu()) {
                     case Constants.creditCode:
@@ -277,14 +277,12 @@ public class Main {
                     System.out.print(".");
 
                     if(openChannels(flagServer)) {
-                        System.out.println("Conection recovered!");
+                        System.out.println("Connection recovered!");
 
-                        if(Main.logged){
+                        if(Main.logged == true){
                             Main.opt.setOption(Constants.loginCode);
-                            Thread.sleep(Constants.sleepTime);
                             System.out.println("Sending buffers...");
                             Main.opt.setOption(Constants.messageCode);
-                            Thread.sleep(Constants.sleepTime);
                             Main.opt.setOption(Constants.messageAllCode);
                         }
 

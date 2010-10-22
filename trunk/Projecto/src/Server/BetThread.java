@@ -36,7 +36,7 @@ class BetThread extends Thread {
         while (true) {
             if (tipo == 0) {
                 IBetManager man = new BetManager(numJogos);
-                System.out.println("ENTRA1");
+                //System.out.println("ENTRA1");
                 Queries.NewRound(man, ronda);
                 tipo++;
                 Queries.actualiza(ronda, 1);
@@ -44,7 +44,7 @@ class BetThread extends Thread {
             } else if (tipo == 1) {
                 try {
                     long espera = Queries.espera();
-                    System.out.println("ENTRA2" + espera);
+                    System.out.println("ACABOU TEMPO DE APOSTAS PARA A RONDA "+ronda);
                     if (espera > 0) {
                         BetThread.sleep(espera);
                     }

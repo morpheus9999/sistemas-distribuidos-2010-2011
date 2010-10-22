@@ -52,6 +52,8 @@ public class Main {
 
         ClientRMIThread rmi = new ClientRMIThread();
         rmi.start();
+        
+
 
         /*  welcome screen  */
         while(!login) {
@@ -64,6 +66,7 @@ public class Main {
                     Main.gen = screen.register();
                     Main.opt.setOption(Constants.regCode);
                 break;
+
                 default:
                     System.out.println("Wrong code");
                 break;
@@ -74,23 +77,27 @@ public class Main {
 
         /*  main menu   */
         while(!exit) {
+            
             log.setName(Main.lg.getName());
             log.setPassword(Main.lg.getPassword());
 
             if(connected) {
                 /*  gets messages stored in the server  */
-                Main.opt.setOption(Constants.requestMessage);
-                
+                //Main.opt.setOption(Constants.requestMessage);
+                 
                 switch(screen.mainMenu()) {
                     case Constants.creditCode:
                         /*  credit  */
+                        //System.out.println("2222222222");
                         Main.gen.setObj(new Credit());
+                        
                         Main.opt.setOption(Constants.creditCode);
                     break;
                     case Constants.resetCode:
                         /*  reset credit    */
                         Main.gen.setObj(cred);
                         Main.opt.setOption(Constants.resetCode);
+
                     break;
                     case Constants.matchesCode:
                         /*  view matches    */

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Queries {
 
     static Generic resetCredit(Generic temp, Login lg) {
-        System.out.println("reset login:"+lg.getName());
+        //System.out.println("reset login:"+lg.getName());
         Statement stmt = null;
         while (true) {
             try {
@@ -52,7 +52,7 @@ public class Queries {
         }
     }
     static int rondaActual(){
-        System.out.println("RONDA ACTUAL ");
+        //System.out.println("RONDA ACTUAL ");
         Statement stmt = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -82,7 +82,7 @@ public class Queries {
 
     }
     static int tipoActual(){
-        System.out.println("TIPO ACTUAL ");
+        //System.out.println("TIPO ACTUAL ");
         Statement stmt = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -112,7 +112,7 @@ public class Queries {
 
     }
     static void actualiza(int idRonda,int tipo){
-         System.out.println("ACTUALIZA ");
+         //System.out.println("ACTUALIZA ");
         Statement stmt = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -137,7 +137,7 @@ public class Queries {
 
     }
     static long espera(){
-        System.out.println("ESPERA ");
+        //System.out.println("ESPERA ");
         Statement stmt = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -170,7 +170,7 @@ public class Queries {
 
     static Generic viewMatches(Generic temp, int ronda) {
         Statement stmt = null;
-        System.out.println("RESET CRL!!!!");
+        
         while (true) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -215,9 +215,9 @@ public class Queries {
         Login lg = (Login) generic.getObj();
 
         /*  aqui vao as queries */
-        System.out.println("recebido");
-        System.out.println("name: " + lg.getName());
-        System.out.println("pass: " + lg.getPassword());
+//        System.out.println("recebido");
+//        System.out.println("name: " + lg.getName());
+//        System.out.println("pass: " + lg.getPassword());
         Statement stmt=null;
         while (true) {
             try {
@@ -315,8 +315,8 @@ public class Queries {
         Bet bet = (Bet) generic.getObj();
         
 
-        System.out.println("recebido");
-        System.out.println("name: " + lg.getName());
+        //System.out.println("recebido");
+        //System.out.println("name: " + lg.getName());
         //System.out.println("bet: "+ lg.getBetGame());
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());
@@ -430,8 +430,8 @@ public class Queries {
          // nao deverá ser user
         Credit cr = (Credit) gen.getObj();
         
-        System.out.println("recebido GETCREDITO");
-        System.out.println("name: " + lg.getName());
+       // System.out.println("recebido GETCREDITO");
+       // System.out.println("name: " + lg.getName());
         
 
         while (true) {
@@ -554,7 +554,7 @@ public class Queries {
 
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());\
-        System.out.println("NOME SET MSG:"+para);
+        //System.out.println("NOME SET MSG:"+para);
         Message k;
 
 
@@ -573,7 +573,11 @@ public class Queries {
 
                 stmt.close();
                 return m;
-            } catch (SQLException e) {
+            } catch (MySQLIntegrityConstraintViolationException e) {
+                return false;
+                //System.out.println("SQL Exception (setMensagens): " + e.toString());
+
+            }catch (SQLException e) {
                 e.printStackTrace(System.out);
                 System.out.println("SQL Exception (setMensagens): " + e.toString());
 
@@ -594,7 +598,7 @@ public class Queries {
         //Bet bet = (Bet) generic.getObj();
 
 
-        System.out.println("recebido : updateBets-->");
+        //System.out.println("recebido : updateBets-->");
         //SELECT Cliente_Nome, bet
         //FROM Aposta, Jogo
         //WHERE Jogo_idJogo = idJogo
@@ -614,11 +618,11 @@ public class Queries {
                 ResultSet rr = stmt.executeQuery("SELECT Cliente_Nome, bet,idJogo FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa =Resultado");
                 String game = "";
                 while (rr.next()) {
-                    System.out.println("ENTRA 1aaaaaaaaaa");
+                    //System.out.println("ENTRA 1aaaaaaaaaa");
                     Nome = rr.getString("Cliente_Nome");
                     idJogo=rr.getInt("idJogo");
                     bet = rr.getInt("bet");
-                    System.out.println("Vai fazer update da aposta do " + Nome + " " + bet);
+                    //System.out.println("Vai fazer update da aposta do " + Nome + " " + bet);
                     stmt = con.createStatement();
                     ResultSet mm = stmt.executeQuery("SELECT Credito from Cliente WHERE Nome='" + Nome + "'");
                     mm.next();
@@ -647,7 +651,7 @@ public class Queries {
                 ResultSet rperdeu = stmt.executeQuery("SELECT Cliente_Nome, bet, idJogo FROM Aposta, Jogo WHERE Jogo_idJogo = idJogo AND ronda =" + ronda + " AND Aposta_equipa !=Resultado");
 
                 while (rperdeu.next()) {
-                    System.out.println("ENTRA 2aaaaaaaaaa");
+                    //System.out.println("ENTRA 2aaaaaaaaaa");
                     Nome = rperdeu.getString("Cliente_Nome");
                     bet = rperdeu.getInt("bet");
                     idJogo=rperdeu.getInt("idJogo");
