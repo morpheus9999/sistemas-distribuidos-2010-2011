@@ -57,8 +57,8 @@ public class Main {
             System.out.println("\n\n(Backup): Sou secondary :(\n\n");
 
             /*  opens a port to check for requests  */
-//            game = new BetThread(Constants.numJogos);
-//            game.start();
+            game = new BetThread(Constants.numJogos);
+            game.start();
 
             /*  opens RMI connections   */
             try {

@@ -47,9 +47,9 @@ public class BetGenerator {
         return betgen.getRandomMatch();
     }
     
-    public static void main(String[] args) {
-        BetGenerator bet = new BetGenerator();
-        Match m = bet.getRandomMatch();
-        System.out.println(m);
-    }
+//    public static void main(String[] args) {
+//        BetGenerator bet = new BetGenerator();
+//        Match m = bet.getRandomMatch();
+//        System.out.println(m);
+//    }
 }
