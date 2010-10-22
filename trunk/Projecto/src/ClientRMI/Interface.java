@@ -266,7 +266,8 @@ public class Interface {
             gen.setCode(Constants.messageCode);
             mes.setAuthor(Interface.buffer.getAuthor());
             mes.setHashtable(Interface.buffer.getHashtable());
-
+            gen.setObj(mes);
+            
             /*
              *  this is done because evoking message method
              *  will store the messages as backup until they are delivered
@@ -290,7 +291,8 @@ public class Interface {
             gen.setCode(Constants.messageAllCode);
             mes.setAuthor(Interface.bufferAll.getAuthor());
             mes.setHashtable(Interface.bufferAll.getHashtable());
-
+            gen.setObj(mes);
+            
             /*
              *  this is done because evoking message method
              *  will store the messages as backup until they are delivered
