@@ -75,6 +75,13 @@ public class Main {
             Main.opt.getOption();
         }
 
+        if(Main.connected) {
+            /*  gets messages stored in the server  */
+            Main.opt.setOption(Constants.requestMessage);
+            /*  waits for the answer    */
+            Main.opt.getOption();
+        }
+            
         /*  main menu   */
         while(!exit) {
             
@@ -82,13 +89,9 @@ public class Main {
             log.setPassword(Main.lg.getPassword());
 
             if(connected) {
-                /*  gets messages stored in the server  */
-                //Main.opt.setOption(Constants.requestMessage);
-                 
                 switch(screen.mainMenu()) {
                     case Constants.creditCode:
                         /*  credit  */
-                        //System.out.println("2222222222");
                         Main.gen.setObj(new Credit());
                         
                         Main.opt.setOption(Constants.creditCode);
