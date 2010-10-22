@@ -133,9 +133,11 @@ public class receiverThread extends Thread{
                             System.out.println("Register failed!");
                         break;
                     case Constants.receiveMessage:
-                        if(gen.getConfirmation()) {
-                            /*  receiving messages  */
-                            Message mes = (Message) gen.getObj();
+                        /*  receiving messages  */
+                        
+                        Message mes = (Message) gen.getObj();
+                        if(mes!=null){
+                            System.out.println("\n#### Messages received offline  ####");
                             System.out.println("\nMessage Received");
                             System.out.println("From: "+mes.getAuthor());
                             System.out.println("Message:");

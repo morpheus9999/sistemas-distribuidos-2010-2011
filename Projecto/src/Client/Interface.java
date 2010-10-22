@@ -319,7 +319,7 @@ public class Interface {
      * Requests offline messages from the server
      */
     public void requestMessage() {
-        System.out.println("#### Messages received offline  ####");
+        
         Main.opt.setOption(Constants.requestMessage);
     }
 }
