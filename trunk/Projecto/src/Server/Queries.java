@@ -125,7 +125,7 @@ public class Queries {
             Timestamp data2 = k.getTimestamp(1);
             int min=data2.getMinutes();
             data2.setMinutes(min+1);
-            System.out.println(data2.toString().substring(0,data2.toString().length()-2 ));
+            //System.out.println(data2.toString().substring(0,data2.toString().length()-2 ));
             String p=data2.toString().substring(0,data2.toString().length()-2 );
             boolean m = stmt.execute("UPDATE  `mydb`.`Ronda` SET  `idRonda` =  '"+idRonda+"',`Data` =  '"+p+"',`Tipo` =  '"+tipo+"' WHERE  `Ronda`.`id` =1 ;");
             stmt.close();
@@ -444,7 +444,7 @@ public class Queries {
                     rs1 = stmt.executeQuery("SELECT Credito FROM Cliente WHERE Nome = '" + lg.getName()+"'" );
                     rs1.next();
                     int bet = rs1.getInt("Credito");
-                    System.out.println(" credito:"+bet);
+                    //System.out.println(" credito:"+bet);
                     cr.setCredit(bet);
                     gen.setConfirmation(true);
                     gen.setObj(cr);
