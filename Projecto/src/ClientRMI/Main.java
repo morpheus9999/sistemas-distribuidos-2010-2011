@@ -48,9 +48,7 @@ public class Main {
         Login log = new Login();
         Bet bet = new Bet();
 
-
         Interface screen = new Interface();
-
 
         ClientRMIThread rmi = new ClientRMIThread();
         rmi.start();
@@ -74,16 +72,15 @@ public class Main {
             Main.opt.getOption();
         }
 
-        /*  gets messages stored in the server  */
-        if(connected && login)
-            Main.opt.setOption(Constants.requestMessage);
-
         /*  main menu   */
         while(!exit) {
             log.setName(Main.lg.getName());
             log.setPassword(Main.lg.getPassword());
 
             if(connected) {
+                /*  gets messages stored in the server  */
+                Main.opt.setOption(Constants.requestMessage);
+                
                 switch(screen.mainMenu()) {
                     case Constants.creditCode:
                         /*  credit  */

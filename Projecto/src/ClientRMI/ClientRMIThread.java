@@ -170,7 +170,7 @@ public class ClientRMIThread extends Thread {
 
         try {
             while (!Main.exit) {
-                System.out.print("Trying to connect.");
+                System.out.print("Trying to connect");
                 for(int i = 1; i <= Constants.tries && !Main.exit; i++, Thread.sleep(Constants.reconnectTime)) {
                     try {
                         System.out.print(".");
@@ -226,7 +226,7 @@ public class ClientRMIThread extends Thread {
                     System.out.println("Backup");
             }
         } catch (InterruptedException ex) {
-            System.out.println("Error in sleeping thread");
+            //System.out.println("Error in sleeping thread");
         }
 
         System.out.println("");

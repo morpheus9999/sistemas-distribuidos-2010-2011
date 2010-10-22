@@ -147,11 +147,9 @@ public class receiverThread extends Thread{
             } catch (ClassNotFoundException ex) {
                 System.out.println("Class not found when receiving: "+ ex.getMessage());
             } catch (IOException ex) {
-                  System.out.println("Error receiving object: "+ ex.getMessage());
-                  System.out.println("Ending receiving thread");
-                Main.connected = false;
-                while(!Main.connected && !Main.exit)
-                    Main.reconnect();
+                System.out.println("Error receiving object: "+ ex.getMessage());
+                System.out.println("Ending receiving thread");
+                Main.reconnect();
             }
         }
 

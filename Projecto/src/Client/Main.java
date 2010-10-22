@@ -53,10 +53,8 @@ public class Main {
     public static void main(String args[]) {
         /*  init    */
         /*  tries to connect 1 time, if it fails, the app ends  */
-        if(!connect()) {
-            while(!connected)
-                reconnect();
-        }
+        if(!connect())
+            reconnect();
 
         /*  initates interface  */
         Interface inter = new Interface();
@@ -169,11 +167,14 @@ public class Main {
     /**
      * opens comunication channels
      * */
-    public static boolean openChannels() {
+    public static boolean openChannels(int flagServer) {
         try {
             sock = null;
-            sock = new Socket(Constants.primaryServerTCP, Constants.primaryServerTCPPort);
-
+            if(flagServer == 0)
+                sock = new Socket(Constants.primaryServerTCP, Constants.primaryServerTCPPort);
+            else
+                sock = new Socket(Constants.backupServerTCP, Constants.backupServerTCPPort);
+            
             if(sock != null && sock.isConnected()) {
                 outStream = sock.getOutputStream();
                 out = new ObjectOutputStream(outStream);
@@ -248,7 +249,7 @@ public class Main {
      * connect
      * */
     public static boolean connect() {
-        openChannels();
+        openChannels(0);
         
         if(Main.connected) {
             initThreads();
@@ -263,27 +264,39 @@ public class Main {
      * */
     public static boolean reconnect() {
         Main.connected = false;
-        
+        int flagServer = 0;
+
+        System.out.println("Connection lost");
+
         try {
-            for (int i = 1; i <= Constants.tries && !Main.connected && !Main.exit; i++, Thread.sleep(Constants.reconnectTime)) {
-                if (i == 1)
-                    System.out.println("Connection lost. Trying to reconnect...");
+            while(!Main.exit) {
+                System.out.print("Trying to connect");
+                for (int i = 1; i <= Constants.tries && !Main.connected && !Main.exit; i++, Thread.sleep(Constants.reconnectTime)) {
+                    System.out.print(".");
 
-                if(openChannels()) {
-                    if(Main.logged == true)
-                        Main.opt.setOption(Constants.loginCode);
+                    if(openChannels(flagServer)) {
+                        if(Main.logged == true)
+                            Main.opt.setOption(Constants.loginCode);
 
-                    return true;
+                        return true;
+                    }
                 }
+
+                System.out.println("");
+
+                /*  changes server to connect   */
+                flagServer = ++flagServer%2;
+                
+                System.out.print("Changing servers: ");
+                if(flagServer == 0)
+                    System.out.println("Primary");
                 else
-                    if(i == Constants.tries) {
-                        System.out.println("Reconnect failed :(");
-                        return false;
-                }
+                    System.out.println("Backup");
             }
         } catch (Exception ex) {
             //System.out.println("Error in sleeping thread");
         }
+        System.out.println("");
         return false;
     }
 }
