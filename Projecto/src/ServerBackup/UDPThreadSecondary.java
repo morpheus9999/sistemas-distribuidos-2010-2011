@@ -3,18 +3,21 @@
  * and open the template in the editor.
  */
 
-package Server;
+package ServerBackup;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  *
- * @author jojo
+ * @author JLA
  */
-import java.net.*;
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-public class UDPClient{
-    public static void main(String args[]){
+public class UDPThreadSecondary extends Thread {
+
+    public void run() {
         DatagramSocket bSocket = null;
         DatagramSocket aSocket = null;
         int estado=0;
@@ -31,7 +34,7 @@ public class UDPClient{
             while(true){
                 try{
                     if(estado == 0)
-                        texto = "IN ALIVE";
+                        texto = "IM SLAVE";
                     else
                         texto = "IM MASTER";
 
@@ -65,13 +68,22 @@ public class UDPClient{
                     if(s.contains("IM MASTER"))
                         estado = 0;
                     else {
-                        if(x != 0)
+                        /*
+                         *  since it's the secondary server
+                         *  it only assumes master on the second run if possible
+                         */
+                        if(x != 0) {
                             estado = 1;
+                            /*  tells main to continue execution    */
+                            Main.opt.setOption(1);
+                        }
                         x = 1;
                     }
                 }catch (IOException e){
                     System.out.println("IO: " + e.getMessage());
                     estado = 1;
+                    /*  tells main to continue execution    */
+                    Main.opt.setOption(1);
                 }
             }
         }   catch (SocketException e)   {

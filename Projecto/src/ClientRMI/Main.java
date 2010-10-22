@@ -5,6 +5,7 @@
 
 package ClientRMI;
 
+import Client_Server.Selection;
 import Client_Server.Bet;
 import Client_Server.CallbackInterface;
 import Client_Server.Constants;
@@ -42,9 +43,6 @@ public class Main {
 
     
     public static void main(String args[]) {
-
-
-
         OnlineUsers online;
         Credit cred;
         Login log;

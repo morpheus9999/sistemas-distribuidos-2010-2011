@@ -16,6 +16,7 @@ import Client_Server.Constants;
 import Client_Server.Message;
 import Client_Server.User;
 import Client_Server.Bet;
+import Client_Server.Selection;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -172,7 +173,7 @@ public class Main {
     public static boolean openChannels() {
         try {
             sock = null;
-            sock = new Socket(host, Constants.serverPort);
+            sock = new Socket(Constants.primaryServerTCP, Constants.primaryServerTCPPort);
 
             if(sock != null && sock.isConnected()) {
                 outStream = sock.getOutputStream();

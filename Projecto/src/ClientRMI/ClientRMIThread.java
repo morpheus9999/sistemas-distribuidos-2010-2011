@@ -56,7 +56,7 @@ public class ClientRMIThread extends Thread {
             try {
                 if(!Main.connected) {
                     /*  gets stub   */
-                    obj = (RMIInterface) Naming.lookup(Constants.clientFirstServerRMI);
+                    obj = (RMIInterface) Naming.lookup(Constants.clientPrimaryServerRMI);
                     /*  sets callback object    */
                     CallbackMethods callback = new CallbackMethods();
                     obj.setCallback((CallbackInterface) callback);
@@ -178,7 +178,7 @@ public class ClientRMIThread extends Thread {
 //                try {
 //                    System.out.print(".");
 //
-//                    RMIInterface obj = (RMIInterface) Naming.lookup(Constants.clientFirstServerRMI);
+//                    RMIInterface obj = (RMIInterface) Naming.lookup(Constants.clientPrimaryServerRMI);
 //
 //                    /*  sets callback object    */
 //                    CallbackMethods callback = new CallbackMethods();
