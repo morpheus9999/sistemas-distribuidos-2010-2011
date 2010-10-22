@@ -177,7 +177,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
             
             try {
                 callback.printMessage(fromUser, message);
-            } catch (IOException error) {
+            } catch (Exception error) {
                 /*  if it throws an error, delete it    */
                 Main.onlineUsersRMI.remove(toUser);
             }

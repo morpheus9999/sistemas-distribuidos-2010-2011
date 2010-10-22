@@ -38,22 +38,15 @@ public class Main {
     static boolean connected = false;
     static boolean exit = false;
     static boolean login = false;
-    static Generic gen;
+    static Generic gen = new Generic();
 
 
     
     public static void main(String args[]) {
         OnlineUsers online;
-        Credit cred;
-        Login log;
-        Bet bet;
-
-
-        Main.gen = new Generic();
-        bet = new Bet();
-        cred = new Credit();
-        log = new Login();
-
+        Credit cred = new Credit();
+        Login log = new Login();
+        Bet bet = new Bet();
 
 
         Interface screen = new Interface();
@@ -64,7 +57,6 @@ public class Main {
 
         /*  welcome screen  */
         while(!login) {
-
             switch(screen.welcomeMenu()) {
                 case Constants.loginCode:
                     Main.gen = screen.login();
@@ -83,7 +75,7 @@ public class Main {
         }
 
         /*  gets messages stored in the server  */
-        if(connected)
+        if(connected && login)
             Main.opt.setOption(Constants.requestMessage);
 
         /*  main menu   */
@@ -95,7 +87,6 @@ public class Main {
                 switch(screen.mainMenu()) {
                     case Constants.creditCode:
                         /*  credit  */
-                        System.out.println("entra");
                         Main.gen.setObj(new Credit());
                         Main.opt.setOption(Constants.creditCode);
                     break;
