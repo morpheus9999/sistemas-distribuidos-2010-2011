@@ -231,7 +231,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         String fromUser = null, toUser = null, id = null;
         Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
+        Enumeration<String> keys, userEnumerator, message;
 
 
         fromUser = mes.getAuthor();

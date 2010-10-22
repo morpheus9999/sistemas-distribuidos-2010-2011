@@ -87,6 +87,10 @@ public class Message implements Serializable{
         this.messageBuffer.clear();
     }
 
+    public int getSize() {
+        return this.messageBuffer.size();
+    }
+
     /*  to ease searches in the hashtable   */
     public Enumeration<Vector<String>> getMessagesEnumeration() {
         return this.messageBuffer.elements();

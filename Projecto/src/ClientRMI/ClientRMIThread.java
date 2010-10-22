@@ -188,8 +188,8 @@ public class ClientRMIThread extends Thread {
                         /*  sets connected to true  */
                         Main.connected = true;
 
-                        /*  if the user was logged, it does the login automatically */
                         if(Main.login) {
+                            /*  if the user was logged, it does the login automatically */
                             Generic gen = new Generic();
                             Login lg = new Login();
                             lg.setName(Main.lg.getName());
@@ -199,10 +199,12 @@ public class ClientRMIThread extends Thread {
                             gen.setObj(lg);
 
                             this.obj.login(gen);
-                        }
 
-                        if(Main.connected && Main.login)
+                            /*  asks for messages sent by other users while connection went off */
                             Main.opt.setOption(Constants.requestMessage);
+                            /*  sends messages to the server buffered while offline */
+                            
+                        }
                         
                         System.out.println("\nConnection recovered :)");
                         return true;

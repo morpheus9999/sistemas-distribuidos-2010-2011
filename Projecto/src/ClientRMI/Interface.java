@@ -252,4 +252,54 @@ public class Interface {
 
         return gen;
     }
+
+    /**
+     * Prepares to send the stored buffer
+     * @return generic object
+     */
+    public Generic messageSingleBuffer() {
+        Generic gen = null;
+        Message mes = new Message();
+
+        if(Interface.buffer.getSize() > 0) {
+            gen = new Generic();
+            mes.setAuthor(Interface.buffer.getAuthor());
+            mes.setHashtable(Interface.buffer.getHashtable());
+
+            /*
+             *  this is done because evoking message method
+             *  will store the messages as backup until they are delivered
+             */
+            Interface.buffer.clearHashtable();
+        }
+
+        gen.setCode(Constants.messageCode);
+
+        return gen;
+    }
+
+    /**
+     * Prepares to send the stored buffer
+     * @return generic object
+     */
+    public Generic messageAllBuffer() {
+        Generic gen = null;
+        Message mes = new Message();
+
+        if(Interface.bufferAll.getSize() > 0) {
+            gen = new Generic();
+            mes.setAuthor(Interface.bufferAll.getAuthor());
+            mes.setHashtable(Interface.bufferAll.getHashtable());
+
+            /*
+             *  this is done because evoking message method
+             *  will store the messages as backup until they are delivered
+             */
+            Interface.bufferAll.clearHashtable();
+        }
+
+        gen.setCode(Constants.messageAllCode);
+
+        return gen;
+    }
 }
