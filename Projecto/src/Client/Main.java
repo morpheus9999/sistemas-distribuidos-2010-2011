@@ -277,10 +277,16 @@ public class Main {
                     System.out.print(".");
 
                     if(openChannels(flagServer)) {
-                        if(Main.logged == true)
-                            Main.opt.setOption(Constants.loginCode);
-
                         System.out.println("Connection recovered!");
+
+                        if(Main.logged == true){
+                            Main.opt.setOption(Constants.loginCode);
+                            System.out.println("Sending buffers...");
+                            Main.opt.setOption(Constants.messageCode);
+                            Main.opt.setOption(Constants.messageAllCode);
+                        }
+
+                        
                         return true;
                     }
                 }

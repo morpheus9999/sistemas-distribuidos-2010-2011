@@ -203,10 +203,12 @@ public class ClientRMIThread extends Thread {
                             /*  asks for messages sent by other users while connection went off */
                             Main.opt.setOption(Constants.requestMessage);
                             /*  sends messages to the server buffered while offline */
+                            gen = new Generic();
                             gen = Interface.messageSingleBuffer();
                             if(gen != null)
                                 this.obj.messageUser(gen);
 
+                            gen = new Generic();
                             gen = Interface.messageAllBuffer();
                             if(gen != null)
                                 this.obj.messageAll(gen);
