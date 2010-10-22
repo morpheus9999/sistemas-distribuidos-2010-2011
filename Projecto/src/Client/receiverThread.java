@@ -61,11 +61,6 @@ public class receiverThread extends Thread{
                         for(int x=0;x<matches.size();x++){
                             System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
                         }
-                        /*  lists current matches   */
-
-                        /*  fazer print dos jogos   */
-
-
                         break;
                     case Constants.betCode:
                         /*  bets on a match */

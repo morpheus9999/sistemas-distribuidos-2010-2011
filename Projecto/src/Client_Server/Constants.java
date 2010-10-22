@@ -13,7 +13,7 @@ package Client_Server;
 public class Constants {
     final public static int numJogos=8;
     final public static int tries = 3;
-    final public static int sleepTime = 500;
+    final public static int sleepTime = 1000;
     final public static int reconnectTime = 1000;
 
     final public static String  primaryServerTCP = "localhost";
