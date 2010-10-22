@@ -203,8 +203,13 @@ public class ClientRMIThread extends Thread {
                             /*  asks for messages sent by other users while connection went off */
                             Main.opt.setOption(Constants.requestMessage);
                             /*  sends messages to the server buffered while offline */
-                            this.obj.messageUser(Interface.messageSingleBuffer());
-                            this.obj.messageAll(Interface.messageAllBuffer());
+                            gen = Interface.messageSingleBuffer();
+                            if(gen != null)
+                                this.obj.messageUser(gen);
+
+                            gen = Interface.messageAllBuffer();
+                            if(gen != null)
+                                this.obj.messageAll(gen);
                         }
                         
                         System.out.println("\nConnection recovered :)");
