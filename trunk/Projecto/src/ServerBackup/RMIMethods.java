@@ -45,8 +45,15 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean login(Generic gen) throws java.rmi.RemoteException {
+        //System.out.println("WTF");
         if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
+            
+            if(Main.onlineUsersTCP.containsKey(lg.getName()))
+                return false;
+            else if(Main.onlineUsersRMI.containsKey(lg.getName()))
+                return false;
+
             Main.onlineUsersRMI.put(lg.getName(), this.call);
             return true;
         } else
@@ -60,6 +67,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean logout(Login lg) throws java.rmi.RemoteException {
+
         if(Main.onlineUsersRMI.containsKey(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
         }
@@ -73,6 +81,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean register(Generic gen) throws java.rmi.RemoteException {
+        //System.out.println("WTF2");
         return Queries.register(gen);
     }
 
@@ -84,6 +93,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public Generic getCredit(Generic gen, Login log) throws java.rmi.RemoteException {
+        //System.out.println("WTF3");
         return Queries.getCredit(gen, log);
     }
 
