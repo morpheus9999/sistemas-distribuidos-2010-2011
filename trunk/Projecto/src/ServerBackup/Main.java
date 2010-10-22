@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package Server;
+package ServerBackup;
 
 import Client.Interface;
 import Client.receiverThread;
@@ -41,19 +41,20 @@ public class Main {
     public static Hashtable<String, CallbackInterface> onlineUsersRMI = new Hashtable<String, CallbackInterface>();
     public static Selection opt = new Selection();
     public static BetThread game;
-    
+
     public static void main(String args[]) {
         int counter = 0;
 
         try {
             /*  waits for server to be primary before continuing    */
-            UDPThreadPrimary udp = new UDPThreadPrimary();
+            UDPThreadSecondary udp = new UDPThreadSecondary();
             udp.start();
 
+            System.out.println("!!!!!!!!!!!!!!!!!IT WAITS!!!!!!!!!!!!");
             /*  it waits!   */
             Main.opt.getOption();
 
-            System.out.println("\n\n(Primary): sou Master :D\n\n");
+            System.out.println("\n\n(Backup): Sou secondary :(\n\n");
 
             /*  opens a port to check for requests  */
 //            game = new BetThread(Constants.numJogos);
@@ -62,13 +63,13 @@ public class Main {
             /*  opens RMI connections   */
             try {
                 RMIInterface obj = new RMIMethods();
-                LocateRegistry.createRegistry(Constants.primaryServerRMIPort).rebind(Constants.primaryServerRMIObj, obj);
+                LocateRegistry.createRegistry(Constants.backupServerRMIPort).rebind(Constants.backupServerRMIObj, obj);
             } catch (RemoteException ex) {
                 System.out.println("RMI connection error");
             }
 
             /*  opens socket to listen for connections  */
-            ServerSocket listener = new ServerSocket(Constants.primaryServerTCPPort);
+            ServerSocket listener = new ServerSocket(Constants.backupServerTCPPort);
 
             /*  creates a thread pool   */
             ExecutorService pool = Executors.newCachedThreadPool();

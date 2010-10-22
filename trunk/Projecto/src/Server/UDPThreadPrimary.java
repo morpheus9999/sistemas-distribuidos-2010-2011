@@ -5,15 +5,20 @@
 
 package Server;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+
 /**
  *
- * @author jojo
+ * @author JLA
  */
-import java.net.*;
-import java.io.*;
-public class UDPServer{
+public class UDPThreadPrimary extends Thread {
 
-    public static void main(String args[]){
+
+    public void run() {
         int estado = 0;
         DatagramSocket bSocket = null;
         DatagramSocket aSocket = null;
@@ -36,7 +41,7 @@ public class UDPServer{
                 }
 
                 if(estado == 0)
-                    texto = "IM ALIVE";
+                    texto = "IM SLAVE";
                 else
                     texto = "IM MASTER";
 
@@ -60,12 +65,17 @@ public class UDPServer{
                     /*  check to take master/slave position */
                     if(s.contentEquals("IM MASTER")) {
                         estado = 0;
-                    } else
+                    } else {
                         estado = 1;
+                        /*  tells main to continue execution    */
+                        Main.opt.setOption(1);
+                    }
 
                 }catch (IOException e){
                     System.out.println("IO: " + e.getMessage());
                     estado = 1;
+                    /*  tells main to continue execution    */
+                    Main.opt.setOption(1);
                 }
             }
         }   catch (SocketException e){
