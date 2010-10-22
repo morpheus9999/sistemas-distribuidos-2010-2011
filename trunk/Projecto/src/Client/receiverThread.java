@@ -133,12 +133,14 @@ public class receiverThread extends Thread{
                             System.out.println("Register failed!");
                         break;
                     case Constants.receiveMessage:
-                        /*  receiving messages  */
-                        Message mes = (Message) gen.getObj();
-                        System.out.println("\nMessage Received");
-                        System.out.println("From: "+mes.getAuthor());
-                        System.out.println("Message:");
-                        System.out.println("> "+mes.getText());
+                        if(gen.getConfirmation()) {
+                            /*  receiving messages  */
+                            Message mes = (Message) gen.getObj();
+                            System.out.println("\nMessage Received");
+                            System.out.println("From: "+mes.getAuthor());
+                            System.out.println("Message:");
+                            System.out.println("> "+mes.getText());
+                        }
                         break;
                     default:
                         System.out.println("Code not recognized :X: "+gen.getCode());
