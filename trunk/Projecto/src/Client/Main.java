@@ -54,8 +54,8 @@ public class Main {
         /*  init    */
         /*  tries to connect 1 time, if it fails, the app ends  */
         if(!connect()) {
-            System.out.println("System is down :(\nBye Bye");
-            return;
+            while(!connected)
+                reconnect();
         }
 
         /*  initates interface  */
