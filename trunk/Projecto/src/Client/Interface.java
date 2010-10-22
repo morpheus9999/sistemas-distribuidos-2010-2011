@@ -171,20 +171,18 @@ public class Interface {
     public int mainMenu() {
         int opt = -1;
 
-        do {
-            System.out.println("#### Main Menu ####");
-            System.out.println("1 - Credit");
-            System.out.println("2 - Reset Credit");
-            System.out.println("3 - Current Matches");
-            System.out.println("4 - Bet");
-            System.out.println("5 - Online Users");
-            System.out.println("6 - Message User");
-            System.out.println("7 - Message All");
-            System.out.println("8 - Logout");
+        System.out.println("#### Main Menu ####");
+        System.out.println("1 - Credit");
+        System.out.println("2 - Reset Credit");
+        System.out.println("3 - Current Matches");
+        System.out.println("4 - Bet");
+        System.out.println("5 - Online Users");
+        System.out.println("6 - Message User");
+        System.out.println("7 - Message All");
+        System.out.println("8 - Logout");
 
-            System.out.print("Option: ");
-            opt = Input.readInt();
-        } while (opt < 1 || opt > 8);
+        System.out.print("Option: ");
+        opt = Input.readInt();
 
         return opt;
     }
@@ -195,15 +193,13 @@ public class Interface {
     public int offlineMenu() {
         int opt = -1;
 
-        do {
-            System.out.println("#### Offline Menu ####");
-            System.out.println("6 - Message User");
-            System.out.println("7 - Message All");
-            System.out.println("8 - Logout");
+        System.out.println("#### Offline Menu ####");
+        System.out.println("6 - Message User");
+        System.out.println("7 - Message All");
+        System.out.println("8 - Logout");
 
-            System.out.print("Option: ");
-            opt = Input.readInt();
-        } while (opt < 6 || opt > 8);
+        System.out.print("Option: ");
+        opt = Input.readInt();
 
         return opt;
     }
