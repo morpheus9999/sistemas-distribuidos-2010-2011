@@ -265,7 +265,7 @@ class ClientThreadTCP extends Thread{
         String fromUser = null, toUser = null, id = null;
         Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
+        Enumeration<String> keys, userEnumerator, message;
         
 
         fromUser = mes.getAuthor();
