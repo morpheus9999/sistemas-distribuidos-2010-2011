@@ -64,8 +64,11 @@ public class ClientRMIThread extends Thread {
                 }
 
                 switch(Main.opt.getOption()) {
+                
                     case Constants.loginCode:
+                        
                         if(this.obj.login(Main.gen)) {
+                            
                             System.out.println("Login sucessfull");
                             Main.login = true;
                         }
@@ -75,13 +78,16 @@ public class ClientRMIThread extends Thread {
                         Main.opt.setOption(Constants.loginCode);
                     break;
                     case Constants.regCode:
+                        
                         if(this.obj.register(Main.gen))
                             System.out.println("Register sucessfull");
                         else
                             System.out.println("Register failed");
+                        Main.opt.setOption(Constants.regCode);
                     break;
                     case Constants.creditCode:
                         /*  credit  */
+                        System.out.println("CREDITO");
                         gen = this.obj.getCredit(Main.gen, log);
                         cred = (Credit) gen.getObj();
 
@@ -148,11 +154,16 @@ public class ClientRMIThread extends Thread {
                     default:
                         System.out.println("Wrong code (in RMI thread)");
                     break;
+                   
                 }
+                 //System.out.println("OPTION:"+Main.opt.getOption());
 
             } catch (NotBoundException ex) {
+                
             } catch (MalformedURLException ex) {
+                
             } catch (RemoteException ex) {
+                
                 reconnect();
             } catch (Exception ex) {
                 System.out.println("Weird Exception: "+ex.getMessage());
@@ -199,7 +210,7 @@ public class ClientRMIThread extends Thread {
                             gen.setObj(lg);
 
                             this.obj.login(gen);
-
+                            gen = new Generic();
                             /*  asks for messages sent by other users while connection went off */
                             Main.opt.setOption(Constants.requestMessage);
                             /*  sends messages to the server buffered while offline */
@@ -207,7 +218,7 @@ public class ClientRMIThread extends Thread {
                             gen = Interface.messageSingleBuffer();
                             if(gen != null)
                                 this.obj.messageUser(gen);
-
+                            gen = new Generic();
                             gen = new Generic();
                             gen = Interface.messageAllBuffer();
                             if(gen != null)

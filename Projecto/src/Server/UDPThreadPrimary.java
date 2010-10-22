@@ -32,7 +32,7 @@ public class UDPThreadPrimary extends Thread {
             aSocket = new DatagramSocket(6789);
             InetAddress bHost = InetAddress.getByName("localhost");
 
-            System.out.println("Socket Datagram ‡ escuta no porto 6789");
+            //System.out.println("Socket Datagram ‡ escuta no porto 6789");
 
             while(true){
                 try {
@@ -50,7 +50,7 @@ public class UDPThreadPrimary extends Thread {
                 DatagramPacket request2 = new DatagramPacket(m,m.length,bHost,6790);
                 bSocket.send(request2);
 
-                System.out.println("ENVIA: "+texto);
+                //System.out.println("ENVIA: "+texto);
 
                 byte[] buffer = new byte[1000];
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
@@ -60,7 +60,7 @@ public class UDPThreadPrimary extends Thread {
                     aSocket.receive(request);
                     s = new String(request.getData(), 0, request.getLength());
 
-                    System.out.println("Server Recebeu: " + s);
+                   // System.out.println("Server Recebeu: " + s);
 
                     /*  check to take master/slave position */
                     if(s.contentEquals("IM MASTER")) {
@@ -72,9 +72,10 @@ public class UDPThreadPrimary extends Thread {
                     }
 
                 }catch (IOException e){
-                    System.out.println("IO: " + e.getMessage());
+                    //System.out.println("IO: " + e.getMessage());
                     estado = 1;
                     /*  tells main to continue execution    */
+                    
                     Main.opt.setOption(1);
                 }
             }

@@ -52,7 +52,7 @@ public class UDPThreadSecondary extends Thread {
                 DatagramPacket request = new DatagramPacket(m,m.length,aHost,6789);
                 aSocket.send(request);
 
-                System.out.println("ENVIA:"+texto);
+               // System.out.println("ENVIA:"+texto);
 
                 byte [] buffer = new byte[1000];
                 DatagramPacket request2 = new DatagramPacket(buffer, buffer.length);
@@ -62,7 +62,7 @@ public class UDPThreadSecondary extends Thread {
                     bSocket.receive(request2);
                     s = new String(request2.getData(), 0, request2.getLength());
 
-                    System.out.println("Server Recebeu: " + s);
+                   //System.out.println("Server Recebeu: " + s);
 
                     /*  check to take master/slave position */
                     if(s.contains("IM MASTER"))
@@ -80,7 +80,7 @@ public class UDPThreadSecondary extends Thread {
                         x = 1;
                     }
                 }catch (IOException e){
-                    System.out.println("IO: " + e.getMessage());
+                    //System.out.println("IO: " + e.getMessage());
                     estado = 1;
                     /*  tells main to continue execution    */
                     Main.opt.setOption(1);
