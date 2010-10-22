@@ -66,7 +66,6 @@ class BetThread extends Thread {
                     tcp = (ClientThreadTCP) (Main.onlineUsersTCP.get(m.elementAt(k).getAuthor()));
                     tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
 
-
                     
                     //DELETE jogos
                     Queries.actualiza(ronda, 0);
