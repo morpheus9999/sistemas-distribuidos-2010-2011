@@ -351,7 +351,9 @@ class ClientThreadTCP extends Thread{
         for(mes = Queries.getMensagens(lg.getName()); mes != null; mes = Queries.getMensagens(lg.getName()))
             ClientThreadTCP.messageUser(mes.getAuthor(), mes.getTo(), mes.getText());
 
+        temp.setCode(Constants.receiveMessage);
         temp.setConfirmation(true);
+
         return temp;
     }
 }
