@@ -31,7 +31,6 @@ public class Main {
      * Global/Static variables
      */
     private static Socket sock;
-    private final static String host = "localhost";
     private static OutputStream outStream;
     private static InputStream inStream;
     public static ObjectOutputStream out;

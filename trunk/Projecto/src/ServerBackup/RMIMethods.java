@@ -151,7 +151,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         return gen;
     }
 
-    private void message(String fromUser, String toUser, String message) throws RemoteException, IOException {
+    private void message(String fromUser, String toUser, String message) throws RemoteException {
         /*  creates individual message  */
         Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
@@ -195,7 +195,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @return
      * @throws RemoteException
      */
-     public boolean messageUser(Generic gen) throws RemoteException, IOException {
+     public boolean messageUser(Generic gen) throws RemoteException {
         String fromUser = null, toUser = null;
         Vector<String> messageVector;
         Enumeration<String> message;
@@ -227,11 +227,11 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
       * @throws RemoteException
       * @throws IOException
       */
-    public boolean messageAll(Generic gen) throws RemoteException, IOException {
+    public boolean messageAll(Generic gen) throws RemoteException {
         String fromUser = null, toUser = null, id = null;
         Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
+        Enumeration<String> keys, userEnumerator, message;
 
 
         fromUser = mes.getAuthor();
@@ -264,7 +264,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         return true;
     }
 
-    public void getMessage(Login lg) throws  RemoteException, IOException {
+    public void getMessage(Login lg) throws  RemoteException {
         Message temp;
 
         for(temp = Queries.getMensagens(lg.getName()); temp != null; temp = Queries.getMensagens(lg.getName()))
