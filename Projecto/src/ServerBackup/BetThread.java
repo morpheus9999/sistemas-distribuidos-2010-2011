@@ -36,7 +36,7 @@ class BetThread extends Thread {
         while (true) {
             if (tipo == 0) {
                 IBetManager man = new BetManager(numJogos);
-                System.out.println("ENTRA1");
+                //System.out.println("ENTRA1");
                 Queries.NewRound(man, ronda);
                 tipo++;
                 Queries.actualiza(ronda, 1);
@@ -44,7 +44,7 @@ class BetThread extends Thread {
             } else if (tipo == 1) {
                 try {
                     long espera = Queries.espera();
-                    System.out.println("ENTRA2" + espera);
+                    System.out.println("ACABOU TEMPO DE APOSTAS PARA A RONDA "+ronda);
                     if (espera > 0) {
                         BetThread.sleep(espera);
                     }
@@ -64,12 +64,7 @@ class BetThread extends Thread {
                 for (int k = 0; k < m.size(); k++) {
 
                     tcp = (ClientThreadTCP) (Main.onlineUsersTCP.get(m.elementAt(k).getAuthor()));
-                    try {
-                        tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
-                    } catch (IOException ex) {
-                        Logger.getLogger(BetThread.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
+                    tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
 
                     
                     //DELETE jogos

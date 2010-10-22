@@ -151,13 +151,18 @@ class ClientThreadTCP extends Thread{
     /**
      * Login
      * */
-    private Generic login(Generic gen) throws IOException {
+    private synchronized Generic login(Generic gen) throws IOException {
         /*  faz query   */
        if(Queries.login(gen)) {
             /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
-            Main.onlineUsersTCP.put(this.lg.getName(), this);
+            if(Main.onlineUsersTCP.containsKey(lg.getName()))
+                gen.setConfirmation(false);
+            else if(Main.onlineUsersRMI.containsKey(lg.getName()))
+                gen.setConfirmation(false);
+            else
+                Main.onlineUsersTCP.put(this.lg.getName(), this);
         }
         else
             gen.setConfirmation(false);
@@ -192,7 +197,7 @@ class ClientThreadTCP extends Thread{
      /**
      * Message a user
      * */
-    public static void messageUser(String fromUser, String toUser, String message) throws IOException {
+    public static void messageUser(String fromUser, String toUser, String message) {
         /*  creates individual message  */
         Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
@@ -206,7 +211,6 @@ class ClientThreadTCP extends Thread{
         /*  checks if the user is online and sends  */
         if(Main.onlineUsersTCP.containsKey(toUser)) {
             ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
-
             try {
                 sock.out.writeObject(gen);
             } catch (IOException error) {
@@ -215,7 +219,6 @@ class ClientThreadTCP extends Thread{
             }
         } else if(Main.onlineUsersRMI.containsKey(toUser)) {
             CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-
             try {
                 callback.printMessage(fromUser, message);
             } catch (IOException error) {
@@ -267,7 +270,7 @@ class ClientThreadTCP extends Thread{
         String fromUser = null, toUser = null, id = null;
         Vector<String> messageVector, userVector;
         Message mes = (Message) gen.getObj();
-        Enumeration<String> keys, onlineEnumeratorTCP, onlineEnumeratorRMI, userEnumerator, message;
+        Enumeration<String> keys, userEnumerator, message;
         
 
         fromUser = mes.getAuthor();
@@ -353,7 +356,9 @@ class ClientThreadTCP extends Thread{
         for(mes = Queries.getMensagens(lg.getName()); mes != null; mes = Queries.getMensagens(lg.getName()))
             ClientThreadTCP.messageUser(mes.getAuthor(), mes.getTo(), mes.getText());
 
+        temp.setCode(Constants.receiveMessage);
         temp.setConfirmation(true);
+
         return temp;
     }
 }
