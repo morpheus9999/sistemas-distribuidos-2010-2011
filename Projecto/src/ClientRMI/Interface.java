@@ -263,6 +263,7 @@ public class Interface {
 
         if(Interface.buffer.getSize() > 0) {
             gen = new Generic();
+            gen.setCode(Constants.messageCode);
             mes.setAuthor(Interface.buffer.getAuthor());
             mes.setHashtable(Interface.buffer.getHashtable());
 
@@ -272,8 +273,6 @@ public class Interface {
              */
             Interface.buffer.clearHashtable();
         }
-
-        gen.setCode(Constants.messageCode);
 
         return gen;
     }
@@ -288,6 +287,7 @@ public class Interface {
 
         if(Interface.bufferAll.getSize() > 0) {
             gen = new Generic();
+            gen.setCode(Constants.messageAllCode);
             mes.setAuthor(Interface.bufferAll.getAuthor());
             mes.setHashtable(Interface.bufferAll.getHashtable());
 
@@ -297,8 +297,6 @@ public class Interface {
              */
             Interface.bufferAll.clearHashtable();
         }
-
-        gen.setCode(Constants.messageAllCode);
 
         return gen;
     }
