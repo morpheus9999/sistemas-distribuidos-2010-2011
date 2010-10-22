@@ -257,7 +257,7 @@ public class Interface {
      * Prepares to send the stored buffer
      * @return generic object
      */
-    public Generic messageSingleBuffer() {
+    public static Generic messageSingleBuffer() {
         Generic gen = null;
         Message mes = new Message();
 
@@ -282,7 +282,7 @@ public class Interface {
      * Prepares to send the stored buffer
      * @return generic object
      */
-    public Generic messageAllBuffer() {
+    public static Generic messageAllBuffer() {
         Generic gen = null;
         Message mes = new Message();
 
