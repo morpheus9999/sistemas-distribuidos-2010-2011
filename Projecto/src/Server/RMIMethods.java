@@ -48,6 +48,12 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         //System.out.println("WTF");
         if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
+            
+            if(Main.onlineUsersTCP.containsKey(lg.getName()))
+                return false;
+            else if(Main.onlineUsersRMI.containsKey(lg.getName()))
+                return false;
+
             Main.onlineUsersRMI.put(lg.getName(), this.call);
             return true;
         } else
@@ -61,6 +67,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public boolean logout(Login lg) throws java.rmi.RemoteException {
+
         if(Main.onlineUsersRMI.containsKey(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
         }

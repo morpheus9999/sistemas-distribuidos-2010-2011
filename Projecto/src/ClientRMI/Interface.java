@@ -185,8 +185,13 @@ public class Interface {
         System.out.print("Victoria Casa (1) Victoria fora (2) Empate (0): ");
         int aposta =Input.readInt();
         be.setAposta(aposta);
-        System.out.print("Quantos creditos pretende apostar: ");
-        int bet =Input.readInt();
+        //System.out.print("Quantos creditos pretende apostar: ");
+        int bet=-1;
+        while(bet<0){
+            System.out.print("Quantos creditos pretende apostar: ");
+            bet=Input.readInt();
+
+        }
         be.setIdGame(idJogo);
         be.setBet(bet);
 
