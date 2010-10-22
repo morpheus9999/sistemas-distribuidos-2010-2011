@@ -150,6 +150,8 @@ public class ClientRMIThread extends Thread {
                     case Constants.requestMessage:
                         /*  requests messages from server   */
                         this.obj.getMessage(log);
+
+                        Main.opt.setOption(Constants.requestMessage);
                     break;
                     default:
                         System.out.println("Wrong code (in RMI thread)");
@@ -213,6 +215,9 @@ public class ClientRMIThread extends Thread {
                             gen = new Generic();
                             /*  asks for messages sent by other users while connection went off */
                             Main.opt.setOption(Constants.requestMessage);
+                            /*  waits for the messages  */
+                            Main.opt.getOption();
+                            
                             /*  sends messages to the server buffered while offline */
                             gen = new Generic();
                             gen = Interface.messageSingleBuffer();
