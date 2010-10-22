@@ -165,10 +165,22 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         /*  checks if the user is online and sends  */
         if(Main.onlineUsersTCP.containsKey(toUser)) {
             ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
-            sock.out.writeObject(gen);
+
+            try {
+                sock.out.writeObject(gen);
+            } catch (IOException error) {
+                /*  if it throws an error, delete it    */
+                Main.onlineUsersTCP.remove(toUser);
+            }
         } else if(Main.onlineUsersRMI.containsKey(toUser)) {
             CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-            callback.printMessage(fromUser, message);
+            
+            try {
+                callback.printMessage(fromUser, message);
+            } catch (IOException error) {
+                /*  if it throws an error, delete it    */
+                Main.onlineUsersRMI.remove(toUser);
+            }
         }
         else { /*    or stores to send later accordingly    */
             Queries.setMensagens(fromUser, toUser, message);

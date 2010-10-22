@@ -192,7 +192,7 @@ class ClientThreadTCP extends Thread{
      /**
      * Message a user
      * */
-    public static void messageUser(String fromUser, String toUser, String message) throws IOException {
+    public static void messageUser(String fromUser, String toUser, String message) {
         /*  creates individual message  */
         Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
@@ -206,10 +206,20 @@ class ClientThreadTCP extends Thread{
         /*  checks if the user is online and sends  */
         if(Main.onlineUsersTCP.containsKey(toUser)) {
             ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
-            sock.out.writeObject(gen);
+            try {
+                sock.out.writeObject(gen);
+            } catch (IOException error) {
+                /*  if it throws an error, delete it    */
+                Main.onlineUsersTCP.remove(toUser);
+            }
         } else if(Main.onlineUsersRMI.containsKey(toUser)) {
             CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-            callback.printMessage(fromUser, message);
+            try {
+                callback.printMessage(fromUser, message);
+            } catch (IOException error) {
+                /*  if it throws an error, delete it    */
+                Main.onlineUsersRMI.remove(toUser);
+            }
         }
         else { /*    or stores to send later accordingly    */
             Queries.setMensagens(fromUser, toUser, message);
