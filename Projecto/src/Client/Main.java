@@ -53,8 +53,10 @@ public class Main {
     public static void main(String args[]) {
         /*  init    */
         /*  tries to connect 1 time, if it fails, the app ends  */
-        if(!connect())
+        if(!connect()) {
             reconnect();
+            initThreads();
+        }
 
         /*  initates interface  */
         Interface inter = new Interface();
@@ -278,6 +280,7 @@ public class Main {
                         if(Main.logged == true)
                             Main.opt.setOption(Constants.loginCode);
 
+                        System.out.println("Connection recovered!");
                         return true;
                     }
                 }
