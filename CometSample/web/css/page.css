@@ -1,0 +1,86 @@
+
+body{
+	background:url(../images/body_dot.png) repeat 0 0;
+	font-family:Tahoma, serifSansSerifMonospace;
+	color:#d6d6d6;
+	text-align:center;
+	margin:0;
+}
+
+#bg_container{
+	background:url(../images/content_dot.png) repeat 0 0;
+}
+
+#container{
+	margin-right:auto;
+	margin-left:auto;
+	width:900px;
+	padding-top:70px;
+}
+
+#chat_text{
+        text-align:left;
+        font-size:12px;
+        width:700px;
+        height:250px;
+        overflow:auto;
+        margin-right:auto;
+	margin-left:auto;
+        padding:10px;
+}
+
+#logo{
+	background:url(../images/logo.png) no-repeat 0 50px;
+	height:130px;
+	width:130px;
+	margin-right:auto;
+	margin-left:auto;
+	padding-bottom:5px;
+	padding-top:50px;
+}
+
+#square{
+	background:url(../images/bg_square.png) repeat-x 0 0;
+	height:20px;
+	width:100%;
+	margin-bottom:5px;
+}
+
+#footer{
+	bottom:15px;
+	color:#464646;
+        margin-bottom:20px;
+}
+
+.line1{
+	font-size:11px;
+}
+
+.line2{
+	font-size:9px;
+}
+
+img{
+	border:0;
+	margin-top:20px;
+}
+
+a{
+	margin:0 20px;
+	width:220px;
+	height:120px;
+}
+
+a #add_new_user{
+	background:url(../images/add_new_user_normal.png) no-repeat 0 0;
+}
+
+a #add_new_user:hover{
+	background:url(../images/add_new_user_hover.png) no-repeat 0 0;
+}
+
+a #change_user_password{}
+a #chat_server_statistics{}
+a #detailed_activity_lists{}
+a #naming_service_list{}
+a #remove_user_registry{}
