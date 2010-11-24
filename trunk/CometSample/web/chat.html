@@ -1,68 +1,97 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+
         <title>Comet Chat</title>
     </head>
     <body>
-        <div id="displayCurrentMatches">
-            <h1> Current Matches</h1>
-            <div id="currentMatches" style="overflow: auto; border:thin solid #000000; position: fixed; top: 80px; left: 60px; width: 400px; height: 400px"></div>
-        
-        </div>
-         
-        <div id="display" style="  position: fixed;  top: 80px; left: 700px; width: 600px; height: 500px">
-           <h2>Comet Chat</h2>
-            <div id="messagesboard" style="overflow: auto; border: thin solid #000000; top: 80px; left: 60px; width: 400px; height: 400px"></div>
-        
-        <div id="input" style=" top: 490px; left: 700px; width: 600px; height: 60px">
-            <input id="message" type="text" size="90"/><br/>
-            Send To: <input id="destination" type="text" size="20"/><br/>
-            <input type="button" onclick="sendMsg()" value="Send" />
-            <input type="button" onclick="quitChat();window.location='about:blank';" value="Quit" />
-        </div>
-            
+
+
+        <div id="displayCurrentMatches"style="  position: fixed;  top: 10px; left: 10px; width: 600px; height: 500px">
+            <h2> Current Matches</h2>
+            <div id="currentMatches" style="overflow: auto; border:thin solid #000000; position: fixed; top: 80px; left: 60px; width: 400px; height: 400px">
+
             </div>
+        </div>
+        <div id="display2" style="  position: fixed;  top: 80px; left: 1000px; width: 600px; height: 500px">
+            <h2>Online Users:</h2>
+            <div id="onlineUsers" style="overflow: auto; border: thin solid #000000; top: 80px; left: 60px; width: 150px; height: 300px">
+
+            </div>
+        </div> 
+        <div id="display" style="  position: fixed;  top: 10px; left: 580px; width: 600px; height: 500px">            
+            <h2>Comet Chat</h2>
+            <div id="messagesboard" style="overflow: auto; border: thin solid #000000; top: 80px; left: 60px; width: 400px; height: 400px">
+
+            </div>
+
+            <div id="input" style=" top: 490px; left: 580px; width: 400px; height: 60px">
+                <input id="message" type="text" size="90"/><br/>
+                Send To: <input id="destination" type="text" size="20"/><br/>
+                <input type="button" onclick="sendMsg()" value="Send" />
+                <input type="button" onclick="quitChat();window.location='about:blank';" value="Quit" />
+            </div>
+
+        </div>
     </body>
     <script type="text/javascript" src="comet.js"> </script>
     <script type="text/javascript">
     	
-    	// Initiate Comet object
-    	var comet = Comet("http://localhost:8080/CometSample/");
-    	var board = document.getElementById('messagesboard');
-    	
-    	// Register with Server for COMET callbacks.
-    	comet.get("ChatServlet?type=register", function(response) {
-    		// updates the message board with the new response.
-    		board.innerHTML = response;
-    	});
+        // Initiate Comet object
+        var comet = Comet("http://localhost:8080/CometSample/");
+        var board = document.getElementById('messagesboard');
+        var board2 = document.getElementById('currentMatches');
+        var board3 = document.getElementById('onlineUsers');
+        
+        // Register with Server for COMET callbacks.
+        comet.get("ChatServlet?type=register", function(response1) {
+            // updates the message board with the new response.
+    		
+            board.innerHTML = response1;
+        });
+        comet.get("ChatServlet?type=register1", function(response2) {
+            // updates the message board with the new response.
+    		
+            board2.innerHTML =response2.split("\n\n\n").pop();
+                
+                
+        });
+        comet.get("ChatServlet?type=register2", function(response3) {
+            // updates the message board with the new response.
+    		
+            board3.innerHTML =response3.split("\n\n\n").pop();
+               
+                
+        });
     
-    	function sendMsg() {
-    		var msg = document.getElementById('message').value;
-    		var dest = document.getElementById('destination').value;
-    		if (dest == "") {
-    			msg = "allusers\n" + msg;
-    		}
-    		else {
-    			msg = dest + "\n" + msg
-    		}
+        function sendMsg() {
+            var msg = document.getElementById('message').value;
+            var dest = document.getElementById('destination').value;
+            if (dest == "") {
+                msg = "allusers\n" + msg;
+            }
+            else {
+                msg = dest + "\n" + msg
+            }
     			
-    		comet.post("ChatServlet", msg, function(response) {
-    			// Do Nothing
-    		})
-    		// Clears the value of the message element
-    		document.getElementById('message').value = '';
-    	}
+            comet.post("ChatServlet", msg, function(response1) {
+                // Do Nothing
+            })
+            // Clears the value of the message element
+            document.getElementById('message').value = '';
+        }
   	
     	
-    	function quitChat() {
-    		comet.post("ChatServlet?type=exit", '', function(response) {
-    			// Exits browser
-    			window.location='about:blank';
-    		})
-    	}
+        function quitChat() {
+            comet.post("ChatServlet?type=exit", '', function(response1) {
+                // Exits browser
+                window.location='about:blank';
+            })
+        }
     	
     	
-    	//This makes the browser call the quitChat function before unloading(or closing) the page
-    	window.onunload = quitChat;
+        //This makes the browser call the quitChat function before unloading(or closing) the page
+        window.onunload = quitChat;
     </script>
 </html>

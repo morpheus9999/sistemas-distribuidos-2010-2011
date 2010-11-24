@@ -1,18 +1,25 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<title>User Login</title>
-</head>
-<body>
-<form action="LoginServlet" method="post">
-Username: <input type="text" name="userName" size="10">
-<br>
-Password: <input type="password" name="passWord" size="10">
-<br>
-Nickname: <input type="text" name="nickName" size="10">
-<br>
-<input type="submit" value="Enter Chat!!">
-</form>
-</body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="css/page.css" rel="stylesheet" type="text/css" />
+        <title>User Login</title>
+    </head>
+    <body>
+        <img src="images/chat_server_login_normal.png" />
+        <form action="LoginServlet" method="post">
+            Username: <input type="text" name="userName" size="10">
+            <br>
+            Password: <input type="password" name="passWord" size="10">
+            <br>
+            
+            <input type="button" value="back" onClick="history.go(-1)">
+            <input type="submit" value="Enter Chat!!">
+        </form>
+
+        <div id="footer">
+            <div class="line1">Application created to 2010 Distributed Systems project.</div>
+            <div class="line2">Developed by Jorge Figueira.</div>
+        </div>
+    </body>
 </html>

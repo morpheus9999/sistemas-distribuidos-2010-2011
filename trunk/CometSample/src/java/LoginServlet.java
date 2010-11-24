@@ -42,6 +42,7 @@ public class LoginServlet extends HttpServlet
         _users.put("Jorge", "123");
         _users.put("zeca", "456");
 	_users.put("java", "sun");
+        _users.put("test","test");
         
         try {
             this.obj = (RMIInterface) Naming.lookup(Constants.clientPrimaryServerRMI);
@@ -65,12 +66,11 @@ public class LoginServlet extends HttpServlet
     {
 	String user = request.getParameter("userName"); 
 	String pass = request.getParameter("passWord");
-	String nick = request.getParameter("nickName");
+	//String nick = request.getParameter("nickName");
 
-	String verifiedPass;
+	//String verifiedPass;
 	RequestDispatcher dispatcher;
-	if ((verifiedPass = (String) _users.get(user)) != null && verifiedPass.equals(pass))
-	{
+	
             Login s=new Login();
             s.setName(user);
             s.setPassword(pass);
@@ -78,15 +78,16 @@ public class LoginServlet extends HttpServlet
             Generic m=new Generic();
             m.setObj(s);
             m.setCode(Constants.loginCode);
+            try{
             if(this.obj.login(m)==true){
-                System.out.println("FIxE");
+                System.out.println("FIxE"+s.getName());
             
                 
             
 		// The parameter true defines that if the session
 		// doesn't exist, it will be created
 	    HttpSession session = request.getSession(true);
-	    session.setAttribute("nickName", nick);
+	    //session.setAttribute("nickName", nick);
             session.setAttribute("rmi", this.obj);
             session.setAttribute("gen", m);
             session.setAttribute("Login", s);
@@ -97,11 +98,10 @@ public class LoginServlet extends HttpServlet
             else{
                 dispatcher = request.getRequestDispatcher("/invalid.html");
             }
-	}
-	else
-	{
-	    dispatcher = request.getRequestDispatcher("/invalid.html");
-	}
+            }catch(Exception e){
+                
+                dispatcher = request.getRequestDispatcher("/invalid.html");
+            }
 	
 	dispatcher.forward(request, response);
     }
