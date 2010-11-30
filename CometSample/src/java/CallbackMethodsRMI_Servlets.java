@@ -96,9 +96,14 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
                     //resp2.resetBuffer();
                     //resp.resetBuffer();
                     //resp2.getWriter().println("AHAH" + "<br/>");
+                if(from.length()==0){
+                    
+                    resp.getWriter().println("<font color=\"red\">"+ message+"</font>" + "<br/>");
+                }else{
+                    
                     resp.getWriter().println(from + ": " + message + "<br/>");
                 
-
+                }
                 resp.getWriter().flush();
                 //resp2.getWriter().flush();  
 
@@ -154,7 +159,11 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
         
         System.out.println("end!!!matches");
     }
-    
+    public void UpdateCredit(String nome)throws java.rmi.RemoteException{
+                m.actualizaCredito(nome);
+        
+        System.out.println("end!!!userss");
+    }
 
     
 

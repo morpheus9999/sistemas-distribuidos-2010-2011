@@ -1,6 +1,8 @@
 
+import Client_Server.Bet;
 import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
+import Client_Server.Credit;
 import Client_Server.Generic;
 import Client_Server.Login;
 import Client_Server.Message;
@@ -39,91 +41,111 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
     // something to the client's socket, we can retrieve the HttpServletResponse.
     public static Map<String, Vector<HttpServletResponse>> clients = new Hashtable<String, Vector<HttpServletResponse>>();
     public static RMIInterface obj = null;
-    public static OnlineUsers online=null;
+    public static OnlineUsers online = null;
     public static CallbackMethodsRMI_Servlets callback = null;
-    public static Vector<ViewMatch> currentMatches=null;
+    public static Vector<ViewMatch> currentMatches = null;
     // Method called when a client is registers with the CometProcessor
 
-    public  void  addClient(String nickName, HttpServletResponse clientResponseObject, int i) throws RemoteException {
+    public void addClient(String nickName, HttpServletResponse clientResponseObject, int i) throws RemoteException {
         Vector<HttpServletResponse> m;
-        synchronized(ChatServlet.clients){
-        
-        if (!ChatServlet.clients.containsKey(nickName)) {
+        synchronized (ChatServlet.clients) {
 
-            System.out.println("add0 " + i + ":" + nickName);
-            m= new Vector<HttpServletResponse>();
-            m.setSize(3);
-            m.setElementAt(clientResponseObject, i);
-            System.out.println(m.toString());
-            //m.add(i, clientResponseObject);
+            if (!ChatServlet.clients.containsKey(nickName)) {
+
+                System.out.println("add0 " + i + ":" + nickName);
+                m = new Vector<HttpServletResponse>();
+                m.setSize(4);
+                m.setElementAt(clientResponseObject, i);
+                System.out.println(m.toString());
+                
+                ChatServlet.clients.put(nickName, m);
+
+            } else {
+                System.out.println("add1 " + i + ":" + nickName);
+
+                m = (Vector<HttpServletResponse>) ChatServlet.clients.get(nickName);
+                
+                System.out.println(m.toString());
+                
+                m.setElementAt(clientResponseObject, i);
 
 
-            //m.setElementAt(clientResponseObject, i);
+                System.out.println(m.toString());
+                ChatServlet.clients.put(nickName, m);
 
-            ChatServlet.clients.put(nickName, m);
 
-        } else {
-            System.out.println("add1 " + i + ":" + nickName);
+                System.out.println("::::" + ChatServlet.clients.get(nickName).size() + "\n\n");
+            }
+            System.out.println("LISTA:::::" + clients.toString());
 
-             m = (Vector<HttpServletResponse>) ChatServlet.clients.get(nickName);
-            //m.addElement(clientResponseObject);
-            //m.add(i, clientResponseObject);
-            System.out.println(m.toString());
-            //m.set(i,clientResponseObject);
-            //m.setElementAt(clientResponseObject, i);
-            
-            m.setElementAt(clientResponseObject, i);
-            
 
-            System.out.println(m.toString());
-            ChatServlet.clients.put(nickName, m);
-            
-
-            System.out.println("::::" + ChatServlet.clients.get(nickName).size() + "\n\n");
-        }
-        System.out.println("LISTA:::::"+clients.toString());
-        
-        
-        if (callback != null) {
-                if(clients.get(nickName).elementAt(0)!=null && i==0)
+            if (callback != null) {
+                if (clients.get(nickName).elementAt(0) != null && i == 0) {
                     callback.printMessageall(nickName, " está online");
+                }
             }
-        
-        if(clients.get(nickName).elementAt(2)!=null && i==2){
-            if(online==null){
-                online=(OnlineUsers)obj.onlineUsers(new Generic()).getObj();
+
+            if (clients.get(nickName).elementAt(2) != null && i == 2) {
+                if (online == null) {
+                    online = (OnlineUsers) obj.onlineUsers(new Generic()).getObj();
+
+
+
+                    updateUsersOnline(nickName);
+                } else {
+                    updateUsersOnline(nickName);
+                }
+
+            } else if (clients.get(nickName).elementAt(1) != null && i == 1) {
+                if (currentMatches == null) {
+                    currentMatches = (Vector<ViewMatch>) obj.viewMathces(new Generic()).getObj();
+                    updateCurrentMatches(nickName);
+                } else {
+                    updateCurrentMatches(nickName);
+                }
+            }else if(clients.get(nickName).elementAt(3)!=null && i==3){
+                Login j=new Login();
+                j.setName(nickName);
+                Credit c= new Credit();
+                Generic h= new Generic();
+                h.setObj(c);
                 
-            
-                
-               updateUsersOnline(nickName); 
-            }
-            else
-                updateUsersOnline(nickName);
-            
-        }else if(clients.get(nickName).elementAt(1)!=null && i==1)
-            if(currentMatches==null){
-                currentMatches=(Vector<ViewMatch>) obj.viewMathces(new Generic()).getObj();
-                updateCurrentMatches(nickName); 
-            }else{
-               updateCurrentMatches(nickName); 
+                 try {
+                     h=obj.getCredit(h,j);
+                        c=(Credit)h.getObj();
+                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(3);
+
+                            resp.getWriter().println(c.getCredit());
+                        
+
+                        resp.getWriter().flush();
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        // Trouble using the response object's writer so we remove
+                        // the user and response object from the hashtable
+                    }
+
             }
         }
-        
+
         // TODO 1: Write your code here.
     }
 
     // Method called after an Exception is thrown when the server tries to write to a client's socket.
     public void removeClient(String nickName, HttpServletRequest request) {
-        System.out.println("FDX removeu!!!!");
+        System.out.println("entrou no remove client!!!!");
         if (ChatServlet.clients.remove(nickName) != null) {
-            Login k=new Login();
+            Login k = new Login();
             k.setName(nickName);
             try {
                 obj.logout(k);
                 request.removeAttribute("Login");
                 request.getSession().invalidate();
+
+
                 //request.removeAttribute(nickName);
-                
+
                 // TODO 2: Write your code here
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -171,6 +193,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
         String sessionId = request.getSession().getId();
         //String nickName = (String) request.getSession().getAttribute("nickName");
         Login s = (Login) request.getSession().getAttribute("Login");
+        System.out.println("entra e imprime:" + s.getName());
         //System.out.println("Nick: " + nickName);
         System.out.println("SESSION: " + sessionId);
         response.setHeader("Pragma", "no-cache");
@@ -233,10 +256,26 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     //ChatServlet.clients.toString();
 
 
+                } else if (reqType.equalsIgnoreCase("register3")) {
+                    // Register will add the client HttpServletResponse to the callback array and start a streamed response.
+
+                    // This header is sent to keep the connection open, in order to send future updates.
+                    response.setHeader("Content-type", "application/octet-stream");
+                    // Here is where the important Comet magic happens.
+
+                    // Let's save the HttpServletResponse with the nickName key.
+                    //  That response object will act as a callback to the client.
+                    System.out.println("meter na 3:");
+                    addClient(s.getName(), response, 3);
+
+                    //callback.printMatches(obj.viewMathces(new Generic()));
+                    //ChatServlet.clients.toString();
+
+
                 } else if (reqType.equalsIgnoreCase("exit")) {
                     // if the client wants to quit, we do it.
                     System.out.println("EXIT::" + s.getName());
-                    
+
                     removeClient(s.getName(), request);
 
                 }
@@ -267,6 +306,72 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     obj.messageAll(gen);
 
                     //sendMessageToAll(msg);
+
+                } else if (dest.equals("apostar")) {
+                    System.out.println("entra aposta");
+                    try {
+                        Generic m = new Generic();
+                        Bet j = new Bet();
+                        j.setAposta(Integer.parseInt(request.getReader().readLine().trim()));
+                        j.setBet(Integer.parseInt(request.getReader().readLine().trim()));
+                        j.setIdGame(Integer.parseInt(msg));
+
+                        m.setObj(j);
+
+
+                        m = this.obj.bet(m, s);
+                        System.out.println("acaba aposta");
+
+                        actualizaCredito(s.getName());
+                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
+
+                        if (m.getConfirmation()) {
+                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " apostou bem..." + "</font>"+"<br/>");
+                        } else {
+                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " apostou mal!..." + "</font>"+"<br/>");
+                        }
+
+                        resp.getWriter().flush();
+                        
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        // Trouble using the response object's writer so we remove
+                        // the user and response object from the hashtable
+                        System.out.println("client remove:" + s.getName());
+                        //removeClient(client, null);
+                    }
+
+
+                }else if (dest.equals("reset")) {
+                    System.out.println("entra reset");
+                    try {
+                        Generic m = new Generic();
+                        Credit j=new Credit();
+                        m.setObj(j);
+
+
+                        m = this.obj.resetCredit(m, s);
+                        System.out.println("acaba rest");
+
+                        actualizaCredito(s.getName());
+                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
+
+                        if (m.getConfirmation()) {
+                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " reset bem..." +"</font>"+ "<br/>");
+                        } else {
+                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " reset mal!..." +"</font>"+ "<br/>");
+                        }
+
+                        resp.getWriter().flush();
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        // Trouble using the response object's writer so we remove
+                        // the user and response object from the hashtable
+                        System.out.println("client remove:" + s.getName());
+                        //removeClient(client, null);
+                    }
+
 
                 } else {
                     System.out.println("de:" + s.getName());
@@ -299,87 +404,49 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
         }
     }
 
-    private void sendMessageToAll(String message) {
-        // The message is for everyone.
+    
+    public void updateUsersOnline(String nome) throws RemoteException {
+        System.out.println("ENTRA UPDATE USERS " + nome);
+
+        Vector temp = online.getList();
+
         synchronized (ChatServlet.clients) {
             Set<String> clientKeySet = ChatServlet.clients.keySet();
-            // Let's iterate through the clients and send each one the message.
-            for (String client : clientKeySet) {
-                try {
-                    HttpServletResponse resp = ChatServlet.clients.get(client).elementAt(0);
-                    resp.resetBuffer();
-                    resp.getWriter().println("coiso:" + message + "<br/>");
-                    resp.getWriter().flush();
-
-                } catch (IOException ex) {
-                    // Trouble using the response object's writer so we remove
-                    // the user and response object from the hashtable
-                    removeClient(client, null);
-                }
-            }
-        }
-    }
-
-    private void sendMessage(String message, String destination) {
-        // This method sends a message to a specific user
-        System.out.println("D:" + destination);
-
-        synchronized (ChatServlet.clients) {
-            try {
-                HttpServletResponse resp = ChatServlet.clients.get(destination).elementAt(0);
-
-                resp.getWriter().println("coiso:" + message + "<br/>");
-                resp.getWriter().flush();
-
-            } catch (IOException ex) {
-                // Trouble using the response object's writer so we remove
-                // the user and response object from the hashtable
-                removeClient(destination, null);
-            }
-        }
-    }
-    public void updateUsersOnline(String nome) throws RemoteException{
-        System.out.println("ENTRA UPDATE USERS "+nome);
-       
-        Vector temp=online.getList();
-        
-        synchronized (ChatServlet.clients) {
-            Set<String> clientKeySet = ChatServlet.clients.keySet();
-            if(nome.compareTo("all")==0){
-            }else{
-                clientKeySet=new HashSet<String>();
+            if (nome.compareTo("all") == 0) {
+            } else {
+                clientKeySet = new HashSet<String>();
                 clientKeySet.add(nome);
             }
-            System.out.println("updateUsers::"+clients.toString());
+            System.out.println("updateUsers::" + clients.toString());
             // Let's iterate through the clients and send each one the message.
             for (String client : clientKeySet) {
                 try {
-                    HttpServletResponse resp = (HttpServletResponse)ChatServlet.clients.get(client).elementAt(2);
-                    
+                    HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(client).elementAt(2);
+
                     //resp.resetBuffer();
                     resp.getWriter().println("\n\n\n");
-                    for(int x=0;x<temp.size();x++)
-                        resp.getWriter().println(temp.elementAt(x)+"<br/>");
-                    
-                    
+                    for (int x = 0; x < temp.size(); x++) {
+                        resp.getWriter().println(temp.elementAt(x) + "<br/>");
+                    }
+
+
                     resp.getWriter().flush();
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     // Trouble using the response object's writer so we remove
                     // the user and response object from the hashtable
-                    System.out.println("client remove:"+client);
+                    System.out.println("client remove:" + client);
                     //removeClient(client, null);
                 }
             }
         }
         System.out.println("acaba UPDATE USERS");
-        
+
     }
-    
 
     public void setOnlineUsers(OnlineUsers onlineUsers) {
-        online=onlineUsers;
+        online = onlineUsers;
         try {
             updateUsersOnline("all");
         } catch (Exception ex) {
@@ -389,54 +456,84 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
     }
 
     void setCurrentMatches(Vector<ViewMatch> vector) {
-        currentMatches=vector;
+        currentMatches = vector;
         updateCurrentMatches("all");
     }
 
     private void updateCurrentMatches(String nome) {
-        
-        Vector <ViewMatch>matches=currentMatches;
-        
+
+        Vector<ViewMatch> matches = currentMatches;
+
         synchronized (ChatServlet.clients) {
             Set<String> clientKeySet = ChatServlet.clients.keySet();
-            if(nome.compareTo("all")==0){
-                
-            }else{
-                
-                
-                clientKeySet=new HashSet<String>();
+            if (nome.compareTo("all") == 0) {
+            } else {
+
+
+                clientKeySet = new HashSet<String>();
                 clientKeySet.add(nome);
             }
             // Let's iterate through the clients and send each one the message.
             for (String client : clientKeySet) {
                 try {
-                    HttpServletResponse resp = (HttpServletResponse)ChatServlet.clients.get(client).elementAt(1);
-                    
+                    HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(client).elementAt(1);
+
                     //resp.resetBuffer();
                     resp.getWriter().println("\n\n\n");
-                        //resp2.resetBuffer();
-                        //resp.resetBuffer();
-                        for (int x = 0; x < matches.size(); x++) {
-                            if (x == 0) {
-                                resp.getWriter().println("<INPUT TYPE=\"radio\" NAME=\"jogos\" VALUE=\"" + matches.elementAt(x).getIdJogo() + "\" CHECKED>" + matches.elementAt(x).getHome() + " VS " + matches.elementAt(x).getFora() + "<br/>");
-                            } else {
-                                resp.getWriter().println("<INPUT TYPE=\"radio\" NAME=\"jogos\" VALUE=\"" + matches.elementAt(x).getIdJogo() + "\" >" + matches.elementAt(x).getHome() + " VS " + matches.elementAt(x).getFora() + "<br/>");
-                            }
 
-                            //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
+                    resp.getWriter().println("<form name=\"jogoss\">");
+                    //resp2.resetBuffer();
+                    //resp.resetBuffer();
+                    for (int x = 0; x < matches.size(); x++) {
+                        if (x == 0) {
+                            resp.getWriter().println("<INPUT TYPE=\"radio\" NAME=\"jogos\" VALUE=\"" + matches.elementAt(x).getIdJogo() + "\" CHECKED>" + matches.elementAt(x).getHome() + " VS " + matches.elementAt(x).getFora() + "<br/>");
+                        } else {
+                            resp.getWriter().println("<INPUT TYPE=\"radio\" NAME=\"jogos\" VALUE=\"" + matches.elementAt(x).getIdJogo() + "\" >" + matches.elementAt(x).getHome() + " VS " + matches.elementAt(x).getFora() + "<br/>");
                         }
+
+                        //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
+                    }
+                    resp.getWriter().println("</form>");
                     resp.getWriter().flush();
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     // Trouble using the response object's writer so we remove
                     // the user and response object from the hashtable
-                    System.out.println("client remove:"+client);
+                    System.out.println("client remove:" + client);
                     //removeClient(client, null);
                 }
             }
         }
-        
-        
+
+
+    }
+
+    public void actualizaCredito(String name) {
+        try {
+                        Generic m = new Generic();
+                        Credit j=new Credit();
+                        m.setObj(j);
+
+                        Login s=new Login();
+                        s.setName(name);
+                        m = this.obj.getCredit(m,s );
+
+                        j=(Credit)m.getObj();
+                        
+                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(3);
+
+                        resp.getWriter().println("\n\n\n");
+                        resp.getWriter().println(j.getCredit());
+                        
+
+                        resp.getWriter().flush();
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        // Trouble using the response object's writer so we remove
+                        // the user and response object from the hashtable
+                        //removeClient(client, null);
+                    }
     }
 }
