@@ -92,7 +92,7 @@ public class LoginServlet extends HttpServlet
             session.setAttribute("gen", m);
             session.setAttribute("Login", s);
             
-	    dispatcher = request.getRequestDispatcher("/chat.html");
+	    dispatcher = request.getRequestDispatcher("/chat.jsp");
             
             }
             else{
