@@ -56,7 +56,7 @@ public class ClientRMIThread extends Thread {
                     /*  gets stub   */
                     this.obj = (RMIInterface) Naming.lookup(Constants.clientPrimaryServerRMI);
                     /*  sets callback object    */
-                    CallbackMethods callback = new CallbackMethods();
+                    CallbackMethods callback = new CallbackMethods();              
                     this.obj.setCallback((CallbackInterface) callback);
 
                     /*  sets connected to true  */

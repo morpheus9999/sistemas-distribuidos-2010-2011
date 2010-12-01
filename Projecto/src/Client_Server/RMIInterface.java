@@ -26,4 +26,6 @@ public interface RMIInterface extends java.rmi.Remote{
     public boolean messageUser(Generic gen) throws java.rmi.RemoteException;
     public boolean messageAll(Generic gen) throws java.rmi.RemoteException;
     public void getMessage(Login lg) throws  java.rmi.RemoteException;
+
+    public void setCallbackTomcat(CallbackInterfaceTomcat callbackInterfaceTomcat)throws java.rmi.RemoteException;
 }

@@ -2,6 +2,7 @@ package Server;
 
 
 import Client_Server.CallbackInterface;
+import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
@@ -151,7 +152,7 @@ class ClientThreadTCP extends Thread{
     /**
      * Login
      * */
-    private synchronized Generic login(Generic gen) throws IOException {
+    private  Generic login(Generic gen) throws IOException {
         /*  faz query   */
        if(Queries.login(gen)) {
             /*  sets user is logged  */
@@ -161,8 +162,21 @@ class ClientThreadTCP extends Thread{
                 gen.setConfirmation(false);
             else if(Main.onlineUsersRMI.containsKey(lg.getName()))
                 gen.setConfirmation(false);
+            else if(Main.onlineUsersRMITomcat.contains(lg.getName()))
+                gen.setConfirmation(false);
             else
                 Main.onlineUsersTCP.put(this.lg.getName(), this);
+            
+            
+            
+            
+            if(Main.calbackInterfaceTomcat!=null){
+            
+           
+            
+            Main.calbackInterfaceTomcat.UpdateUsersOnline();
+            
+            }
         }
         else
             gen.setConfirmation(false);
@@ -178,6 +192,9 @@ class ClientThreadTCP extends Thread{
         gen.setConfirmation(true);
         /*  exits thread    */
         this.logout = true;
+        if (Main.calbackInterfaceTomcat != null) {
+            Main.calbackInterfaceTomcat.UpdateUsersOnline();
+        }
 
         return gen;
     }
@@ -199,6 +216,7 @@ class ClientThreadTCP extends Thread{
      * */
     public static void messageUser(String fromUser, String toUser, String message) {
         /*  creates individual message  */
+        System.out.println("ENTRA NO TCP PARA ENVIAR MSG"+toUser);
         Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
 
@@ -224,6 +242,14 @@ class ClientThreadTCP extends Thread{
             } catch (IOException error) {
                 /*  if it throws an error, delete it    */
                 Main.onlineUsersRMI.remove(toUser);
+            }
+        }else if(Main.onlineUsersRMITomcat.contains(toUser)) {
+            CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
+            try {
+                callback.printMessage(fromUser, message, toUser);
+            } catch (IOException error) {
+                /*  if it throws an error, delete it    */
+                Main.onlineUsersRMITomcat.remove(toUser);
             }
         }
         else { /*    or stores to send later accordingly    */
@@ -320,7 +346,11 @@ class ClientThreadTCP extends Thread{
         temp = Main.onlineUsersRMI.keys();
         while(temp.hasMoreElements())
             list.addEntry(temp.nextElement());
-
+            
+        temp= Main.onlineUsersRMITomcat.elements();
+        while(temp.hasMoreElements())
+            list.addEntry(temp.nextElement());
+        
         gen.setConfirmation(true);
         gen.setObj(list);
 

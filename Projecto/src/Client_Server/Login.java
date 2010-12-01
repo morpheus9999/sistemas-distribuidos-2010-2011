@@ -41,7 +41,12 @@ public class Login implements Serializable {
         this.name = name;
         this.password = password;
     }
-
+    
+    protected Login(String name){
+        this.name = name;
+        
+    }
+    
     public String getName(){
         return this.name;
     }

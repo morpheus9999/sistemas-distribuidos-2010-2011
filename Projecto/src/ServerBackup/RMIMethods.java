@@ -6,6 +6,7 @@
 package ServerBackup;
 
 import Client_Server.CallbackInterface;
+import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
@@ -38,6 +39,9 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         this.call = callback;
     }
 
+    public void setCallbackTomcat(CallbackInterfaceTomcat callbackInterfaceTomcat) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     /**
      * Login
      * @param gen
@@ -280,4 +284,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         for(temp = Queries.getMensagens(lg.getName()); temp != null; temp = Queries.getMensagens(lg.getName()))
             message(temp.getAuthor(), temp.getTo(), temp.getText());
     }
+
+    
 }

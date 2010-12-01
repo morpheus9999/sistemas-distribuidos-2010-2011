@@ -430,8 +430,8 @@ public class Queries {
          // nao deverá ser user
         Credit cr = (Credit) gen.getObj();
         
-       // System.out.println("recebido GETCREDITO");
-       // System.out.println("name: " + lg.getName());
+        System.out.println("recebido GETCREDITO");
+        System.out.println("name: " + lg.getName());
         
 
         while (true) {
@@ -444,7 +444,7 @@ public class Queries {
                     rs1 = stmt.executeQuery("SELECT Credito FROM Cliente WHERE Nome = '" + lg.getName()+"'" );
                     rs1.next();
                     int bet = rs1.getInt("Credito");
-                    //System.out.println(" credito:"+bet);
+                    System.out.println(" credito:"+bet);
                     cr.setCredit(bet);
                     gen.setConfirmation(true);
                     gen.setObj(cr);
@@ -554,7 +554,7 @@ public class Queries {
 
         //n sei que nome dar
         //System.out.println("bet: "+ lg.getBetXpto());\
-        //System.out.println("NOME SET MSG:"+para);
+        System.out.println("NOME SET MSG:"+para);
         Message k;
 
 
@@ -593,8 +593,6 @@ public class Queries {
     }
 
     static Vector<Message> updateBets(int ronda) {
-
-
         //Bet bet = (Bet) generic.getObj();
 
 

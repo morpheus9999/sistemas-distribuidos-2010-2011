@@ -147,8 +147,8 @@ public class Interface {
             try {
                 if(k==0)
                     System.out.print("Introduce your password: ");
-                else
-                    System.out.print("Introduce a valid password plz :P : ");
+                //else
+                    ///System.out.print("Introduce a valid password plz :P : ");
 
                 k++;
                 temp = Input.readString().trim();
