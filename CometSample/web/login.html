@@ -3,19 +3,29 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link href="css/page.css" rel="stylesheet" type="text/css" />
-        <title>User Login</title>
+        <title>BetAndUin - Login</title>
     </head>
     <body>
-        <img src="images/chat_server_login_normal.png" />
-        <form action="LoginServlet" method="post">
-            Username: <input type="text" name="userName" size="10">
-            <br>
-            Password: <input type="password" name="passWord" size="10">
-            <br>
+    	<div id="bg_container">
+    	    <div id="container">
+    	        <br><br><br>
+        		<img src="images/chat_server_login_normal.png" />
+     		   	<form action="LoginServlet" method="post">
+     		   		<br>
+      		     	Username: <input type="text" name="userName" size="10">
+      		     	<br>
+      		     	Password: <input type="password" name="passWord" size="10">
+      		     	<br><br>
             
-            <input type="button" value="back" onClick="history.go(-1)">
-            <input type="submit" value="Enter Chat!!">
-        </form>
+       		    	<input type="button" value="back" onClick="history.go(-1)">
+       		    	<input type="submit" value="Enter Chat!!">
+       		 	</form>
+       		 </div>
+       		 
+       		 <div id="logo"></div>
+        </div>
+        
+        <div id="square"></div>
 
         <div id="footer">
             <div class="line1">Application created to 2010 Distributed Systems project.</div>

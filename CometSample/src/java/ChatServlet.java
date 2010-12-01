@@ -142,6 +142,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 obj.logout(k);
                 request.removeAttribute("Login");
                 request.getSession().invalidate();
+                
 
 
                 //request.removeAttribute(nickName);

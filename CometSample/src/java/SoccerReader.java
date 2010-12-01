@@ -64,7 +64,7 @@ public class SoccerReader {
 	        
 	        // Response body from InputStream.
 	        InputSource inputSource = new InputSource(connection.getInputStream());
-	                   System.out.println("");
+	        System.out.println("");
 	        // XPath is a way of reading XML files.
 	        XPathFactory  factory=XPathFactory.newInstance();
 	        XPath xPath=factory.newXPath();
@@ -148,7 +148,7 @@ public class SoccerReader {
                             Node node = nodes.item(i);
                             String title = node.getTextContent();
 	        	System.out.println(title);
-                            System.out.println(node.toString());
+                            //System.out.println(node.toString());
 				// TODO 3
 				// Check if name="trail-text"
 				// And if is, print the content of the node element.
