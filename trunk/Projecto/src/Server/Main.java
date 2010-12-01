@@ -9,6 +9,7 @@ import Client.Interface;
 import Client.receiverThread;
 import Client.senderThread;
 import Client_Server.CallbackInterface;
+import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
@@ -25,6 +26,7 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -39,6 +41,10 @@ public class Main {
     /*  stores info about online users  */
     public static Hashtable<String, ClientThreadTCP> onlineUsersTCP = new Hashtable<String, ClientThreadTCP>();
     public static Hashtable<String, CallbackInterface> onlineUsersRMI = new Hashtable<String, CallbackInterface>();
+    public static Vector <String> onlineUsersRMITomcat =new Vector<String>();
+    //falta isto 
+    public static CallbackInterfaceTomcat calbackInterfaceTomcat=null;
+    
     public static Selection opt = new Selection();
     public static BetThread game;
     
@@ -46,6 +52,7 @@ public class Main {
         int counter = 0;
 
         try {
+            
             /*  waits for server to be primary before continuing    */
             UDPThreadPrimary udp = new UDPThreadPrimary();
             udp.start();

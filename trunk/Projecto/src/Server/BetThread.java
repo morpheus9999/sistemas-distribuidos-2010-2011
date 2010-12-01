@@ -9,6 +9,7 @@ import BetPackage.IBetManager;
 import Client_Server.Generic;
 import Client_Server.Message;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -38,13 +39,22 @@ class BetThread extends Thread {
                 IBetManager man = new BetManager(numJogos);
                 //System.out.println("ENTRA1");
                 Queries.NewRound(man, ronda);
+
                 tipo++;
                 Queries.actualiza(ronda, 1);
+                if (Main.calbackInterfaceTomcat != null) {
+                    try {
+                        //Main.calbackInterfaceTomcat.printMatches(Queries.viewMatches(new Generic(), ronda));
+                        Main.calbackInterfaceTomcat.UpdateMatchs();
+                    } catch (Exception ex) {
+                        System.out.println("erro callback");
+                    }
 
+                }
             } else if (tipo == 1) {
                 try {
                     long espera = Queries.espera();
-                    System.out.println("ACABOU TEMPO DE APOSTAS PARA A RONDA "+ronda);
+                    System.out.println("ACABOU TEMPO DE APOSTAS PARA A RONDA " + ronda);
                     if (espera > 0) {
                         BetThread.sleep(espera);
                     }
@@ -60,18 +70,27 @@ class BetThread extends Thread {
                 System.out.println("Actualiza valores das bets....");
                 Vector<Message> m = Queries.updateBets(ronda - 1);
                 ClientThreadTCP tcp;
-                if(m!=null){
-                for (int k = 0; k < m.size(); k++) {
+                if (m != null) {
+                    for (int k = 0; k < m.size(); k++) {
 
-                    tcp = (ClientThreadTCP) (Main.onlineUsersTCP.get(m.elementAt(k).getAuthor()));
-                    tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
+                        tcp = (ClientThreadTCP) (Main.onlineUsersTCP.get(m.elementAt(k).getAuthor()));
+                        tcp.messageUser("", m.elementAt(k).getAuthor(), m.elementAt(k).getText());
+                        if (Main.calbackInterfaceTomcat != null) {
+                            try {
+                                //Main.calbackInterfaceTomcat.printMatches(Queries.viewMatches(new Generic(), ronda));
+                                Main.calbackInterfaceTomcat.UpdateCredit(m.elementAt(k).getAuthor());
+                            } catch (Exception ex) {
+                                System.out.println("erro callback");
+                            }
 
-                    
+                        }
+
+                    }
                     //DELETE jogos
                     Queries.actualiza(ronda, 0);
                     //Delete apostas
 
-                }
+
                 }
                 tipo = 0;
             }

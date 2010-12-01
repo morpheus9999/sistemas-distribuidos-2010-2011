@@ -18,6 +18,8 @@ public class CallbackMethods extends java.rmi.server.UnicastRemoteObject impleme
         
     }
 
+    
+
     /**
      * printOnClient - prints a message on the client
      * @param s
