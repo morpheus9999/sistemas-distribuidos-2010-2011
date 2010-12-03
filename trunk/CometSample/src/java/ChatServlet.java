@@ -120,7 +120,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(4);
 
                 //resp.resetBuffer();
-                resp.getWriter().println("\n\n\n");
+                resp.getWriter().println("\n\n\n%%%%");
 
                 resp.getWriter().println("<h2>Top News</h2>");
                 //resp2.resetBuffer();
@@ -135,9 +135,9 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                         }
 
                         String valor = valores.nextElement();
-                        resp.getWriter().println("<li><a href=\"#\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
+                        resp.getWriter().println("<li><a href=\"#openNew\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
 
-                        if (x == (lastnews.size() / 2)) {
+                        if (x == ((lastnews.size() / 2) - 1)) {
                             resp.getWriter().println("</ul>");
                             resp.getWriter().println("</div>");
                             resp.getWriter().println("<ul>");
@@ -147,8 +147,9 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                         //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
                     }
                     resp.getWriter().println("</ul>");
-                    resp.getWriter().flush();
+                    
                 }
+                resp.getWriter().flush();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 // Trouble using the response object's writer so we remove
@@ -157,23 +158,17 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
             }
 
 
-        } else if (clients.get(nickName).elementAt(5) != null && i == 5) {
-            try {
-                HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(5);
+        } 
+                
 
-                resp.getWriter().println("\n\n\n");
-
-                resp.getWriter().flush();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+                
+        
         //System.out.println("ADD TERMINA");
 
 
         // TODO 1: Write your code here.
     }
-
+    
     // Method called after an Exception is thrown when the server tries to write to a client's socket.
     public void removeClient(String nickName, HttpServletRequest request) {
         System.out.println("entrou no remove client!!!!");
@@ -473,17 +468,20 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                             Vector<String> rest = restThread.games.recentBody(restThread.lastnews.get(msg));
 
                             System.out.println("rest:" + rest.toString());
-                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(5);
-                            resp.getWriter().println("\n\n\n");
+                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(4);
+                            resp.getWriter().println("\n\n\n!!!!");
+                            System.out.println("-->"+rest.toString());
                             for (int g = 0; g < rest.size(); g++) {
+                                
                                 if (g == 0) {
                                     resp.getWriter().println("<h3>" + rest.elementAt(g) + "</h3>");
+                                }else if(g==1){
+                                    resp.getWriter().println("<h4>" + rest.elementAt(g) + "</h4>");
+                                }else if(g==2){
+                                    resp.getWriter().println("<img src=\"" + rest.elementAt(g) + "\"/>");
+                                }else{
+                                    resp.getWriter().println(rest.elementAt(g));
                                 }
-                                if(g==1){
-                                     resp.getWriter().println("<img src=\"" + rest.elementAt(g) + "\"/>");
-                                }
-
-
 
 
 
@@ -685,21 +683,20 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 try {
                     HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(client).elementAt(4);
 
-                    //resp.resetBuffer();
-                    resp.getWriter().println("\n\n\n");
+                    resp.getWriter().println("\n\n\n%%%%");
 
                     resp.getWriter().println("<h2>Top News</h2>");
-                    //resp2.resetBuffer();
-                    //resp.resetBuffer();
+                    
                     for (int x = 0; x < lastnews.size(); x++) {
                         if (x == 0) {
                             resp.getWriter().println("<div id=\"left\"><ul>");
                         }
 
                         String valor = valores.nextElement();
-                        resp.getWriter().println("<li><a href=\"#\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
-
-                        if (x == (lastnews.size() / 2)) {
+                        
+                        resp.getWriter().println("<li><a href=\"#openNew\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
+                        
+                        if (x == (lastnews.size() / 2)-1) {
                             resp.getWriter().println("</ul>");
                             resp.getWriter().println("</div>");
                             resp.getWriter().println("<ul>");

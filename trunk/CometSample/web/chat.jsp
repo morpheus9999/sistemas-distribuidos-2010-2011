@@ -73,6 +73,7 @@
                                     </ul>
 	        	</div>
 	        	
+                        <a name="openNew"></a>
 	        	<div id="selectedNew">
 	        		<h3>Titulo da noticia</h3>
 	        		<h4>Subtitulo da noticia que pode ser comprido e ter varias palavras</h4>
@@ -138,17 +139,20 @@
     comet.get("ChatServlet?type=register4", function(response5) {
         // updates the message board with the new response.
         //alert("merda4");
-        board5.innerHTML =response5.split("\n\n\n").pop();
-           
+       var test=response5.split("\n\n\n").pop();
+       var test4;
+        if(test.search("%%%%")>-1){
+          test4=test.split("%%%%").pop();  
+        board5.innerHTML =test4;
+        
+        }
+        if(test.search("!!!!")>-1){
+            test4=test.split("!!!!").pop(); 
+            board6.innerHTML =test4;
+        }
             
     });
-    comet.get("ChatServlet?type=register5", function(response6) {
-        // updates the message board with the new response.
-        //alert("merda4");
-        board6.innerHTML =response6.split("\n\n\n").pop();
-           
-            
-    });
+    
     function numbersonly(myfield, e, dec){
         var key;
         var keychar;
