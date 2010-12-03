@@ -22,7 +22,9 @@ public class SoccerReader {
     // IMPORTANT
     // TODO 0
     // Get your own key at http://guardian.mashery.com/apps/register
-    private String API_KEY = "f39fdb9wnbps7graqwqkyyhc";
+    //f39fdb9wnbps7graqwqkyyhc
+    
+    private String API_KEY = "zyw4m5v4z85hk9kwu5updfcd";
 
     public static void main(String[] args) {
         SoccerReader reader = new SoccerReader();
@@ -160,15 +162,18 @@ public class SoccerReader {
                 System.out.println(node.getAttributes().getNamedItem("name").getNodeValue());
                 if(node.getAttributes().getNamedItem("name").getNodeValue().equals("headline")){
                     envia.addElement(node.getTextContent());
-                    
-                if(node.getAttributes().getNamedItem("name").getNodeValue().equals("thumbnail")){
+                    }
+                
+                if(node.getAttributes().getNamedItem("name").getNodeValue().equals("trail-text")){
                     envia.addElement(node.getTextContent()); 
-                    
+                }
+                if(node.getAttributes().getNamedItem("name").getNodeValue().equals("thumbnail")){
+                    envia.addElement(node.getTextContent());                     
                 }
                 String title = node.getTextContent();
                 System.out.println(title);
                 
-                }
+                
                 //System.out.println(node.toString());
                 // TODO 3
                 // Check if name="trail-text"
