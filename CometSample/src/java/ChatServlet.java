@@ -12,6 +12,7 @@ import Client_Server.ViewMatch;
 import java.io.IOException;
 import java.lang.String;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -39,95 +40,136 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
     // The clients Map is used to associate a specific user id with a particular
     // HttpServletResponse object. This way if, later on, we want to send 
     // something to the client's socket, we can retrieve the HttpServletResponse.
-    public static Map<String, Vector<HttpServletResponse>> clients = new Hashtable<String, Vector<HttpServletResponse>>();
+    public static final Map<String, Vector<HttpServletResponse>> clients = new Hashtable<String, Vector<HttpServletResponse>>();
     public static RMIInterface obj = null;
     public static OnlineUsers online = null;
     public static CallbackMethodsRMI_Servlets callback = null;
     public static Vector<ViewMatch> currentMatches = null;
-    // Method called when a client is registers with the CometProcessor
+    public static Rest restThread;
 
+    // Method called when a client is registers with the CometProcessor
     public void addClient(String nickName, HttpServletResponse clientResponseObject, int i) throws RemoteException {
         Vector<HttpServletResponse> m;
-        synchronized (ChatServlet.clients) {
-
-            if (!ChatServlet.clients.containsKey(nickName)) {
-
-                System.out.println("add0 " + i + ":" + nickName);
-                m = new Vector<HttpServletResponse>();
-                m.setSize(4);
-                m.setElementAt(clientResponseObject, i);
-                System.out.println(m.toString());
-                
-                ChatServlet.clients.put(nickName, m);
-
-            } else {
-                System.out.println("add1 " + i + ":" + nickName);
-
-                m = (Vector<HttpServletResponse>) ChatServlet.clients.get(nickName);
-                
-                System.out.println(m.toString());
-                
-                m.setElementAt(clientResponseObject, i);
 
 
-                System.out.println(m.toString());
-                ChatServlet.clients.put(nickName, m);
+        if (!ChatServlet.clients.containsKey(nickName)) {
+
+            m = new Vector<HttpServletResponse>();
+            m.setSize(6);
+            m.setElementAt(clientResponseObject, i);
+
+            ChatServlet.clients.put(nickName, m);
+
+        } else {
+
+            m = (Vector<HttpServletResponse>) ChatServlet.clients.get(nickName);
+            m.setElementAt(clientResponseObject, i);
+            ChatServlet.clients.put(nickName, m);
+        }
 
 
-                System.out.println("::::" + ChatServlet.clients.get(nickName).size() + "\n\n");
-            }
-            System.out.println("LISTA:::::" + clients.toString());
-
-
-            if (callback != null) {
-                if (clients.get(nickName).elementAt(0) != null && i == 0) {
-                    callback.printMessageall(nickName, " está online");
-                }
-            }
-
-            if (clients.get(nickName).elementAt(2) != null && i == 2) {
-                if (online == null) {
-                    online = (OnlineUsers) obj.onlineUsers(new Generic()).getObj();
-
-
-
-                    updateUsersOnline(nickName);
-                } else {
-                    updateUsersOnline(nickName);
-                }
-
-            } else if (clients.get(nickName).elementAt(1) != null && i == 1) {
-                if (currentMatches == null) {
-                    currentMatches = (Vector<ViewMatch>) obj.viewMathces(new Generic()).getObj();
-                    updateCurrentMatches(nickName);
-                } else {
-                    updateCurrentMatches(nickName);
-                }
-            }else if(clients.get(nickName).elementAt(3)!=null && i==3){
-                Login j=new Login();
-                j.setName(nickName);
-                Credit c= new Credit();
-                Generic h= new Generic();
-                h.setObj(c);
-                
-                 try {
-                     h=obj.getCredit(h,j);
-                        c=(Credit)h.getObj();
-                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(3);
-
-                            resp.getWriter().println(c.getCredit());
-                        
-
-                        resp.getWriter().flush();
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        // Trouble using the response object's writer so we remove
-                        // the user and response object from the hashtable
-                    }
-
+        if (callback != null) {
+            if (clients.get(nickName).elementAt(0) != null && i == 0) {
+                callback.printMessageall(nickName, " está online");
             }
         }
+
+        if (clients.get(nickName).elementAt(2) != null && i == 2) {
+            if (online == null) {
+                setOnlineUsers((OnlineUsers) obj.onlineUsers(new Generic()).getObj());
+
+                updateUsersOnline(nickName);
+            } else {
+                updateUsersOnline(nickName);
+            }
+
+        } else if (clients.get(nickName).elementAt(1) != null && i == 1) {
+            if (currentMatches == null) {
+                currentMatches = (Vector<ViewMatch>) obj.viewMathces(new Generic()).getObj();
+                updateCurrentMatches(nickName);
+            } else {
+                updateCurrentMatches(nickName);
+            }
+        } else if (clients.get(nickName).elementAt(3) != null && i == 3) {
+            Login j = new Login();
+            j.setName(nickName);
+            Credit c = new Credit();
+            Generic h = new Generic();
+            h.setObj(c);
+
+            try {
+                h = obj.getCredit(h, j);
+                c = (Credit) h.getObj();
+                HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(3);
+
+                resp.getWriter().println(c.getCredit());
+
+
+                resp.getWriter().flush();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // Trouble using the response object's writer so we remove
+                // the user and response object from the hashtable
+            }
+
+        } else if (clients.get(nickName).elementAt(4) != null && i == 4) {
+
+
+            try {
+                HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(4);
+
+                //resp.resetBuffer();
+                resp.getWriter().println("\n\n\n");
+
+                resp.getWriter().println("<h2>Top News</h2>");
+                //resp2.resetBuffer();
+                //resp.resetBuffer();
+                Hashtable<String, String> lastnews = restThread.lastnews;
+                if (lastnews != null) {
+                    Enumeration<String> valores = lastnews.keys();
+
+                    for (int x = 0; x < lastnews.size(); x++) {
+                        if (x == 0) {
+                            resp.getWriter().println("<div id=\"left\"><ul>");
+                        }
+
+                        String valor = valores.nextElement();
+                        resp.getWriter().println("<li><a href=\"#\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
+
+                        if (x == (lastnews.size() / 2)) {
+                            resp.getWriter().println("</ul>");
+                            resp.getWriter().println("</div>");
+                            resp.getWriter().println("<ul>");
+                        }
+
+
+                        //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
+                    }
+                    resp.getWriter().println("</ul>");
+                    resp.getWriter().flush();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // Trouble using the response object's writer so we remove
+                // the user and response object from the hashtable
+                //removeClient(client, null);
+            }
+
+
+        } else if (clients.get(nickName).elementAt(5) != null && i == 5) {
+            try {
+                HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(nickName).elementAt(5);
+
+                resp.getWriter().println("\n\n\n");
+
+                resp.getWriter().flush();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        //System.out.println("ADD TERMINA");
+
 
         // TODO 1: Write your code here.
     }
@@ -142,7 +184,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 obj.logout(k);
                 request.removeAttribute("Login");
                 request.getSession().invalidate();
-                
+
 
 
                 //request.removeAttribute(nickName);
@@ -152,6 +194,14 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 ex.printStackTrace();
             }
         }
+        try {
+            setOnlineUsers((OnlineUsers) obj.onlineUsers(new Generic()).getObj());
+        } catch (RemoteException ex) {
+            Logger.getLogger(ChatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+
     }
 
     // Main method that handles all the assynchronous calls to the servlet.
@@ -179,11 +229,17 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
 
 
         if (obj == null) {
-            System.out.println("ENTRA connect");
+
+            //System.out.println("ENTRA connect");
             obj = (RMIInterface) request.getSession().getAttribute("rmi");
             callback = new CallbackMethodsRMI_Servlets(this);
             obj.setCallbackTomcat((CallbackInterfaceTomcat) callback);
 
+        }
+
+        if (restThread == null) {
+            restThread = new Rest(this);
+            restThread.start();
         }
 
 
@@ -194,9 +250,9 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
         String sessionId = request.getSession().getId();
         //String nickName = (String) request.getSession().getAttribute("nickName");
         Login s = (Login) request.getSession().getAttribute("Login");
-        System.out.println("entra e imprime:" + s.getName());
+        //System.out.println("entra e imprime:" + s.getName());
         //System.out.println("Nick: " + nickName);
-        System.out.println("SESSION: " + sessionId);
+        //System.out.println("SESSION: " + sessionId);
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Cache-control", "no-cache");
         // Disabling the cache, means that the browser will _always_ call this code.
@@ -273,6 +329,38 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     //ChatServlet.clients.toString();
 
 
+                } else if (reqType.equalsIgnoreCase("register4")) {
+                    // Register will add the client HttpServletResponse to the callback array and start a streamed response.
+
+                    // This header is sent to keep the connection open, in order to send future updates.
+                    response.setHeader("Content-type", "application/octet-stream");
+                    // Here is where the important Comet magic happens.
+
+                    // Let's save the HttpServletResponse with the nickName key.
+                    //  That response object will act as a callback to the client.
+                    System.out.println("meter na 4:");
+                    addClient(s.getName(), response, 4);
+
+                    //callback.printMatches(obj.viewMathces(new Generic()));
+                    //ChatServlet.clients.toString();
+
+
+                } else if (reqType.equalsIgnoreCase("register5")) {
+                    // Register will add the client HttpServletResponse to the callback array and start a streamed response.
+
+                    // This header is sent to keep the connection open, in order to send future updates.
+                    response.setHeader("Content-type", "application/octet-stream");
+                    // Here is where the important Comet magic happens.
+
+                    // Let's save the HttpServletResponse with the nickName key.
+                    //  That response object will act as a callback to the client.
+                    System.out.println("meter na 5:");
+                    addClient(s.getName(), response, 5);
+
+                    //callback.printMatches(obj.viewMathces(new Generic()));
+                    //ChatServlet.clients.toString();
+
+
                 } else if (reqType.equalsIgnoreCase("exit")) {
                     // if the client wants to quit, we do it.
                     System.out.println("EXIT::" + s.getName());
@@ -281,6 +369,8 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
 
                 }
             }
+
+
         } else if (event.getEventType() == CometEvent.EventType.READ) {
             // READ event indicates that input data is available
 
@@ -309,7 +399,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     //sendMessageToAll(msg);
 
                 } else if (dest.equals("apostar")) {
-                    System.out.println("entra aposta");
+                    //System.out.println("entra aposta");
                     try {
                         Generic m = new Generic();
                         Bet j = new Bet();
@@ -321,19 +411,19 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
 
 
                         m = this.obj.bet(m, s);
-                        System.out.println("acaba aposta");
+                        //System.out.println("acaba aposta");
+                        synchronized (ChatServlet.clients) {
+                            actualizaCredito(s.getName());
+                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
 
-                        actualizaCredito(s.getName());
-                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
+                            if (m.getConfirmation()) {
+                                resp.getWriter().println("<font color=\"red\">" + s.getName() + " apostou bem..." + "</font>" + "<br/>");
+                            } else {
+                                resp.getWriter().println("<font color=\"red\">" + s.getName() + " apostou mal!..." + "</font>" + "<br/>");
+                            }
 
-                        if (m.getConfirmation()) {
-                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " apostou bem..." + "</font>"+"<br/>");
-                        } else {
-                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " apostou mal!..." + "</font>"+"<br/>");
+                            resp.getWriter().flush();
                         }
-
-                        resp.getWriter().flush();
-                        
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         // Trouble using the response object's writer so we remove
@@ -343,11 +433,11 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     }
 
 
-                }else if (dest.equals("reset")) {
+                } else if (dest.equals("reset")) {
                     System.out.println("entra reset");
                     try {
                         Generic m = new Generic();
-                        Credit j=new Credit();
+                        Credit j = new Credit();
                         m.setObj(j);
 
 
@@ -355,22 +445,59 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                         System.out.println("acaba rest");
 
                         actualizaCredito(s.getName());
-                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
+                        synchronized (ChatServlet.clients) {
+                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
 
-                        if (m.getConfirmation()) {
-                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " reset bem..." +"</font>"+ "<br/>");
-                        } else {
-                            resp.getWriter().println("<font color=\"red\">"+s.getName() + " reset mal!..." +"</font>"+ "<br/>");
+                            if (m.getConfirmation()) {
+                                resp.getWriter().println("<font color=\"red\">" + s.getName() + " reset bem..." + "</font>" + "<br/>");
+                            } else {
+                                resp.getWriter().println("<font color=\"red\">" + s.getName() + " reset mal!..." + "</font>" + "<br/>");
+                            }
+
+                            resp.getWriter().flush();
                         }
-
-                        resp.getWriter().flush();
-
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         // Trouble using the response object's writer so we remove
                         // the user and response object from the hashtable
                         System.out.println("client remove:" + s.getName());
                         //removeClient(client, null);
+                    }
+
+
+                } else if (dest.equals("linkrest")) {
+                    System.out.println("entra linkrest");
+
+                    synchronized (ChatServlet.clients) {
+                        try {
+                            Vector<String> rest = restThread.games.recentBody(restThread.lastnews.get(msg));
+
+                            System.out.println("rest:" + rest.toString());
+                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(5);
+                            resp.getWriter().println("\n\n\n");
+                            for (int g = 0; g < rest.size(); g++) {
+                                if (g == 0) {
+                                    resp.getWriter().println("<h3>" + rest.elementAt(g) + "</h3>");
+                                }
+                                if(g==1){
+                                     resp.getWriter().println("<img src=\"" + rest.elementAt(g) + "\"/>");
+                                }
+
+
+
+
+
+                            }
+
+                            resp.getWriter().flush();
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            // Trouble using the response object's writer so we remove
+                            // the user and response object from the hashtable
+                            //System.out.println("client remove:" + s.getName());
+                            //removeClient(client, null);
+                        }
                     }
 
 
@@ -387,25 +514,25 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 }
             }
             event.close();
+            
 
         } else if (event.getEventType() == CometEvent.EventType.ERROR) {
             // In case of any error, we terminate the connection.
             // The connection remains in cache anyway, and it's later removed
             // when an Exception at write-time is raised.
-            System.out.println("ERRO::" + s.getName());
+            //System.out.println("ERRO::" + s.getName());
             //obj.logout(s);
             event.close();
 
         } else if (event.getEventType() == CometEvent.EventType.END) {
             // When the clients wants to finish, we do it the same way as above.
-            System.out.println("TERMINA::" + s.getName());
+            //System.out.println("TERMINA::" + s.getName());
             //obj.logout(s);
 
             event.close();
         }
     }
 
-    
     public void updateUsersOnline(String nome) throws RemoteException {
         System.out.println("ENTRA UPDATE USERS " + nome);
 
@@ -462,12 +589,13 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
     }
 
     private void updateCurrentMatches(String nome) {
-
+        System.out.println("ENTRA UPDATE MATCHES");
         Vector<ViewMatch> matches = currentMatches;
 
         synchronized (ChatServlet.clients) {
-            Set<String> clientKeySet = ChatServlet.clients.keySet();
+            Set<String> clientKeySet = null;
             if (nome.compareTo("all") == 0) {
+                clientKeySet = ChatServlet.clients.keySet();
             } else {
 
 
@@ -506,35 +634,92 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                 }
             }
         }
-
+        System.out.println("SAI UPDATE MATCHES");
 
     }
 
     public void actualizaCredito(String name) {
         try {
-                        Generic m = new Generic();
-                        Credit j=new Credit();
-                        m.setObj(j);
+            Generic m = new Generic();
+            Credit j = new Credit();
+            m.setObj(j);
 
-                        Login s=new Login();
-                        s.setName(name);
-                        m = this.obj.getCredit(m,s );
+            Login s = new Login();
+            s.setName(name);
+            m = this.obj.getCredit(m, s);
 
-                        j=(Credit)m.getObj();
-                        
-                        HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(3);
+            j = (Credit) m.getObj();
 
-                        resp.getWriter().println("\n\n\n");
-                        resp.getWriter().println(j.getCredit());
-                        
+            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(3);
 
-                        resp.getWriter().flush();
+            resp.getWriter().println("\n\n\n");
+            resp.getWriter().println(j.getCredit());
 
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        // Trouble using the response object's writer so we remove
-                        // the user and response object from the hashtable
-                        //removeClient(client, null);
+
+            resp.getWriter().flush();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // Trouble using the response object's writer so we remove
+            // the user and response object from the hashtable
+            //removeClient(client, null);
+        }
+    }
+
+    void actualizaLinks(Hashtable<String, String> lastnews, String user) {
+        System.out.println("ENTRA NO ACTUALIZA LINKS" + lastnews.toString());
+
+        synchronized (ChatServlet.clients) {
+            Set<String> clientKeySet = null;
+            if (user.compareTo("all") == 0) {
+                clientKeySet = ChatServlet.clients.keySet();
+            } else {
+
+
+                clientKeySet = new HashSet<String>();
+                clientKeySet.add(user);
+            }
+            Enumeration<String> valores = lastnews.keys();
+            // Let's iterate through the clients and send each one the message.
+            for (String client : clientKeySet) {
+                try {
+                    HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(client).elementAt(4);
+
+                    //resp.resetBuffer();
+                    resp.getWriter().println("\n\n\n");
+
+                    resp.getWriter().println("<h2>Top News</h2>");
+                    //resp2.resetBuffer();
+                    //resp.resetBuffer();
+                    for (int x = 0; x < lastnews.size(); x++) {
+                        if (x == 0) {
+                            resp.getWriter().println("<div id=\"left\"><ul>");
+                        }
+
+                        String valor = valores.nextElement();
+                        resp.getWriter().println("<li><a href=\"#\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
+
+                        if (x == (lastnews.size() / 2)) {
+                            resp.getWriter().println("</ul>");
+                            resp.getWriter().println("</div>");
+                            resp.getWriter().println("<ul>");
+                        }
+
+
+                        //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
                     }
+                    resp.getWriter().println("</ul>");
+                    resp.getWriter().flush();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    // Trouble using the response object's writer so we remove
+                    // the user and response object from the hashtable
+                    System.out.println("client remove:" + client);
+                    //removeClient(client, null);
+                }
+            }
+        }
+        System.out.println("SAI NO ACTUALIZA LINKS");
     }
 }

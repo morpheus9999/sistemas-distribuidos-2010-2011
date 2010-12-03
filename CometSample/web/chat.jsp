@@ -41,7 +41,7 @@
 	        <div id="displayCometChat">
 	        	<h2>Comet Chat</h2>
 	            <div id="cometChat">
-	            	merda
+	            	
 	            </div>
 	            
 	            <div id="onlineUsers">
@@ -104,6 +104,9 @@
     var board2 = document.getElementById('currentMatches');
     var board3 = document.getElementById('onlineUsers');
     var board4 = document.getElementById('credito');
+    var board5 = document.getElementById('topNews');
+    var board6 = document.getElementById('selectedNew');
+    
     // Register with Server for COMET callbacks.
     comet.get("ChatServlet?type=register", function(response1) {
         // updates the message board with the new response.
@@ -124,10 +127,25 @@
            
             
     });
+    
     comet.get("ChatServlet?type=register3", function(response4) {
         // updates the message board with the new response.
         //alert("merda4");
         board4.innerHTML =response4.split("\n\n\n").pop();
+           
+            
+    });
+    comet.get("ChatServlet?type=register4", function(response5) {
+        // updates the message board with the new response.
+        //alert("merda4");
+        board5.innerHTML =response5.split("\n\n\n").pop();
+           
+            
+    });
+    comet.get("ChatServlet?type=register5", function(response6) {
+        // updates the message board with the new response.
+        //alert("merda4");
+        board6.innerHTML =response6.split("\n\n\n").pop();
            
             
     });
@@ -201,6 +219,15 @@
             // Do Nothing
         })
     }
+    function linkRest(m) {
+        
+			
+                        
+           var msgg="linkrest\n "+m;             
+        comet.post("ChatServlet", msgg, function(response1) {
+            // Do Nothing
+        })
+    }
     
     
     function apostar() {
@@ -223,7 +250,7 @@
             // Do Nothing
         })
         // Clears the value of the message element
-        document.getElementById('apostaMensgem').value = '';
+        document.getElementById('apostaMensagem').value = '';
     }
     
     
