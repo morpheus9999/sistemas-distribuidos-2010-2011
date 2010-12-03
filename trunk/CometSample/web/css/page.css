@@ -111,17 +111,22 @@ b#credito {
 	text-align: left;
 }
 
-#topNews li {
+#topNews ul {
+	margin: 0;
+	margin-left: -25px;
+}
+
+#topNews ul li {
 	list-style-type: square;
 	line-height: 19px;
 	margin-bottom: 12px;
 }
 
 #topNews #left {
-	width: 46%;
+	width: 48%;
 	display: inline;
 	float: left;
-	margin-right: 10px;
+	margin-right: 35px;
 }
 
 #selectedNew {
@@ -183,7 +188,8 @@ b#credito {
 	font-size:9px;
 }
 
-a {
+a,
+a:visited {
 	color: #888888;
 }
 
@@ -191,7 +197,7 @@ a:hover {
 	color: #cccccc;
 }
 
-a #add_new_user{
+a #add_new_user {
 	background:url(../images/add_new_user_normal.png) no-repeat 0 0;
 }
 
