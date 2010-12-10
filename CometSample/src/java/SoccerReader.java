@@ -22,7 +22,7 @@ public class SoccerReader {
     // IMPORTANT
     // TODO 0
     // Get your own key at http://guardian.mashery.com/apps/register
-    //f39fdb9wnbps7graqwqkyyhc
+    
     
     private String API_KEY = "zyw4m5v4z85hk9kwu5updfcd";
 
@@ -72,12 +72,13 @@ public class SoccerReader {
             if (connection.getResponseCode() >= 300) {
                 // We want more information about what went wrong.
                 debug(connection);
+                return null;
             }
 
 
             // Response body from InputStream.
             InputSource inputSource = new InputSource(connection.getInputStream());
-            System.out.println("");
+            
             // XPath is a way of reading XML files.
             XPathFactory factory = XPathFactory.newInstance();
             XPath xPath = factory.newXPath();
@@ -99,6 +100,7 @@ public class SoccerReader {
                 // Fetching the atributes of the node element
                 String title = node.getAttributes().getNamedItem("web-title").getTextContent();
                 lastID = node.getAttributes().getNamedItem("id").getTextContent();
+                
                 ID.put(title, lastID);
                 //System.out.println(title);
             }
@@ -140,11 +142,13 @@ public class SoccerReader {
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
             connection.setRequestProperty("User-agent", "ToDo Manager");
-
+Vector<String> envia=new Vector<String>();
             // If we get a Redirect or an Error (3xx, 4xx and 5xx)
             if (connection.getResponseCode() >= 300) {
                 // We want more information about what went wrong.
                 debug(connection);
+                envia.addElement("ERROR::: "+connection.getResponseCode());
+                return envia;
             }
 
             // Response body from InputStream.
@@ -156,7 +160,7 @@ public class SoccerReader {
 
             // TODO 2: Extract all <field> elements using XPath.
             NodeList nodes = (NodeList) xPath.evaluate("response/content/fields/field", inputSource, XPathConstants.NODESET);
-            Vector<String> envia=new Vector<String>();
+            
             for (int i = 0; i < nodes.getLength(); i++) {
                 Node node = nodes.item(i);
                 System.out.println(node.getAttributes().getNamedItem("name").getNodeValue());

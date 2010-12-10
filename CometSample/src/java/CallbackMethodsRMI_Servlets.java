@@ -9,11 +9,8 @@ import Client_Server.OnlineUsers;
 import Client_Server.ViewMatch;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -34,10 +31,12 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
      * @param s
      * @throws java.rmi.RemoteException
      */
+    @Override
     public void printOnClient(String s) throws java.rmi.RemoteException {
         System.out.println(s);
     }
 
+    @Override
     public void printMatches(Generic l)throws java.rmi.RemoteException {
         System.out.println("entra matches!!!");
         Vector<ViewMatch> matches = (Vector<ViewMatch>) l.getObj();
@@ -72,9 +71,10 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
+                    
                     // Trouble using the response object's writer so we remove
                     // the user and response object from the hashtable
-                    m.removeClient(client, null);
+                   // m.removeClient(client, null);
                 }
             }
 
@@ -83,6 +83,7 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
 
     }
     
+    @Override
     public void printMessage(String from, String message, String destination) throws java.rmi.RemoteException {
         System.out.println("entra msg");
 
@@ -122,6 +123,7 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
         System.out.println("sai msg");
     }
 
+    @Override
     public void printMessageall(String from, String message) throws java.rmi.RemoteException {
         System.out.println("entra msg all print");
 
@@ -147,18 +149,21 @@ public class CallbackMethodsRMI_Servlets extends java.rmi.server.UnicastRemoteOb
         System.out.println("sai msg all print");
 
     }
+    @Override
     public void UpdateUsersOnline() throws java.rmi.RemoteException{
                 System.out.println("Start!!!userss");
                 m.setOnlineUsers((OnlineUsers)m.obj.onlineUsers(new Generic()).getObj());
         
         System.out.println("end!!!userss");
     }
+    @Override
     public void UpdateMatchs() throws java.rmi.RemoteException{
                 System.out.println("Start!!!matches");
                 m.setCurrentMatches((Vector<ViewMatch>) m.obj.viewMathces(new Generic()).getObj());
         
         System.out.println("end!!!matches");
     }
+    @Override
     public void UpdateCredit(String nome)throws java.rmi.RemoteException{
                 m.actualizaCredito(nome);
         

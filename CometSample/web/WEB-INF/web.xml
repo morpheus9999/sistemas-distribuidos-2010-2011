@@ -4,11 +4,14 @@
         <servlet-name>ChatServlet</servlet-name>
         <servlet-class>ChatServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegistoServlet</servlet-name>
+        <servlet-class>RegistoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ChatServlet</servlet-name>
         <url-pattern>/ChatServlet</url-pattern>
     </servlet-mapping>
-    
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>LoginServlet</servlet-class>
@@ -17,7 +20,10 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
-        
+    <servlet-mapping>
+        <servlet-name>RegistoServlet</servlet-name>
+        <url-pattern>/RegistoServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
