@@ -11,6 +11,9 @@ import Client_Server.RMIInterface;
 import Client_Server.ViewMatch;
 import java.io.IOException;
 import java.lang.String;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -47,7 +50,25 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
     public static Vector<ViewMatch> currentMatches = null;
     public static Rest restThread;
 
+    public void init() {
+
+        try {
+            this.obj = (RMIInterface) Naming.lookup(Constants.clientPrimaryServerRMI);
+            callback = new CallbackMethodsRMI_Servlets(this);
+            obj.setCallbackTomcat((CallbackInterfaceTomcat) callback);
+
+
+        } catch (NotBoundException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RemoteException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
     // Method called when a client is registers with the CometProcessor
+
     public void addClient(String nickName, HttpServletResponse clientResponseObject, int i) throws RemoteException {
         Vector<HttpServletResponse> m;
 
@@ -71,6 +92,10 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
         if (callback != null) {
             if (clients.get(nickName).elementAt(0) != null && i == 0) {
                 callback.printMessageall(nickName, " está online");
+                Login login=new Login();
+                login.setName(nickName);
+                obj.getMessage(login);
+                
             }
         }
 
@@ -135,6 +160,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                         }
 
                         String valor = valores.nextElement();
+                        valor = valor.replaceAll("'", "±");
                         resp.getWriter().println("<li><a href=\"#openNew\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
 
                         if (x == ((lastnews.size() / 2) - 1)) {
@@ -147,7 +173,7 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                         //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
                     }
                     resp.getWriter().println("</ul>");
-                    
+
                 }
                 resp.getWriter().flush();
             } catch (Exception ex) {
@@ -158,17 +184,17 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
             }
 
 
-        } 
-                
+        }
 
-                
-        
+
+
+
         //System.out.println("ADD TERMINA");
 
 
         // TODO 1: Write your code here.
     }
-    
+
     // Method called after an Exception is thrown when the server tries to write to a client's socket.
     public void removeClient(String nickName, HttpServletRequest request) {
         System.out.println("entrou no remove client!!!!");
@@ -226,10 +252,8 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
         if (obj == null) {
 
             //System.out.println("ENTRA connect");
-            obj = (RMIInterface) request.getSession().getAttribute("rmi");
-            callback = new CallbackMethodsRMI_Servlets(this);
-            obj.setCallbackTomcat((CallbackInterfaceTomcat) callback);
-
+            //obj = (RMIInterface) request.getSession().getAttribute("rmi");
+            System.out.println("ERROR rmi");
         }
 
         if (restThread == null) {
@@ -465,21 +489,22 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
 
                     synchronized (ChatServlet.clients) {
                         try {
+                            msg = msg.replaceAll("±", "'");
                             Vector<String> rest = restThread.games.recentBody(restThread.lastnews.get(msg));
 
                             System.out.println("rest:" + rest.toString());
                             HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(4);
                             resp.getWriter().println("\n\n\n!!!!");
-                            System.out.println("-->"+rest.toString());
+                            System.out.println("-->" + rest.toString());
                             for (int g = 0; g < rest.size(); g++) {
-                                
+
                                 if (g == 0) {
                                     resp.getWriter().println("<h3>" + rest.elementAt(g) + "</h3>");
-                                }else if(g==1){
+                                } else if (g == 1) {
                                     resp.getWriter().println("<h4>" + rest.elementAt(g) + "</h4>");
-                                }else if(g==2){
+                                } else if (g == 2) {
                                     resp.getWriter().println("<img src=\"" + rest.elementAt(g) + "\"/>");
-                                }else{
+                                } else {
                                     resp.getWriter().println(rest.elementAt(g));
                                 }
 
@@ -508,11 +533,33 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     gen.setCode(Constants.messageCode);
                     gen.setObj(mes);
                     obj.messageUser(gen);
+                    synchronized (ChatServlet.clients) {
+                        try {
+                            HttpServletResponse resp = (HttpServletResponse) ChatServlet.clients.get(s.getName()).elementAt(0);
+
+
+                            resp.getWriter().println(s.getName() + ":" + msg);
+
+
+                            //System.out.println("["+matches.elementAt(x).getIdJogo()+"]"+ matches.elementAt(x).getHome()+" VS "+matches.elementAt(x).getFora());
+
+                            //resp.getWriter().println("</ul>");
+
+
+                            resp.getWriter().flush();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            // Trouble using the response object's writer so we remove
+                            // the user and response object from the hashtable
+                            //removeClient(client, null);
+                        }
+
+                    }
                     //sendMessage(msg,dest);
                 }
             }
             event.close();
-            
+
 
         } else if (event.getEventType() == CometEvent.EventType.ERROR) {
             // In case of any error, we terminate the connection.
@@ -686,17 +733,17 @@ public class ChatServlet extends HttpServlet implements CometProcessor {
                     resp.getWriter().println("\n\n\n%%%%");
 
                     resp.getWriter().println("<h2>Top News</h2>");
-                    
+
                     for (int x = 0; x < lastnews.size(); x++) {
                         if (x == 0) {
                             resp.getWriter().println("<div id=\"left\"><ul>");
                         }
 
                         String valor = valores.nextElement();
-                        
+                        valor = valor.replaceAll("'", "±");
                         resp.getWriter().println("<li><a href=\"#openNew\" onclick=\"linkRest('" + valor + "');\" >" + valor + "</a></li>");
-                        
-                        if (x == (lastnews.size() / 2)-1) {
+
+                        if (x == (lastnews.size() / 2) - 1) {
                             resp.getWriter().println("</ul>");
                             resp.getWriter().println("</div>");
                             resp.getWriter().println("<ul>");

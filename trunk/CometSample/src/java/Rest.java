@@ -1,7 +1,5 @@
 
 import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -30,15 +28,17 @@ public class Rest extends Thread{
         while(true){
             try {
                 
-            lastnews=games.latestHeadlines("portugal", "sport");
+                lastnews=games.latestHeadlines("portugal", "sport");
+                if(lastnews!=null){
                 System.out.println("::>>>>>"+lastnews.toString());
-            m.actualizaLinks(lastnews, "all");
-            
-                Thread.sleep(600000);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                m.actualizaLinks(lastnews, "all");
+                    }
+                    Thread.sleep(60000);
+            } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                
             }
-            
+                     
         }
         
     }

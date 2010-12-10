@@ -2,6 +2,9 @@
 <%@page import="java.util.*" %>
 <html>
 <head>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" CONTENT="-1">
+    
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="css/page.css" rel="stylesheet" type="text/css" />
 
@@ -260,11 +263,12 @@
     
 	
     function quitChat() {
-        alert("entra");
+        
         comet.post("ChatServlet?type=exit", '', function(response1) {
             // Exits browser
             window.location='about:blank';
         })
+        
     }
 	
 	
