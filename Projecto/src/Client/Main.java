@@ -176,7 +176,7 @@ public class Main {
                 sock = new Socket(Constants.primaryServerTCP, Constants.primaryServerTCPPort);
             else
                 sock = new Socket(Constants.backupServerTCP, Constants.backupServerTCPPort);
-            
+                
             if(sock != null && sock.isConnected()) {
                 outStream = sock.getOutputStream();
                 out = new ObjectOutputStream(outStream);

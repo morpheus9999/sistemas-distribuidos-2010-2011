@@ -40,7 +40,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     }
     public void setCallbackTomcat(CallbackInterfaceTomcat callback) throws java.rmi.RemoteException {
         Main.calbackInterfaceTomcat=callback;
-        
+
     }
 
     /**
@@ -50,26 +50,28 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  boolean login(Generic gen) throws java.rmi.RemoteException {
-        System.out.println("WTF");
+        System.out.println("Login:::");
         if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
             System.out.println("lg"+lg.getName());
+            
+            
             if(Main.onlineUsersTCP.containsKey(lg.getName()))
                 return false;
             else if(Main.onlineUsersRMI.containsKey(lg.getName()))
                 return false;
             else if(Main.onlineUsersRMITomcat.contains(lg.getName()))
                 return false;
-            
+
             if(this.call==null)
                 Main.onlineUsersRMITomcat.addElement(lg.getName());
-            
+
             else
                 Main.onlineUsersRMI.put(lg.getName(), this.call);
-            
+
             if(Main.calbackInterfaceTomcat!=null){
                 Main.calbackInterfaceTomcat.UpdateUsersOnline();
-            
+
             }
             return true;
         } else
@@ -87,7 +89,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         if(Main.onlineUsersRMI.containsKey(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
         }else if(Main.onlineUsersRMITomcat.contains(lg.getName())){
-            Main.onlineUsersRMITomcat.remove(lg.getName());   
+            Main.onlineUsersRMITomcat.remove(lg.getName());
         }
         if (Main.calbackInterfaceTomcat != null) {
             Main.calbackInterfaceTomcat.UpdateUsersOnline();
@@ -102,7 +104,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  boolean register(Generic gen) throws java.rmi.RemoteException {
-        //System.out.println("WTF2");
         return Queries.register(gen);
     }
 
@@ -114,7 +115,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  Generic getCredit(Generic gen, Login log) throws java.rmi.RemoteException {
-        //System.out.println("WTF3");
         return Queries.getCredit(gen, log);
     }
 
@@ -175,11 +175,11 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         temp = Main.onlineUsersRMI.keys();
         while(temp.hasMoreElements())
             list.addEntry(temp.nextElement());
-        
+
         temp= Main.onlineUsersRMITomcat.elements();
         while(temp.hasMoreElements())
             list.addEntry(temp.nextElement());
-        
+
         gen.setConfirmation(true);
         gen.setObj(list);
 
@@ -212,7 +212,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                     System.out.println("ENTRA!!!!3");
 
             CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-            
+
             try {
                 callback.printMessage(fromUser, message);
             } catch (Exception error) {
@@ -223,12 +223,11 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                     System.out.println("ENTRA!!!!4");
 
             CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
-            
+
             try {
                 callback.printMessage(fromUser, message,toUser);
             } catch (Exception error) {
                 error.printStackTrace();
-                System.out.println("merda!!!!!!!");
                 System.out.println(" ::"+callback);
                 /*  if it throws an error, delete it    */
                 Main.onlineUsersRMI.remove(toUser);
@@ -236,7 +235,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         }
         else { /*    or stores to send later accordingly    */
             Queries.setMensagens(fromUser, toUser, message);
-            
+
             System.out.println(toUser+" esta offline");
         }
     }
