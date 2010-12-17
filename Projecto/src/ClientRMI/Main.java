@@ -7,24 +7,11 @@ package ClientRMI;
 
 import Client_Server.Selection;
 import Client_Server.Bet;
-import Client_Server.CallbackInterface;
 import Client_Server.Constants;
 import Client_Server.Credit;
 import Client_Server.Generic;
-import Client_Server.Input;
 import Client_Server.Login;
-import Client_Server.Message;
 import Client_Server.OnlineUsers;
-import Client_Server.RMIInterface;
-import Client_Server.ViewMatch;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

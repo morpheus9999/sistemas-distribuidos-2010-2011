@@ -15,6 +15,7 @@ import Client_Server.OnlineUsers;
 import Client_Server.RMIInterface;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.Unreferenced;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -27,9 +28,11 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     static CallbackInterface call=null;
 
     public RMIMethods() throws java.rmi.RemoteException {
-
+        
     }
 
+    
+    
     /**
      * getCallback - gets an interface to interact with the user
      * @param callback
@@ -51,6 +54,10 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      */
     public  boolean login(Generic gen) throws java.rmi.RemoteException {
         System.out.println("Login:::");
+        
+        DAOFactory mysqlFactory =   DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+        AccountDAO accountDAO = mysqlFactory.getAccountDAO();
+        //accountDAO.loginAccount(gen);
         if(Queries.login(gen)) {
             Login lg = (Login) gen.getObj();
             System.out.println("lg"+lg.getName());
@@ -79,8 +86,8 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     }
 
     /**
-     * Login
-     * @param gen
+     * Logout
+     * @param lg
      * @return true if sucessfull/false otherwise
      * @throws java.rmi.RemoteException
      */
@@ -104,6 +111,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  boolean register(Generic gen) throws java.rmi.RemoteException {
+        //return accountDAO.insertAccount(gen);
         return Queries.register(gen);
     }
 

@@ -4,31 +4,32 @@
  */
 package Server;
 
+import java.sql.*;
+
 /**
  *
  * @author jojo
  */
 // Cloudscape concrete DAO Factory implementation
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MysqlDAOFactory extends DAOFactory {
 
     public static final String DBURL = "jdbc:mysql://localhost:8889/mydb?" + "user=root&password=root";
+    public static final String DRIVER = "com.mysql.jdbc.Driver";
+    static Connection con;
 
     // method to create Cloudscape connections
     public static Connection createConnection() {
         // Use DRIVER and DBURL to create a connection
         // Recommend connection pool implementation/usage
-
         try {
-
-            return DriverManager.getConnection(DBURL);
-        
-        } catch (SQLException ex) {
+            Class.forName(DRIVER);
+            con = DriverManager.getConnection(DBURL);
+        } catch (Exception e) {
             return null;
+            //e.printStackTrace();
         }
+        return con;
 
     }
 
@@ -36,11 +37,13 @@ public class MysqlDAOFactory extends DAOFactory {
         // MysqlCustomerDAO implements CustomerDAO
         return new MysqlCustomerDAO();
     }
-    /*
+    
     public AccountDAO getAccountDAO() {
-    // CloudscapeAccountDAO implements AccountDAO
-    return new CloudscapeAccountDAO();
+        // MysqlAccountDAO implements AccountDAO
+
+        return new MysqlAccountDAO();
     }
+    /*
     public OrderDAO getOrderDAO() {
     // CloudscapeOrderDAO implements OrderDAO
     return new CloudscapeOrderDAO();
