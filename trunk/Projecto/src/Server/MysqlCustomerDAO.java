@@ -22,10 +22,10 @@ import javax.sql.RowSet;
 
 public class MysqlCustomerDAO implements CustomerDAO {
   
-    Connection con=null;
+    
   public MysqlCustomerDAO() {
     // initialization 
-      con=MysqlDAOFactory.createConnection();
+      
   }
 
   // The following methods can use
@@ -33,6 +33,7 @@ public class MysqlCustomerDAO implements CustomerDAO {
   // to get a connection as required
 
   public int insertCustomer() {
+      Connection con=MysqlDAOFactory.createConnection();
       
     // Implement insert customer here.
     // Return newly created customer number

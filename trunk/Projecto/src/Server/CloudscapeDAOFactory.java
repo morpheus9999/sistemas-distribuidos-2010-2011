@@ -28,6 +28,11 @@ public class CloudscapeDAOFactory extends DAOFactory {
     // CloudscapeCustomerDAO implements CustomerDAO
     return new MysqlCustomerDAO();
   }
+
+    @Override
+    public AccountDAO getAccountDAO() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
   /*
   public AccountDAO getAccountDAO() {
     // CloudscapeAccountDAO implements AccountDAO

@@ -22,7 +22,7 @@ public abstract class DAOFactory {
   // created. The concrete factories will have to 
   // implement these methods.
   public abstract CustomerDAO getCustomerDAO();
-  //public abstract AccountDAO getAccountDAO();
+  public abstract AccountDAO getAccountDAO();
   //public abstract OrderDAO getOrderDAO();
   
 

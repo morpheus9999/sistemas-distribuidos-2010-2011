@@ -36,6 +36,9 @@ public class Main {
     public static Selection opt = new Selection();
     public static BetThread game;
     
+    
+    
+    
     public static void main(String args[]) {
         int counter = 0;
 
@@ -55,9 +58,12 @@ public class Main {
             game.start();
 
             /*  opens RMI connections   */
+            
             try {
                 RMIInterface obj = new RMIMethods();
+                
                 LocateRegistry.createRegistry(Constants.primaryServerRMIPort).rebind(Constants.primaryServerRMIObj, obj);
+                
             } catch (RemoteException ex) {
                 System.out.println("RMI connection error");
             }
