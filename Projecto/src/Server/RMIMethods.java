@@ -13,10 +13,13 @@ import Client_Server.Login;
 import Client_Server.Message;
 import Client_Server.OnlineUsers;
 import Client_Server.RMIInterface;
+import Server.IteratorPattern.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.Unreferenced;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -55,14 +58,28 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     public  boolean login(Generic gen) throws java.rmi.RemoteException {
         System.out.println("Login:::");
         
-        DAOFactory mysqlFactory =   DAOFactory.getDAOFactory(DAOFactory.MYSQL);
-        AccountDAO accountDAO = mysqlFactory.getAccountDAO();
+        
         //accountDAO.loginAccount(gen);
-        if(Queries.login(gen)) {
+        if (Main.accountDAO.loginAccount(gen)) {
             Login lg = (Login) gen.getObj();
-            System.out.println("lg"+lg.getName());
+            System.out.println("lg" + lg.getName());
+            
+            if(Main.onlineUsers.containsKey(lg.getName())){
+                return false;
+            }
+            
+            if (this.call == null) 
+                Main.onlineUsers.put(lg.getName(), new RMITomcat());
+            else
+                Main.onlineUsers.put(lg.getName(), new RMI(this.call));
             
             
+            
+            
+
+            
+            
+            /*
             if(Main.onlineUsersTCP.containsKey(lg.getName()))
                 return false;
             else if(Main.onlineUsersRMI.containsKey(lg.getName()))
@@ -75,11 +92,14 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 
             else
                 Main.onlineUsersRMI.put(lg.getName(), this.call);
-
+             * 
+             * 
+             */
             if(Main.calbackInterfaceTomcat!=null){
                 Main.calbackInterfaceTomcat.UpdateUsersOnline();
 
             }
+             
             return true;
         } else
             return false;
@@ -92,15 +112,22 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  boolean logout(Login lg) throws java.rmi.RemoteException {
-
+        
+        Main.onlineUsers.remove(lg.getName());
+        
+        
+        /*
         if(Main.onlineUsersRMI.containsKey(lg.getName())) {
             Main.onlineUsersRMI.remove(lg.getName());
         }else if(Main.onlineUsersRMITomcat.contains(lg.getName())){
             Main.onlineUsersRMITomcat.remove(lg.getName());
         }
+         * 
+         */
         if (Main.calbackInterfaceTomcat != null) {
             Main.calbackInterfaceTomcat.UpdateUsersOnline();
         }
+        
         return true;
     }
 
@@ -112,7 +139,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      */
     public  boolean register(Generic gen) throws java.rmi.RemoteException {
         //return accountDAO.insertAccount(gen);
-        return Queries.register(gen);
+        return Main.accountDAO.insertAccount(gen);
     }
 
     /**
@@ -123,7 +150,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  Generic getCredit(Generic gen, Login log) throws java.rmi.RemoteException {
-        return Queries.getCredit(gen, log);
+        return Main.accountDAO.getCreditAccount(gen, log);
     }
 
     /**
@@ -134,7 +161,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws java.rmi.RemoteException
      */
     public  Generic resetCredit(Generic gen, Login log) throws java.rmi.RemoteException {
-        return Queries.resetCredit(gen, log);
+        return Main.accountDAO.resetCreditAccount(gen, log);
     }
 
     /**
@@ -144,7 +171,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws RemoteException
      */
     public  Generic viewMathces(Generic gen) throws RemoteException {
-        return Queries.viewMatches(gen, Main.game.getRonda());
+        return Main.customerDAO.viewMatchesCustomer(gen, Main.game.getRonda());
     }
 
     /**
@@ -156,7 +183,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      */
     public  Generic bet(Generic gen, Login lg) throws RemoteException {
         //meter a variavel da ronda....
-        if(Queries.newBet(gen,lg,Main.game.getRonda()))
+        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRonda()))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
@@ -172,22 +199,13 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      */
     public  Generic onlineUsers(Generic gen) {
         OnlineUsers list = new OnlineUsers();
-        Enumeration<String> temp;
-
-        /*  adds TCP users to the list  */
-        temp = Main.onlineUsersTCP.keys();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
-
-        /*  adds RMI users to the list  */
-        temp = Main.onlineUsersRMI.keys();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
-
-        temp= Main.onlineUsersRMITomcat.elements();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
-
+        
+        Iterator<String> tempo = Main.onlineUsers.keySet().iterator();
+        
+        while(tempo.hasNext())
+            list.addEntry(tempo.next());
+        
+            
         gen.setConfirmation(true);
         gen.setObj(list);
 
@@ -205,47 +223,93 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         gen.setCode(Constants.receiveMessage);
         gen.setConfirmation(true);
         gen.setObj(mes);
+        
+        
+        if(Main.onlineUsers.containsKey(toUser)){
+            if (Main.onlineUsers.get(toUser) instanceof TCP) {
+                ClientThreadTCP sock = (ClientThreadTCP) ((TCP) Main.onlineUsers.get(toUser)).getCallbackObject();
+                try {
+                    sock.out.writeObject(gen);
+                } catch (IOException error) {
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsers.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
 
-        /*  checks if the user is online and sends  */
-        if(Main.onlineUsersTCP.containsKey(toUser)) {
-            ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
+                }
+            } else if (Main.onlineUsers.get(toUser) instanceof RMI) {
 
-            try {
-                sock.out.writeObject(gen);
-            } catch (IOException error) {
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersTCP.remove(toUser);
+                CallbackInterface callback = (CallbackInterface) ((RMI) Main.onlineUsers.get(toUser)).getCallbackObject();
+
+                try {
+                    callback.printMessage(fromUser, message);
+                } catch (Exception error) {
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsers.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                }
+
+            } else if (Main.onlineUsers.get(toUser) instanceof RMITomcat) {
+                CallbackInterfaceTomcat callback = (CallbackInterfaceTomcat) ((RMITomcat) Main.onlineUsers.get(toUser)).getCallbackObject();
+
+                try {
+                    callback.printMessage(fromUser, message, toUser);
+                } catch (Exception error) {
+                    error.printStackTrace();
+                    System.out.println(" ::" + callback);
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsersRMI.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                }
+
             }
-        } else if(Main.onlineUsersRMI.containsKey(toUser)) {
-                    System.out.println("ENTRA!!!!3");
+        } else { /*    or stores to send later accordingly    */
+            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
 
-            CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-
-            try {
-                callback.printMessage(fromUser, message);
-            } catch (Exception error) {
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersRMI.remove(toUser);
-            }
-        } else if(Main.onlineUsersRMITomcat.contains(toUser)) {
-                    System.out.println("ENTRA!!!!4");
-
-            CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
-
-            try {
-                callback.printMessage(fromUser, message,toUser);
-            } catch (Exception error) {
-                error.printStackTrace();
-                System.out.println(" ::"+callback);
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersRMI.remove(toUser);
-            }
-        }
-        else { /*    or stores to send later accordingly    */
-            Queries.setMensagens(fromUser, toUser, message);
-
-            System.out.println(toUser+" esta offline");
-        }
+            System.out.println(toUser + " esta offline");
+        }  
+        
+        
+//
+//        /*  checks if the user is online and sends  */
+//        if(Main.onlineUsersTCP.containsKey(toUser)) {
+//            ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
+//
+//            try {
+//                sock.out.writeObject(gen);
+//            } catch (IOException error) {
+//                /*  if it throws an error, delete it    */
+//                Main.onlineUsersTCP.remove(toUser);
+//            }
+//        } else if(Main.onlineUsersRMI.containsKey(toUser)) {
+//                    System.out.println("ENTRA!!!!3");
+//
+//            CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
+//
+//            try {
+//                callback.printMessage(fromUser, message);
+//            } catch (Exception error) {
+//                /*  if it throws an error, delete it    */
+//                Main.onlineUsersRMI.remove(toUser);
+//            }
+//        } else if(Main.onlineUsersRMITomcat.contains(toUser)) {
+//                    System.out.println("ENTRA!!!!4");
+//
+//            CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
+//
+//            try {
+//                callback.printMessage(fromUser, message,toUser);
+//            } catch (Exception error) {
+//                error.printStackTrace();
+//                System.out.println(" ::"+callback);
+//                /*  if it throws an error, delete it    */
+//                Main.onlineUsersRMI.remove(toUser);
+//            }
+//        }
+//        else { /*    or stores to send later accordingly    */
+//            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+//
+//            System.out.println(toUser+" esta offline");
+//        }
     }
 
     /**
@@ -326,7 +390,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     public  void getMessage(Login lg) throws  RemoteException {
         Message temp;
         System.out.println("ENTRA!!!!1");
-        for(temp = Queries.getMensagens(lg.getName()); temp != null; temp = Queries.getMensagens(lg.getName()))
+        for(temp = Main.accountDAO.getMensagensAccount(lg.getName()); temp != null; temp = Main.accountDAO.getMensagensAccount(lg.getName()))
             message(temp.getAuthor(), temp.getTo(), temp.getText());
     }
 }

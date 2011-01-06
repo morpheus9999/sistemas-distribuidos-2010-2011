@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server;
+package Server.DAOFactoryPattern;
 
+import Server.DAOFactoryPattern.ConsistencyDAO;
+import Server.DAOFactoryPattern.CustomerDAO;
 import java.sql.*;
 
 /**
@@ -42,6 +44,9 @@ public class MysqlDAOFactory extends DAOFactory {
         // MysqlAccountDAO implements AccountDAO
 
         return new MysqlAccountDAO();
+    }
+    public ConsistencyDAO getConsistencyDAO(){
+        return new MysqlConsistencyDAO();
     }
     /*
     public OrderDAO getOrderDAO() {

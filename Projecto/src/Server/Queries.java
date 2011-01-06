@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * @author JLA
  */
 public class Queries {
-
+    //feito
     static Generic resetCredit(Generic temp, Login lg) {
         //System.out.println("reset login:"+lg.getName());
         Statement stmt = null;
@@ -51,6 +51,7 @@ public class Queries {
 
         }
     }
+    //feito
     static int rondaActual(){
         //System.out.println("RONDA ACTUAL ");
         Statement stmt = null;
@@ -81,6 +82,7 @@ public class Queries {
         }
 
     }
+    //feito
     static int tipoActual(){
         //System.out.println("TIPO ACTUAL ");
         Statement stmt = null;
@@ -111,6 +113,7 @@ public class Queries {
         }
 
     }
+    //feito
     static void actualiza(int idRonda,int tipo){
          //System.out.println("ACTUALIZA ");
         Statement stmt = null;
@@ -136,6 +139,7 @@ public class Queries {
         }
 
     }
+    //feito
     static long espera(){
         //System.out.println("ESPERA ");
         Statement stmt = null;
@@ -167,7 +171,7 @@ public class Queries {
         
     }
 
-
+    //feito
     static Generic viewMatches(Generic temp, int ronda) {
         Statement stmt = null;
         
@@ -210,7 +214,7 @@ public class Queries {
 
         }
     }
-
+    //feito
     static boolean login(Generic generic) {
         Login lg = (Login) generic.getObj();
 
@@ -264,7 +268,7 @@ public class Queries {
         }
 
     }
-
+    //feito
     static boolean register(Generic generic) {
         User lg = (User) generic.getObj();
 
@@ -308,7 +312,7 @@ public class Queries {
         }
 
     }
-
+    //feito
     static boolean newBet(Generic generic, Login lg,int ronda) {
 
          
@@ -374,7 +378,7 @@ public class Queries {
 
         }
     }
-
+    //feito
     static boolean NewRound(IBetManager man, int ronda) {
 
         //User lg = (User)generic.getObj();
@@ -425,7 +429,7 @@ public class Queries {
         }
 
     }
-
+//feito
     static Generic getCredit(Generic gen, Login lg) {
          // nao deverá ser user
         Credit cr = (Credit) gen.getObj();
@@ -465,7 +469,7 @@ public class Queries {
 
         }
     }
-
+//feito
     static Vector<String> getUsers() {
         // nao deverá ser user
 
@@ -501,7 +505,7 @@ public class Queries {
 
         }
     }
-
+    //feito
     static Message getMensagens(String nome) {
         // nao deverá ser user
 
@@ -548,7 +552,7 @@ public class Queries {
 
         }
     }
-
+    //feito
     static boolean setMensagens(String de, String para ,String mensagem) {
         // nao deverá ser user
 
@@ -591,7 +595,7 @@ public class Queries {
 
         }
     }
-
+    //feito
     static Vector<Message> updateBets(int ronda) {
         //Bet bet = (Bet) generic.getObj();
 

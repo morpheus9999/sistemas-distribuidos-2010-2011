@@ -5,17 +5,25 @@
 
 package Server;
 
+import Server.DAOFactoryPattern.AccountDAO;
+import Server.DAOFactoryPattern.ConsistencyDAO;
+import Server.DAOFactoryPattern.CustomerDAO;
+import Server.DAOFactoryPattern.DAOFactory;
 import Client_Server.CallbackInterface;
 import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
 import Client_Server.RMIInterface;
 import Client_Server.Selection;
+import Server.IteratorPattern.Connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,17 +38,29 @@ public class Main {
     public static Hashtable<String, ClientThreadTCP> onlineUsersTCP = new Hashtable<String, ClientThreadTCP>();
     public static Hashtable<String, CallbackInterface> onlineUsersRMI = new Hashtable<String, CallbackInterface>();
     public static Vector <String> onlineUsersRMITomcat =new Vector<String>();
+    
+    
+    public static java.util.Map<String,Connection> onlineUsers = new HashMap();
+    
+    
+    
     //falta isto 
     public static CallbackInterfaceTomcat calbackInterfaceTomcat=null;
     
     public static Selection opt = new Selection();
     public static BetThread game;
-    
+    public static AccountDAO accountDAO;
+    public static CustomerDAO customerDAO;
     
     
     
     public static void main(String args[]) {
         int counter = 0;
+        
+        DAOFactory mysqlFactory =   DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+        accountDAO = mysqlFactory.getAccountDAO();
+        customerDAO=mysqlFactory.getCustomerDAO();
+        ConsistencyDAO consistencyDAO=mysqlFactory.getConsistencyDAO();
 
         try {
             
@@ -54,7 +74,7 @@ public class Main {
             System.out.println("\n\n(Primary): sou Master :D\n\n");
 
             /*  opens a port to check for requests  */
-            game = new BetThread(Constants.numJogos);
+            game = new BetThread(Constants.numJogos,consistencyDAO);
             game.start();
 
             /*  opens RMI connections   */
