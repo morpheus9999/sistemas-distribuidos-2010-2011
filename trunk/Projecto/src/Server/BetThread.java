@@ -4,16 +4,11 @@
  */
 package Server;
 
+import Server.DAOFactoryPattern.ConsistencyDAO;
 import BetPackage.BetManager;
 import BetPackage.IBetManager;
-import Client_Server.Generic;
 import Client_Server.Message;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.Hashtable;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,24 +19,32 @@ class BetThread extends Thread {
     int numJogos;
     private int ronda;
     int tipo;
-
+    ConsistencyDAO consistencyDAO;
     BetThread(int numJogos) {
         this.numJogos = numJogos;
         tipo = 0;
     }
 
+    BetThread(int numJogos, ConsistencyDAO consistencyDAO) {
+        this.numJogos = numJogos;
+        tipo = 0;
+        this.consistencyDAO=consistencyDAO;
+        //throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public void run() {
-        ronda = Queries.rondaActual();
-        tipo = Queries.tipoActual();
+        ronda = consistencyDAO.rondaActualConsistency();
+        tipo = consistencyDAO.tipoActualConsistency();
 
         while (true) {
             if (tipo == 0) {
                 IBetManager man = new BetManager(numJogos);
                 //System.out.println("ENTRA1");
-                Queries.NewRound(man, ronda);
+                consistencyDAO.NewRoundConsistency(man, ronda);
 
                 tipo++;
-                Queries.actualiza(ronda, 1);
+                consistencyDAO.actualizaConsistency(ronda, 1);
                 if (Main.calbackInterfaceTomcat != null) {
                     try {
                         //Main.calbackInterfaceTomcat.printMatches(Queries.viewMatches(new Generic(), ronda));
@@ -53,7 +56,7 @@ class BetThread extends Thread {
                 }
             } else if (tipo == 1) {
                 try {
-                    long espera = Queries.espera();
+                    long espera = consistencyDAO.esperaConsistency();
                     System.out.println("ACABOU TEMPO DE APOSTAS PARA A RONDA " + ronda);
                     if (espera > 0) {
                         BetThread.sleep(espera);
@@ -63,12 +66,12 @@ class BetThread extends Thread {
                 }
                 ronda++;
                 tipo++;
-                Queries.actualiza(ronda, 2);
+                consistencyDAO.actualizaConsistency(ronda, 2);
             } else if (tipo == 2) {
 
                 //Hashtable<String, Generic> envia = new Hashtable();
                 System.out.println("Actualiza valores das bets....");
-                Vector<Message> m = Queries.updateBets(ronda - 1);
+                Vector<Message> m = consistencyDAO.updateBetsConsistency(ronda - 1);
                 ClientThreadTCP tcp;
                 if (m != null) {
                     for (int k = 0; k < m.size(); k++) {
@@ -87,7 +90,8 @@ class BetThread extends Thread {
 
                     }
                     //DELETE jogos
-                    Queries.actualiza(ronda, 0);
+                    consistencyDAO.actualizaConsistency(ronda, 0);
+                    
                     //Delete apostas
 
 

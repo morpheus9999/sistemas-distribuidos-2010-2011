@@ -45,5 +45,13 @@ public class Constants {
     final public static int requestMessage = 201;
     final public static int reward=3;
     final public static int resetCredito=70;
+    
+    
+    
+    // Client States -------------------
+    public final static short STATE_OFFLINE    = 0;
+    public final static short STATE_ONLINE     = 1;
+    public final static short STATE_BUSY       = 2;
+    public final static short STATE_AWAY       = 3;
 
 }

@@ -8,19 +8,16 @@ import Client_Server.Generic;
 import Client_Server.Login;
 import Client_Server.Message;
 import Client_Server.OnlineUsers;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import Server.IteratorPattern.RMI;
+import Server.IteratorPattern.RMITomcat;
+import Server.IteratorPattern.TCP;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -31,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author Jorge
  */
-class ClientThreadTCP extends Thread{
+public class ClientThreadTCP extends Thread{
     private boolean logout;
     private Socket socket;
 
@@ -154,19 +151,33 @@ class ClientThreadTCP extends Thread{
      * */
     private  Generic login(Generic gen) throws IOException {
         /*  faz query   */
-       if(Queries.login(gen)) {
+       if(Main.accountDAO.loginAccount(gen)) {
             /*  sets user is logged  */
             gen.setConfirmation(true);
             lg = (Login) gen.getObj();
-            if(Main.onlineUsersTCP.containsKey(lg.getName()))
-                gen.setConfirmation(false);
-            else if(Main.onlineUsersRMI.containsKey(lg.getName()))
-                gen.setConfirmation(false);
-            else if(Main.onlineUsersRMITomcat.contains(lg.getName()))
-                gen.setConfirmation(false);
-            else
-                Main.onlineUsersTCP.put(this.lg.getName(), this);
             
+            
+            if(Main.onlineUsers.containsKey(lg.getName())){
+                gen.setConfirmation(false);
+                return gen;
+            }else{
+                
+                Main.onlineUsers.put(lg.getName(), new TCP(this));
+                
+            }
+            
+            
+//            
+//            
+//            if(Main.onlineUsersTCP.containsKey(lg.getName()))
+//                gen.setConfirmation(false);
+//            else if(Main.onlineUsersRMI.containsKey(lg.getName()))
+//                gen.setConfirmation(false);
+//            else if(Main.onlineUsersRMITomcat.contains(lg.getName()))
+//                gen.setConfirmation(false);
+//            else
+//                Main.onlineUsersTCP.put(this.lg.getName(), this);
+//            
             
             
             
@@ -192,6 +203,8 @@ class ClientThreadTCP extends Thread{
         gen.setConfirmation(true);
         /*  exits thread    */
         this.logout = true;
+        Main.onlineUsers.remove(((Login)gen.getObj()).getName());
+        
         if (Main.calbackInterfaceTomcat != null) {
             Main.calbackInterfaceTomcat.UpdateUsersOnline();
         }
@@ -203,7 +216,7 @@ class ClientThreadTCP extends Thread{
      * Register
      */
     private Generic register(Generic gen) throws IOException {
-        if(Queries.register(gen))
+        if(Main.accountDAO.insertAccount(gen))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
@@ -227,36 +240,48 @@ class ClientThreadTCP extends Thread{
         gen.setObj(mes);
         
         /*  checks if the user is online and sends  */
-        if(Main.onlineUsersTCP.containsKey(toUser)) {
-            ClientThreadTCP sock = Main.onlineUsersTCP.get(toUser);
-            try {
-                sock.out.writeObject(gen);
-            } catch (IOException error) {
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersTCP.remove(toUser);
-            }
-        } else if(Main.onlineUsersRMI.containsKey(toUser)) {
-            CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
-            try {
-                callback.printMessage(fromUser, message);
-            } catch (IOException error) {
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersRMI.remove(toUser);
-            }
-        }else if(Main.onlineUsersRMITomcat.contains(toUser)) {
-            CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
-            try {
-                callback.printMessage(fromUser, message, toUser);
-            } catch (IOException error) {
-                /*  if it throws an error, delete it    */
-                Main.onlineUsersRMITomcat.remove(toUser);
-            }
-        }
-        else { /*    or stores to send later accordingly    */
-            Queries.setMensagens(fromUser, toUser, message);
+        if(Main.onlineUsers.containsKey(toUser)){
+            if (Main.onlineUsers.get(toUser) instanceof TCP) {
+                ClientThreadTCP sock = (ClientThreadTCP) ((TCP) Main.onlineUsers.get(toUser)).getCallbackObject();
+                try {
+                    sock.out.writeObject(gen);
+                } catch (IOException error) {
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsers.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
 
-            System.out.println(toUser+" esta offline");
-        }
+                }
+            } else if (Main.onlineUsers.get(toUser) instanceof RMI) {
+
+                CallbackInterface callback = (CallbackInterface) ((RMI) Main.onlineUsers.get(toUser)).getCallbackObject();
+
+                try {
+                    callback.printMessage(fromUser, message);
+                } catch (Exception error) {
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsers.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                }
+
+            } else if (Main.onlineUsers.get(toUser) instanceof RMITomcat) {
+                CallbackInterfaceTomcat callback = (CallbackInterfaceTomcat) ((RMITomcat) Main.onlineUsers.get(toUser)).getCallbackObject();
+
+                try {
+                    callback.printMessage(fromUser, message, toUser);
+                } catch (Exception error) {
+                    error.printStackTrace();
+                    System.out.println(" ::" + callback);
+                    /*  if it throws an error, delete it    */
+                    Main.onlineUsersRMI.remove(toUser);
+                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                }
+
+            }
+        } else { /*    or stores to send later accordingly    */
+            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+
+            System.out.println(toUser + " esta offline");
+        }  
     }
 
     /**
@@ -337,19 +362,11 @@ class ClientThreadTCP extends Thread{
         OnlineUsers list = new OnlineUsers();
         Enumeration<String> temp;
 
-        /*  adds TCP users to the list  */
-        temp = Main.onlineUsersTCP.keys();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
-
-        /*  adds RMI users to the list  */
-        temp = Main.onlineUsersRMI.keys();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
-            
-        temp= Main.onlineUsersRMITomcat.elements();
-        while(temp.hasMoreElements())
-            list.addEntry(temp.nextElement());
+        Iterator<String> tempo = Main.onlineUsers.keySet().iterator();
+        
+        while(tempo.hasNext())
+            list.addEntry(tempo.next());
+        
         
         gen.setConfirmation(true);
         gen.setObj(list);
@@ -359,7 +376,7 @@ class ClientThreadTCP extends Thread{
 
     private Generic bet(Generic gen) {
         //meter a variavel da ronda....
-        if(Queries.newBet(gen,lg,Main.game.getRonda()))
+        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRonda()))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
@@ -368,22 +385,22 @@ class ClientThreadTCP extends Thread{
     }
 
     private Generic getCredito(Generic temp) {
-        return Queries.getCredit(temp, lg);
+        return Main.accountDAO.getCreditAccount(temp, lg);
 
     }
 
     private Generic resetCredit(Generic temp) {
-        return Queries.resetCredit(temp,lg);
+        return Main.accountDAO.resetCreditAccount(temp,lg);
     }
 
     private Generic viewMatches(Generic temp) {
-        return Queries.viewMatches(temp,Main.game.getRonda());
+        return Main.customerDAO.viewMatchesCustomer(temp,Main.game.getRonda());
     }
 
     private Generic requestMessage(Generic temp) throws IOException {
         Message mes;
 
-        for(mes = Queries.getMensagens(lg.getName()); mes != null; mes = Queries.getMensagens(lg.getName()))
+        for(mes = Main.accountDAO.getMensagensAccount(lg.getName()); mes != null; mes = Main.accountDAO.getMensagensAccount(lg.getName()))
             ClientThreadTCP.messageUser(mes.getAuthor(), mes.getTo(), mes.getText());
 
         temp.setCode(Constants.receiveMessage);

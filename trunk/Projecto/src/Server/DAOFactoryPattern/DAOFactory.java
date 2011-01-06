@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package Server;
+package Server.DAOFactoryPattern;
 
 /**
  *
@@ -12,17 +12,17 @@ package Server;
 // Abstract class DAO Factory
 public abstract class DAOFactory {
 
-  // List of DAO types supported by the factory
+  // Lista de base de dados 
   public static final int CLOUDSCAPE = 1;
   public static final int ORACLE = 2;
   public static final int SYBASE = 3;
   public static final int MYSQL = 4;
 
-  // There will be a method for each DAO that can be 
-  // created. The concrete factories will have to 
-  // implement these methods.
+  
   public abstract CustomerDAO getCustomerDAO();
   public abstract AccountDAO getAccountDAO();
+  public abstract ConsistencyDAO getConsistencyDAO();
+  
   //public abstract OrderDAO getOrderDAO();
   
 

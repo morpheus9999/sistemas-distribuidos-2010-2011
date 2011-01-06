@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package Server;
+package Server.DAOFactoryPattern;
 
 /**
  *
@@ -31,6 +31,11 @@ public class CloudscapeDAOFactory extends DAOFactory {
 
     @Override
     public AccountDAO getAccountDAO() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ConsistencyDAO getConsistencyDAO() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
   /*
