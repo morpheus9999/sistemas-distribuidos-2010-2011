@@ -50,6 +50,11 @@ public class MysqlDAOFactory extends DAOFactory {
         j.addObserver(m);
         return j;
     }
+    
+    public MessageDAO getMessageDAO (){
+        return new MysqlMessageDAO();    
+    }
+    
     /*
     public OrderDAO getOrderDAO() {
     // CloudscapeOrderDAO implements OrderDAO

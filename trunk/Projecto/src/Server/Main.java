@@ -15,6 +15,7 @@ import Client_Server.CallbackInterfaceTomcat;
 import Client_Server.Constants;
 import Client_Server.RMIInterface;
 import Client_Server.Selection;
+import Server.DAOFactoryPattern.MessageDAO;
 import Server.IteratorPattern.Connection;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -54,6 +55,7 @@ public class Main {
     public static AccountDAO accountDAO;
     public static CustomerDAO customerDAO;
     public static ConsistencyDAO consistencyDAO;
+    public static MessageDAO messageDAO;
     
     
     
@@ -65,7 +67,7 @@ public class Main {
         customerDAO=mysqlFactory.getCustomerDAO();
         ApostaFootballObserver m=new ApostaFootballObserver();
         consistencyDAO=mysqlFactory.getConsistencyDAO(m);
-        
+        messageDAO=mysqlFactory.getMessageDAO();
         
         
 

@@ -248,7 +248,7 @@ public class ClientThreadTCP extends Thread{
                 } catch (IOException error) {
                     /*  if it throws an error, delete it    */
                     Main.onlineUsers.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
 
                 }
             } else if (Main.onlineUsers.get(toUser) instanceof RMI) {
@@ -260,7 +260,7 @@ public class ClientThreadTCP extends Thread{
                 } catch (Exception error) {
                     /*  if it throws an error, delete it    */
                     Main.onlineUsers.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
                 }
 
             } else if (Main.onlineUsers.get(toUser) instanceof RMITomcat) {
@@ -273,12 +273,12 @@ public class ClientThreadTCP extends Thread{
                     System.out.println(" ::" + callback);
                     /*  if it throws an error, delete it    */
                     Main.onlineUsersRMI.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
                 }
 
             }
         } else { /*    or stores to send later accordingly    */
-            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+            Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
 
             System.out.println(toUser + " esta offline");
         }  
@@ -400,7 +400,7 @@ public class ClientThreadTCP extends Thread{
     private Generic requestMessage(Generic temp) throws IOException {
         Message mes;
 
-        for(mes = Main.accountDAO.getMensagensAccount(lg.getName()); mes != null; mes = Main.accountDAO.getMensagensAccount(lg.getName()))
+        for(mes = Main.messageDAO.getMensagensAccount(lg.getName()); mes != null; mes = Main.messageDAO.getMensagensAccount(lg.getName()))
             ClientThreadTCP.messageUser(mes.getAuthor(), mes.getTo(), mes.getText());
 
         temp.setCode(Constants.receiveMessage);

@@ -233,7 +233,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                 } catch (IOException error) {
                     /*  if it throws an error, delete it    */
                     Main.onlineUsers.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
 
                 }
             } else if (Main.onlineUsers.get(toUser) instanceof RMI) {
@@ -245,7 +245,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                 } catch (Exception error) {
                     /*  if it throws an error, delete it    */
                     Main.onlineUsers.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
                 }
 
             } else if (Main.onlineUsers.get(toUser) instanceof RMITomcat) {
@@ -258,12 +258,12 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                     System.out.println(" ::" + callback);
                     /*  if it throws an error, delete it    */
                     Main.onlineUsersRMI.remove(toUser);
-                    Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+                    Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
                 }
 
             }
         } else { /*    or stores to send later accordingly    */
-            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+            Main.messageDAO.setMensagensAccount(fromUser, toUser, message);
 
             System.out.println(toUser + " esta offline");
         }  
@@ -390,7 +390,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
     public  void getMessage(Login lg) throws  RemoteException {
         Message temp;
         System.out.println("ENTRA!!!!1");
-        for(temp = Main.accountDAO.getMensagensAccount(lg.getName()); temp != null; temp = Main.accountDAO.getMensagensAccount(lg.getName()))
+        for(temp = Main.messageDAO.getMensagensAccount(lg.getName()); temp != null; temp = Main.messageDAO.getMensagensAccount(lg.getName()))
             messageUser(temp.getAuthor(), temp.getTo(), temp.getText());
     }
 }

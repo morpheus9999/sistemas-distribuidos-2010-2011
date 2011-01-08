@@ -28,9 +28,6 @@ public interface AccountDAO {
   
   public Generic resetCreditAccount(Generic temp, Login lg) ;
   
-  public Message getMensagensAccount(String nome) ;
-  
-  public boolean setMensagensAccount(String de, String para ,String mensagem);
   
 
 }

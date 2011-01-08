@@ -39,6 +39,11 @@ public class CloudscapeDAOFactory extends DAOFactory {
     public ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public MessageDAO getMessageDAO() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
   /*
   public AccountDAO getAccountDAO() {
     // CloudscapeAccountDAO implements AccountDAO
