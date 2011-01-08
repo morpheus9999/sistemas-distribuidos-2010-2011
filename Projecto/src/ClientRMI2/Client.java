@@ -5,15 +5,7 @@ package ClientRMI2;
 
 import ClientRMI2.StatePattern.*;
 
-//import client.gui.GUIFactory;
-//import client.gui.GUI;
-//import client.gui.SimpleGUIFactory;
-//import client.gui.SimpleGUI;
-//import client.gui.TextGUIFactory;
-//import client.state.*;
-//import client.state.ForbiddenActionException;
-//import tools.Buffer;
-//import tools.Define;
+
 import Client_Server.Bet;
 import Client_Server.CallbackInterface;
 import Client_Server.Constants;

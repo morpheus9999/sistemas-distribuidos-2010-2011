@@ -29,7 +29,7 @@ public class ApostaFootballObserver implements Observer {
 
     public void update(Observable o, Object arg) {
         
-        System.out.println("IUUUUUPIIII!!!!! :P");
+        //System.out.println("IUUUUUPIIII!!!!! :P");
         if (arg instanceof Message) {
             Message enviar = (Message) arg;
             String para = enviar.getAuthor();
@@ -49,13 +49,8 @@ public class ApostaFootballObserver implements Observer {
                 } catch (Exception error) {
                     /*  if it throws an error, delete it    */
                     Main.onlineUsers.remove(enviar.getAuthor());
-                    Main.accountDAO.setMensagensAccount("", enviar.getAuthor(), enviar.getText());
+                    Main.messageDAO.setMensagensAccount("", enviar.getAuthor(), enviar.getText());
                 }
-//                try {
-//                    RMIMethods.messageUser("", enviar.getAuthor(), enviar.getText());
-//                } catch (RemoteException ex) {
-//                    System.out.println("ERRO");
-//                }
             }else if(envia instanceof RMITomcat){
                 try {
                     RMIMethods.messageUser("", enviar.getAuthor(), enviar.getText());

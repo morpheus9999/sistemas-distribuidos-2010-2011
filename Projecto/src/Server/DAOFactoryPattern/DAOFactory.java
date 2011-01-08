@@ -24,7 +24,7 @@ public abstract class DAOFactory {
   public abstract CustomerDAO getCustomerDAO();
   public abstract AccountDAO getAccountDAO();
   public abstract ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m);
-  
+  public abstract MessageDAO getMessageDAO();
   //public abstract OrderDAO getOrderDAO();
   
 
