@@ -7,15 +7,17 @@ package Server.DAOFactoryPattern;
 import Server.DAOFactoryPattern.ConsistencyDAO;
 import BetPackage.IBetManager;
 import BetPackage.IMatch;
+import ClientRMI2.observer.Observable;
 import Client_Server.Constants;
 import Client_Server.Message;
 import java.sql.*;
+
 import java.util.Vector;
 /**
  *
  * @author jojo
  */
-public class MysqlConsistencyDAO implements ConsistencyDAO{
+public class MysqlConsistencyDAO extends Observable implements ConsistencyDAO {
     
     
     MysqlConsistencyDAO(){
@@ -222,9 +224,8 @@ public class MysqlConsistencyDAO implements ConsistencyDAO{
                     rs.next();
                     game = rs.getString("Casa") +" VS "+ rs.getString("Fora");
 
-
-
-                    m.addElement(new Message(Nome, "Ganhou apostou no jogo " + game + " com (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
+                    setChanged();
+                    notifyObservers(new Message(Nome, "Ganhou apostou no jogo " + game + " com (" + bet + ") creditos, vai ganhar (" + (bet * Constants.reward) + ") Credito actual (" + (credito_antigo + (bet * Constants.reward)) + ")"));
                     stmt.close();
                     stmt = con.createStatement();
                     stmt.execute("UPDATE  `mydb`.`Cliente` SET  `Credito` = '" + (credito_antigo + (bet * Constants.reward)) + "' WHERE `Cliente`.`Nome` = '" + Nome + "'");
@@ -251,12 +252,18 @@ public class MysqlConsistencyDAO implements ConsistencyDAO{
                     rc = stmt.executeQuery("SELECT idJogo, Casa, Fora FROM Jogo WHERE Ronda='" + ronda + "' and idJogo='"+idJogo+"'");
                     rc.next();
                     game = rc.getString("Casa") +" VS "+ rc.getString("Fora");
-                    m.addElement(new Message(Nome, "Perdeu apostou no jogo " + game + " com (" + bet + ") creditos, vai ficar com (" + (credito_antigo ) + ") Creditos"));
+                    setChanged();
+                    notifyObservers(new Message(Nome, "Perdeu apostou no jogo " + game + " com (" + bet + ") creditos, vai ficar com (" + (credito_antigo ) + ") Creditos"));
                     stmt.close();
-
+                    Message t= new Message(Nome, "Perdeu apostou no jogo " + game + " com (" + bet + ") creditos, vai ficar com (" + (credito_antigo ) + ") Creditos");
+                    
+                    
                 }
-
-
+                
+                System.out.println("entra!!!2");
+                setChanged();
+                    notifyObservers("eag");
+                
                 stmt.close();
                 return m;
 

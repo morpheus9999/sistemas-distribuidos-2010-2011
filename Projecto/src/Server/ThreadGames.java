@@ -21,6 +21,7 @@ public class ThreadGames extends Thread {
         this.numJogos = numJogos;
         tipo = 0;
         this.consistencyDAO=consistencyDAO;
+        
         football =new Football( numJogos, consistencyDAO);
         
         
@@ -30,6 +31,9 @@ public class ThreadGames extends Thread {
     public void run() {
         football.playGame();
         
+    }
+    public int getRondaFootball(){
+        return football.getRonda();
     }
 
 }

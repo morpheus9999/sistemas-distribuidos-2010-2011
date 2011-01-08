@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author JLA
  */
-public class Main {
+public class Client {
 
     /**
      * Global/Static variables
@@ -48,7 +48,7 @@ public class Main {
     public static receiverThread receiver;
     
     /**
-     * Main method
+     * Client method
      */
     public static void main(String args[]) {
         /*  init    */
@@ -68,11 +68,11 @@ public class Main {
                 case Constants.loginCode:
                     inter.login();
 
-                    if(Main.connected)
+                    if(Client.connected)
                         /*  waits for receiver thread confirmation  */
-                        synchronized(Main.class) {
+                        synchronized(Client.class) {
                             try {
-                                Main.class.wait();
+                                Client.class.wait();
                             } catch (InterruptedException ex) {
                                 //System.out.println("Error waiting for login confirmation");
                             }
@@ -92,11 +92,11 @@ public class Main {
         }
 
         /*  requests messages that were received while offline  */
-        if(Main.connected)
+        if(Client.connected)
             inter.requestMessage();
 
         while(!exit) {
-            if(Main.connected) {
+            if(Client.connected) {
                 switch(inter.mainMenu()) {
                     case Constants.creditCode:
                         /*  Credit  */
@@ -184,7 +184,7 @@ public class Main {
                 inStream = sock.getInputStream();
                 in = new ObjectInputStream(inStream);
 
-                Main.connected = true;
+                Client.connected = true;
                 return true;
             }
         } catch (UnknownHostException ex) {
@@ -193,7 +193,7 @@ public class Main {
             //System.out.println("io exception "+ex.getMessage());
         }
         
-        Main.connected = false;
+        Client.connected = false;
         return false;
     }
 
@@ -208,7 +208,7 @@ public class Main {
             //System.out.println("Error closing comunication channels: "+ error.getMessage());
         }
         
-        Main.connected = false;
+        Client.connected = false;
     }
     
     /**
@@ -239,10 +239,10 @@ public class Main {
      * */
     public static boolean threadsAlive() {
         if(sender.isAlive() && receiver.isAlive()) {
-            Main.connected = true;
+            Client.connected = true;
             return true;
         } else {
-            Main.connected = false;
+            Client.connected = false;
             return false;
         }
     }
@@ -253,7 +253,7 @@ public class Main {
     public static boolean connect() {
         openChannels(0);
         
-        if(Main.connected) {
+        if(Client.connected) {
             initThreads();
             return true;
         }
@@ -265,25 +265,25 @@ public class Main {
      * reconnect
      * */
     public static boolean reconnect() {
-        Main.connected = false;
+        Client.connected = false;
         int flagServer = 0;
 
         System.out.println("Connection lost");
 
         try {
-            while(!Main.exit) {
+            while(!Client.exit) {
                 System.out.print("Trying to connect");
-                for (int i = 1; i <= Constants.tries && !Main.connected && !Main.exit; i++, Thread.sleep(Constants.reconnectTime)) {
+                for (int i = 1; i <= Constants.tries && !Client.connected && !Client.exit; i++, Thread.sleep(Constants.reconnectTime)) {
                     System.out.print(".");
 
                     if(openChannels(flagServer)) {
                         System.out.println("Connection recovered!");
 
-                        if(Main.logged == true){
-                            Main.opt.setOption(Constants.loginCode);
+                        if(Client.logged == true){
+                            Client.opt.setOption(Constants.loginCode);
                             System.out.println("Sending buffers...");
-                            Main.opt.setOption(Constants.messageCode);
-                            Main.opt.setOption(Constants.messageAllCode);
+                            Client.opt.setOption(Constants.messageCode);
+                            Client.opt.setOption(Constants.messageAllCode);
                         }
 
                         

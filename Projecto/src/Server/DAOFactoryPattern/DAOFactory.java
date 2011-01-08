@@ -5,6 +5,8 @@
 
 package Server.DAOFactoryPattern;
 
+import ClientRMI2.observer.ApostaFootballObserver;
+
 /**
  *
  * @author jojo
@@ -21,7 +23,7 @@ public abstract class DAOFactory {
   
   public abstract CustomerDAO getCustomerDAO();
   public abstract AccountDAO getAccountDAO();
-  public abstract ConsistencyDAO getConsistencyDAO();
+  public abstract ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m);
   
   //public abstract OrderDAO getOrderDAO();
   

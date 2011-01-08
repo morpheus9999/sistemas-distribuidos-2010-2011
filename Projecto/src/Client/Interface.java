@@ -82,16 +82,16 @@ public class Interface {
         /*  get username    */
         System.out.print("Username: ");
         temp = Input.readString().trim();
-        Main.log.setName(temp);
-        Main.buffer.setAuthor(temp);
+        Client.log.setName(temp);
+        Client.buffer.setAuthor(temp);
         
         /*  get password    */
         System.out.print("Password: ");
         temp = Input.readString().trim();
-        Main.log.setPassword(temp);
+        Client.log.setPassword(temp);
 
         /*  flag 100 to Login   */
-        Main.opt.setOption(Constants.loginCode);
+        Client.opt.setOption(Constants.loginCode);
     }
 
     /**
@@ -115,7 +115,7 @@ public class Interface {
                 token.nextToken("\n");
 
                 /*  adds mail to the object */
-                Main.reg.setMail(temp);
+                Client.reg.setMail(temp);
                 break;
             }
             catch (NoSuchElementException error) {
@@ -132,7 +132,7 @@ public class Interface {
                     System.out.print("Introduce a valid username plz :P : ");
 
                 temp = Input.readString().trim();
-                Main.reg.setName(temp);
+                Client.reg.setName(temp);
                 k++;
                 if (temp.length() > 0) {
                     break;
@@ -152,7 +152,7 @@ public class Interface {
 
                 k++;
                 temp = Input.readString().trim();
-                Main.reg.setPassword(temp);
+                Client.reg.setPassword(temp);
 
                 if (temp.length() > 0) {
                     break;
@@ -162,11 +162,11 @@ public class Interface {
             }
         }
         /*  flag 101 to register   */
-        Main.opt.setOption(Constants.regCode);
+        Client.opt.setOption(Constants.regCode);
     }
 
     /**
-     * Main menu
+     * Client menu
      */
     public int mainMenu() {
         int opt = -1;
@@ -214,7 +214,7 @@ public class Interface {
      */
     public void credit() {
         System.out.println("#### Credit ####");
-        Main.opt.setOption(Constants.creditCode);
+        Client.opt.setOption(Constants.creditCode);
     }
 
     /**
@@ -223,7 +223,7 @@ public class Interface {
      */
     public void resetCredit() {
         System.out.println("#### Reset ####");
-        Main.opt.setOption(Constants.resetCode);
+        Client.opt.setOption(Constants.resetCode);
     }
 
     /**
@@ -232,7 +232,7 @@ public class Interface {
      */
     public void checkMatches() {
         System.out.println("#### Matches ####");
-        Main.opt.setOption(Constants.matchesCode);
+        Client.opt.setOption(Constants.matchesCode);
     }
 
     /**
@@ -245,17 +245,17 @@ public class Interface {
         int idJogo = Input.readInt();
         System.out.print("Victoria Casa (1) Victoria fora (2) Empate (0): ");
         int aposta =Input.readInt();
-        Main.bet.setAposta(aposta);
+        Client.bet.setAposta(aposta);
         int bet=-1;
         while(bet<0){
         System.out.print("Quantos creditos pretende apostar: ");
             bet =Input.readInt();
         }
-        Main.bet.setIdGame(idJogo);
-        Main.bet.setBet(bet);
+        Client.bet.setIdGame(idJogo);
+        Client.bet.setBet(bet);
         /*  pedir dados antes   */
 
-        Main.opt.setOption(Constants.betCode);
+        Client.opt.setOption(Constants.betCode);
     }
 
     /**
@@ -264,7 +264,7 @@ public class Interface {
      */
     public void onlineUsers() {
         System.out.println("#### Online Users ####");
-        Main.opt.setOption(Constants.onlineUsersCode);
+        Client.opt.setOption(Constants.onlineUsersCode);
     }
 
     /**
@@ -283,11 +283,11 @@ public class Interface {
         message = Input.readString();
 
         /*  define autor da mensagem    */
-        Main.buffer.setAuthor(Main.log.getName());
+        Client.buffer.setAuthor(Client.log.getName());
         /*  adiciona mensagem ao buffer */
-        Main.buffer.addEntry(toUser, message);
+        Client.buffer.addEntry(toUser, message);
 
-        Main.opt.setOption(Constants.messageCode);
+        Client.opt.setOption(Constants.messageCode);
     }
 
     /**
@@ -302,11 +302,11 @@ public class Interface {
         message = Input.readString();
 
         /*  define autor da mensagem    */
-        Main.bufferAll.setAuthor(Main.log.getName());
+        Client.bufferAll.setAuthor(Client.log.getName());
         /*  adiciona mensagem ao buffer */
-        Main.bufferAll.addEntry(Integer.toString(Main.bufferAll.getHashtable().size()+1), message);
+        Client.bufferAll.addEntry(Integer.toString(Client.bufferAll.getHashtable().size()+1), message);
         
-        Main.opt.setOption(Constants.messageAllCode);
+        Client.opt.setOption(Constants.messageAllCode);
     }
 
     /**
@@ -315,7 +315,7 @@ public class Interface {
      */
     public void logout() {
         System.out.println("#### Logout ####");
-        Main.opt.setOption(Constants.logoutCode);
+        Client.opt.setOption(Constants.logoutCode);
     }
 
     /**
@@ -323,6 +323,6 @@ public class Interface {
      */
     public void requestMessage() {
         
-        Main.opt.setOption(Constants.requestMessage);
+        Client.opt.setOption(Constants.requestMessage);
     }
 }

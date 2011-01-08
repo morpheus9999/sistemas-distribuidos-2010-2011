@@ -126,7 +126,7 @@ public class ClientRMIThread extends Thread {
                     break;
                     case Constants.messageCode:
                         /*  send a message to a single person   */
-                        if(this.obj.messageUser(Main.gen)) {
+                        if(this.obj.message(Main.gen)) {
                             System.out.println("Message sent");
                             Interface.buffer.clearHashtable();
                         }
@@ -222,7 +222,7 @@ public class ClientRMIThread extends Thread {
                             gen = new Generic();
                             gen = Interface.messageSingleBuffer();
                             if(gen != null)
-                                this.obj.messageUser(gen);
+                                this.obj.message(gen);
                             gen = new Generic();
                             gen = new Generic();
                             gen = Interface.messageAllBuffer();

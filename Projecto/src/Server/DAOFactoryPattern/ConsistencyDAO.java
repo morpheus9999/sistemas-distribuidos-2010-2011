@@ -7,13 +7,14 @@ package Server.DAOFactoryPattern;
 
 import BetPackage.IBetManager;
 import Client_Server.Message;
+import java.util.Observable;
 import java.util.Vector;
 
 /**
  *
  * @author jojo
  */
-public interface ConsistencyDAO {
+public interface ConsistencyDAO{
     
     public int rondaActualConsistency();
     public int tipoActualConsistency();

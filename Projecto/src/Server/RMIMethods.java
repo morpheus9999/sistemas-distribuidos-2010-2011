@@ -171,7 +171,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @throws RemoteException
      */
     public  Generic viewMathces(Generic gen) throws RemoteException {
-        return Main.customerDAO.viewMatchesCustomer(gen, Main.game.getRonda());
+        return Main.customerDAO.viewMatchesCustomer(gen, Main.game.getRondaFootball());
     }
 
     /**
@@ -183,7 +183,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      */
     public  Generic bet(Generic gen, Login lg) throws RemoteException {
         //meter a variavel da ronda....
-        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRonda()))
+        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRondaFootball()))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
@@ -212,8 +212,8 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         return gen;
     }
 
-    private  void message(String fromUser, String toUser, String message) throws RemoteException {
-        /*  creates individual message  */
+    public static  void messageUser(String fromUser, String toUser, String message) throws RemoteException {
+        /*  creates individual messageUser  */
         Message mes = new Message(toUser, message);
         mes.setAuthor(fromUser);
         System.out.println("ENTRA!!!!2");
@@ -286,7 +286,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 //            CallbackInterface callback = Main.onlineUsersRMI.get(toUser);
 //
 //            try {
-//                callback.printMessage(fromUser, message);
+//                callback.printMessage(fromUser, messageUser);
 //            } catch (Exception error) {
 //                /*  if it throws an error, delete it    */
 //                Main.onlineUsersRMI.remove(toUser);
@@ -297,7 +297,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 //            CallbackInterfaceTomcat callback = Main.calbackInterfaceTomcat;
 //
 //            try {
-//                callback.printMessage(fromUser, message,toUser);
+//                callback.printMessage(fromUser, messageUser,toUser);
 //            } catch (Exception error) {
 //                error.printStackTrace();
 //                System.out.println(" ::"+callback);
@@ -306,7 +306,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
 //            }
 //        }
 //        else { /*    or stores to send later accordingly    */
-//            Main.accountDAO.setMensagensAccount(fromUser, toUser, message);
+//            Main.accountDAO.setMensagensAccount(fromUser, toUser, messageUser);
 //
 //            System.out.println(toUser+" esta offline");
 //        }
@@ -318,7 +318,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @return
      * @throws RemoteException
      */
-     public  boolean messageUser(Generic gen) throws RemoteException {
+     public   boolean message(Generic gen) throws RemoteException {
         String fromUser = null, toUser = null;
         Vector<String> messageVector;
         Enumeration<String> message;
@@ -337,7 +337,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
             message = messageVector.elements();
 
             while(message.hasMoreElements())
-                message(fromUser, toUser, message.nextElement());
+                messageUser(fromUser, toUser, message.nextElement());
         }
 
         return true;
@@ -365,8 +365,8 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         keys = mes.getKeysEnumeration();
         while(keys.hasMoreElements()) {
             /*
-             *  since message is for all
-             *  the key doesn't matter, only for obtaining each message
+             *  since messageUser is for all
+             *  the key doesn't matter, only for obtaining each messageUser
              */
             id = keys.nextElement();
             messageVector = mes.getEntry(id);
@@ -379,7 +379,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
                 message = messageVector.elements();
 
                 while(message.hasMoreElements())
-                    message(fromUser, toUser, message.nextElement());
+                    messageUser(fromUser, toUser, message.nextElement());
             }
         }
 
@@ -391,6 +391,6 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
         Message temp;
         System.out.println("ENTRA!!!!1");
         for(temp = Main.accountDAO.getMensagensAccount(lg.getName()); temp != null; temp = Main.accountDAO.getMensagensAccount(lg.getName()))
-            message(temp.getAuthor(), temp.getTo(), temp.getText());
+            messageUser(temp.getAuthor(), temp.getTo(), temp.getText());
     }
 }

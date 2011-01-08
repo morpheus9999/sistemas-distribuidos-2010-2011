@@ -20,11 +20,17 @@ import java.io.IOException;
  * @author JLA
  */
 public class senderThread extends Thread{
+    private static boolean instance_flag = false;
 
     /*
      * Constructor
      */
     public senderThread() {
+        if (instance_flag) {
+            throw new SingletonException("Sender already instanced");
+        } else {
+            instance_flag = true; //set flag for 1
+        }
     }
 
     /*
@@ -33,7 +39,7 @@ public class senderThread extends Thread{
      */
     public void run() {
 
-        while(!Main.exit) {
+        while(!Client.exit) {
             try {
                 Generic gen = new Generic();
                 Message mes = new Message();
@@ -41,7 +47,7 @@ public class senderThread extends Thread{
                 User reg = new User();
                 Bet bet = new Bet();
 
-                int opt = Main.opt.getOption();
+                int opt = Client.opt.getOption();
                 switch(opt) {
                     case Constants.creditCode:
                         /*  get credit balance  */
@@ -55,8 +61,8 @@ public class senderThread extends Thread{
                         break;
                     case Constants.matchesCode:
                         /*  new Login object    */
-                        log.setName(Main.log.getName());
-                        log.setPassword(Main.log.getPassword());
+                        log.setName(Client.log.getName());
+                        log.setPassword(Client.log.getPassword());
 
                         /*  lists current matches   */
                         gen.setCode(Constants.matchesCode);
@@ -64,9 +70,9 @@ public class senderThread extends Thread{
                         break;
                     case Constants.betCode:
                         /*  new Bet object  */
-                        bet.setAposta(Main.bet.getAposta());
-                        bet.setBet(Main.bet.getBet());
-                        bet.setIdGame(Main.bet.getIdGame());
+                        bet.setAposta(Client.bet.getAposta());
+                        bet.setBet(Client.bet.getBet());
+                        bet.setIdGame(Client.bet.getIdGame());
 
                         /*  bets on a match */
                         gen.setCode(Constants.betCode);
@@ -78,16 +84,16 @@ public class senderThread extends Thread{
                         break;
                     case Constants.messageCode:
                         /*  messages a user */
-                        mes.setHashtable(Main.buffer.getHashtable());
-                        mes.setAuthor(Main.buffer.getAuthor());
+                        mes.setHashtable(Client.buffer.getHashtable());
+                        mes.setAuthor(Client.buffer.getAuthor());
 
                         gen.setCode(Constants.messageCode);
                         gen.setObj(mes);
                         break;
                     case Constants.messageAllCode:
                         /*  messages all users  */
-                        mes.setHashtable(Main.bufferAll.getHashtable());
-                        mes.setAuthor(Main.bufferAll.getAuthor());
+                        mes.setHashtable(Client.bufferAll.getHashtable());
+                        mes.setAuthor(Client.bufferAll.getAuthor());
 
                         gen.setCode(Constants.messageAllCode);
                         gen.setObj(mes);
@@ -97,27 +103,27 @@ public class senderThread extends Thread{
                         gen.setCode(Constants.logoutCode);
 
                         /*  only sends if connection is on  */
-                        if(Main.connected) {
+                        if(Client.connected) {
                             /*  sends the request to the server */
-                            Main.out.writeObject(gen);
-                            Main.out.flush();
+                            Client.out.writeObject(gen);
+                            Client.out.flush();
                         }
                         /*  ends the thread  */
                         return;
                     case Constants.loginCode:
                         /*  new Login object    */
-                        log.setName(Main.log.getName());
-                        log.setPassword(Main.log.getPassword());
+                        log.setName(Client.log.getName());
+                        log.setPassword(Client.log.getPassword());
                         /*  login   */
                         gen.setCode(Constants.loginCode);
                         gen.setObj(log);
                         break;
                     case Constants.regCode:
                         /*  new user profile object */
-                        reg.setName(Main.reg.getName());
-                        reg.setMail(Main.reg.getMail());
-                        reg.setPassword(Main.reg.getPassword());
-                        reg.setCredit(Main.reg.getCredit());
+                        reg.setName(Client.reg.getName());
+                        reg.setMail(Client.reg.getMail());
+                        reg.setPassword(Client.reg.getPassword());
+                        reg.setCredit(Client.reg.getCredit());
                         /*  register    */
                         gen.setCode(Constants.regCode);
                         gen.setObj(reg);
@@ -131,10 +137,10 @@ public class senderThread extends Thread{
                 }
 
                 /*  only sends if connection is on  */
-                if(Main.connected) {
+                if(Client.connected) {
                     /*  sends the request to the server */
-                    Main.out.writeObject(gen);
-                    Main.out.flush();
+                    Client.out.writeObject(gen);
+                    Client.out.flush();
                 }
             } catch (IOException ex) {
                 //  System.out.println("IOException sending object: "+ex.getMessage());
