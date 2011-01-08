@@ -27,22 +27,23 @@ public class CloudscapeDAOFactory extends DAOFactory {
   }
   public CustomerDAO getCustomerDAO() {
     // CloudscapeCustomerDAO implements CustomerDAO
-    return new MysqlCustomerDAO();
+    return new CloudscapeCustomerDAO();
   }
 
     @Override
     public AccountDAO getAccountDAO() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new CloudscapeAccountDAO();
+        
     }
 
     @Override
     public ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new CloudscapeConsistencyDAO();
     }
 
     @Override
     public MessageDAO getMessageDAO() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new CloudscapeMessageDAO();
     }
   /*
   public AccountDAO getAccountDAO() {

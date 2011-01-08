@@ -7,7 +7,6 @@ import ClientRMI2.StatePattern.*;
 
 
 import Client_Server.Bet;
-import Client_Server.CallbackInterface;
 import Client_Server.Constants;
 import Client_Server.Generic;
 import Client_Server.Login;
@@ -15,11 +14,7 @@ import Client_Server.Message;
 import Client_Server.RMIInterface;
 import Client_Server.Selection;
 import Client_Server.User;
-import java.net.MalformedURLException;
 
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 
 
 
