@@ -23,7 +23,7 @@ public interface RMIInterface extends java.rmi.Remote{
     public Generic viewMathces(Generic gen) throws java.rmi.RemoteException;
     public Generic bet(Generic gen, Login lg) throws java.rmi.RemoteException;
     public Generic onlineUsers(Generic gen) throws java.rmi.RemoteException;
-    public boolean messageUser(Generic gen) throws java.rmi.RemoteException;
+    public boolean message(Generic gen) throws java.rmi.RemoteException;
     public boolean messageAll(Generic gen) throws java.rmi.RemoteException;
     public void getMessage(Login lg) throws  java.rmi.RemoteException;
 

@@ -4,8 +4,7 @@
  */
 package Server.DAOFactoryPattern;
 
-import Server.DAOFactoryPattern.ConsistencyDAO;
-import Server.DAOFactoryPattern.CustomerDAO;
+import ClientRMI2.observer.ApostaFootballObserver;
 import java.sql.*;
 
 /**
@@ -45,8 +44,11 @@ public class MysqlDAOFactory extends DAOFactory {
 
         return new MysqlAccountDAO();
     }
-    public ConsistencyDAO getConsistencyDAO(){
-        return new MysqlConsistencyDAO();
+    public ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m){
+        
+        MysqlConsistencyDAO j= new MysqlConsistencyDAO();
+        j.addObserver(m);
+        return j;
     }
     /*
     public OrderDAO getOrderDAO() {

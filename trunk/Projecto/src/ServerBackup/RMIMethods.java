@@ -206,7 +206,7 @@ public class RMIMethods extends java.rmi.server.UnicastRemoteObject implements R
      * @return
      * @throws RemoteException
      */
-     public boolean messageUser(Generic gen) throws RemoteException {
+     public boolean message(Generic gen) throws RemoteException {
         String fromUser = null, toUser = null;
         Vector<String> messageVector;
         Enumeration<String> message;

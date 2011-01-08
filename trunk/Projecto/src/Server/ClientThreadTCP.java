@@ -306,7 +306,7 @@ public class ClientThreadTCP extends Thread{
             message = messageVector.elements();
 
             while(message.hasMoreElements())
-                ClientThreadTCP.messageUser(fromUser, toUser, message.nextElement());
+                messageUser(fromUser, toUser, message.nextElement());
         }
 
         gen.setConfirmation(true);
@@ -376,7 +376,7 @@ public class ClientThreadTCP extends Thread{
 
     private Generic bet(Generic gen) {
         //meter a variavel da ronda....
-        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRonda()))
+        if(Main.customerDAO.newBetCustomer(gen,lg,Main.game.getRondaFootball()))
             gen.setConfirmation(true);
         else
             gen.setConfirmation(false);
@@ -394,7 +394,7 @@ public class ClientThreadTCP extends Thread{
     }
 
     private Generic viewMatches(Generic temp) {
-        return Main.customerDAO.viewMatchesCustomer(temp,Main.game.getRonda());
+        return Main.customerDAO.viewMatchesCustomer(temp,Main.game.getRondaFootball());
     }
 
     private Generic requestMessage(Generic temp) throws IOException {

@@ -10,6 +10,7 @@ package Server.DAOFactoryPattern;
  * @author jojo
  */
 // Cloudscape concrete DAO Factory implementation
+import ClientRMI2.observer.ApostaFootballObserver;
 import java.sql.*;
 
 public class CloudscapeDAOFactory extends DAOFactory {
@@ -35,7 +36,7 @@ public class CloudscapeDAOFactory extends DAOFactory {
     }
 
     @Override
-    public ConsistencyDAO getConsistencyDAO() {
+    public ConsistencyDAO getConsistencyDAO(ApostaFootballObserver m) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
   /*

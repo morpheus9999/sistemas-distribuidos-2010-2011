@@ -23,10 +23,18 @@ import java.util.logging.Logger;
  * @author JLA
  */
 public class receiverThread extends Thread{
+        private static boolean instance_flag = false;
+
     /*
      * Constructor
      */
+    
     public receiverThread() {
+        if (instance_flag) {
+            throw new SingletonException("Receiver already instanced");
+        } else {
+            instance_flag = true; //set flag for 1
+        }
     }
 
     /*
@@ -37,9 +45,9 @@ public class receiverThread extends Thread{
         Generic gen;
 
 
-        while(!Main.exit) {
+        while(!Client.exit) {
             try {
-                gen = (Generic) Main.in.readObject();
+                gen = (Generic) Client.in.readObject();
                 switch (gen.getCode()) {
                     case Constants.creditCode:
                         /*  get credit balance  */
@@ -85,7 +93,7 @@ public class receiverThread extends Thread{
                         if(gen.getConfirmation()) {
                             System.out.println("Message sent!");
                             /*  clears buffer   */
-                           Main.buffer.clearHashtable();
+                           Client.buffer.clearHashtable();
                         }
                         else
                             /*  does not remove message from buffer and tries again later   */
@@ -96,7 +104,7 @@ public class receiverThread extends Thread{
                         if(gen.getConfirmation()) {
                             System.out.println("Message sent!");
                             /*  clears buffer   */
-                            Main.bufferAll.clearHashtable();
+                            Client.bufferAll.clearHashtable();
                         }
                         else
                              /*  does not remove message from buffer and tries again later   */
@@ -110,18 +118,18 @@ public class receiverThread extends Thread{
                         /*  login   */
                         if(gen.getConfirmation()) {
                             /*  mudar a flag de logado para true    */
-                            Main.logged = true;
+                            Client.logged = true;
                             System.out.println("Login successfull!");
                         }
                         else {
                             /*  manter a flag a falso   */
-                            Main.logged = false;
+                            Client.logged = false;
                             System.out.println("Login failed!");
                         }
 
                         /*  notifies main thread so it can continue */
-                        synchronized(Main.class) {
-                            Main.class.notify();
+                        synchronized(Client.class) {
+                            Client.class.notify();
                         }
 
                         break;
@@ -153,7 +161,7 @@ public class receiverThread extends Thread{
             } catch (IOException ex) {
                 System.out.println("Error receiving object: "+ ex.getMessage());
                 System.out.println("Ending receiving thread");
-                Main.reconnect();
+                Client.reconnect();
             }
         }
 

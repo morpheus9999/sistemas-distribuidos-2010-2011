@@ -5,6 +5,7 @@
 
 package Server;
 
+import ClientRMI2.observer.ApostaFootballObserver;
 import Server.DAOFactoryPattern.AccountDAO;
 import Server.DAOFactoryPattern.ConsistencyDAO;
 import Server.DAOFactoryPattern.CustomerDAO;
@@ -48,9 +49,11 @@ public class Main {
     public static CallbackInterfaceTomcat calbackInterfaceTomcat=null;
     
     public static Selection opt = new Selection();
-    public static BetThread game;
+    //public static BetThread game;
+    public static ThreadGames game;
     public static AccountDAO accountDAO;
     public static CustomerDAO customerDAO;
+    public static ConsistencyDAO consistencyDAO;
     
     
     
@@ -60,7 +63,11 @@ public class Main {
         DAOFactory mysqlFactory =   DAOFactory.getDAOFactory(DAOFactory.MYSQL);
         accountDAO = mysqlFactory.getAccountDAO();
         customerDAO=mysqlFactory.getCustomerDAO();
-        ConsistencyDAO consistencyDAO=mysqlFactory.getConsistencyDAO();
+        ApostaFootballObserver m=new ApostaFootballObserver();
+        consistencyDAO=mysqlFactory.getConsistencyDAO(m);
+        
+        
+        
 
         try {
             
@@ -74,7 +81,7 @@ public class Main {
             System.out.println("\n\n(Primary): sou Master :D\n\n");
 
             /*  opens a port to check for requests  */
-            game = new BetThread(Constants.numJogos,consistencyDAO);
+            game = new ThreadGames(Constants.numJogos,consistencyDAO);
             game.start();
 
             /*  opens RMI connections   */

@@ -102,7 +102,7 @@ public class Football extends Game {
 
     @Override
     public void printWinner() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
