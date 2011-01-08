@@ -12,6 +12,11 @@ import Client_Server.Message;
  * @author jojo
  */
 public class CloudscapeMessageDAO implements MessageDAO{
+    
+    
+    public CloudscapeMessageDAO() {
+    
+    }
 
     public Message getMensagensAccount(String nome) {
         throw new UnsupportedOperationException("Not supported yet.");
